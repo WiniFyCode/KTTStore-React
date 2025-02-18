@@ -1,4 +1,4 @@
-# KTT STORE - Website Bán Giày Thể Thao
+# KTT STORE - Website Bán Quần áo thời trang
 
 ## 📝 Mô tả
 KTT Store là website bán giày thể thao trực tuyến được xây dựng bằng React. Dự án bao gồm đầy đủ tính năng cho cả người dùng và quản trị viên, với giao diện thân thiện và trải nghiệm mua sắm mượt mà.
