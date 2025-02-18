@@ -1,13 +1,29 @@
 # KTT STORE - Website Bán Quần áo thời trang
 
 ## 📝 Mô tả
-KTT Store là website bán giày thể thao trực tuyến được xây dựng bằng React. Dự án bao gồm đầy đủ tính năng cho cả người dùng và quản trị viên, với giao diện thân thiện và trải nghiệm mua sắm mượt mà.
+KTT Store là website bán quần áo thời trang trực tuyến được xây dựng bằng React. Dự án bao gồm đầy đủ tính năng cho cả người dùng và quản trị viên, với giao diện thân thiện và trải nghiệm mua sắm mượt mà.
 
 ## 🛠️ Công nghệ sử dụng
-- Frontend: React, Redux Toolkit, TailwindCSS
-- Backend: Node.js, Express
-- Database: MySQL
-- Authentication: JWT
+- Frontend: 
+  - React + Vite
+  - Redux Toolkit
+  - TailwindCSS
+  - React Router DOM
+  - Axios
+  - React Icons
+  - React Toastify
+  - Chart.js
+
+- Backend:
+  - Node.js
+  - Express
+  - MongoDB
+  - Mongoose
+  - JWT
+  - Nodemailer
+  - Cloudinary
+  - PayOS
+  - Socket.io
 
 ## ✨ Tính năng chính
 
@@ -34,7 +50,7 @@ KTT Store là website bán giày thể thao trực tuyến được xây dựng 
 
 ### Yêu cầu hệ thống
 - Node.js phiên bản 18.x trở lên
-- MySQL 8.x
+- MongoDB phiên bản 6.x trở lên
 - Git
 
 ### Các bước cài đặt
@@ -45,22 +61,24 @@ git clone https://github.com/WiniFyCode/KTTStore-React.git
 cd KTTStore-React
 ```
 
-2. Cài đặt dependencies cho client
+2. Mở Terminal 1 và chạy lệnh để cài đặt dependencies cho client ( ctrl + shift + `)
 ```bash
 cd client
 npm install
 ```
-
-3. Cài đặt dependencies cho server
+3. Mở Terminal 2 và chạy lệnh để cài đặt dependencies cho server ( ctrl + shift + `)
 ```bash
-cd ../server
+cd server
 npm install
 ```
 
 4. Cấu hình database
 - Tạo database MongoDB mới
 - Copy file `.env.example` thành `.env` trong thư mục server
-- Cập nhật thông tin kết nối database trong file `.env`
+- Cập nhật thông tin kết nối MongoDB trong file `.env`:
+  ```
+  MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority&appName=<appName> 
+  ```
 
 5. Khởi chạy ứng dụng
 
@@ -85,96 +103,83 @@ npm run dev
 ### 🖥️ Frontend (client)
 ```
 client/
-├── public/                 # Static files
-│   ├── images/            # Hình ảnh tĩnh
-│   ├── favicon.ico        
-│   └── index.html         # HTML template
+├── public/                     # Static files
+│   ├── images/                 # Hình ảnh tĩnh
+│   │   └── favicon.ico        
+│   │   └── index.html          # HTML template
+│   │
+│   ├── src/                    # Source code
+│   │   ├── assets/             # Assets (images, fonts, etc.)
+│   │   │
+│   │   ├── components/         # Shared components
+│   │   │   ├── AI/             # Components AI chat
+│   │   │   ├── Products/       # Components sản phẩm
+│   │   │   └── ...
+│   │   │
+│   │   ├── contexts/           # React contexts
+│   │   │   ├── AdminThemeContext.jsx
+│   │   │   └── CustomerThemeContext.jsx 
+│   │   ├── data/               # Data ( dữ liệu mẫu )
+│   │   │
+│   │   ├── layouts/            # Layout components
+│   │   │   ├── AdminLayout/
+│   │   │   └── CustomerLayout/
+│   │   │
+│   │   ├── pages/              # Page components
+│   │   │   ├── admin/          # Admin pages
+│   │   │   ├── customer/       # Customer pages
+│   │   │   └── ...
+│   │   │
+│   │   ├── services/           # API services ( chỉ dành cho NewsData)
+│   │   │
+│   │   ├── styles/             # Global styles
+│   │   │
+│   │   ├── utils/              # Utility functions
+│   │   │
+│   │   ├── App.jsx             # Root component
+│   │   └── main.jsx            # Entry point
+│   │
+│   ├── .env                    # Environment variables
+│   ├── .gitignore              # Git ignore file
+│   ├── package.json            # Dependencies
+│   ├── vite.config.js          # Vite configuration
+│   └── tailwind.config.js      # Tailwind configuration
 │
-├── src/                   # Source code
-│   ├── assets/           # Assets (images, fonts, etc.)
-│   │
-│   ├── components/       # Shared components
-│   │   ├── AI/          # Components AI chat
-│   │   ├── Products/    # Components sản phẩm
-│   │   └── ...
-│   │
-│   ├── contexts/        # React contexts
-│   │   ├── AdminThemeContext.jsx
-│   │   └── CustomerThemeContext.jsx 
-│   │
-│   ├── hooks/           # Custom hooks
-│   │
-│   ├── layouts/         # Layout components
-│   │   ├── AdminLayout/
-│   │   └── CustomerLayout/
-│   │
-│   ├── pages/           # Page components
-│   │   ├── admin/      # Admin pages
-│   │   ├── customer/   # Customer pages
-│   │   └── ...
-│   │
-│   ├── redux/          # Redux store & slices
-│   │   ├── slices/
-│   │   └── store.js
-│   │
-│   ├── services/       # API services
-│   │
-│   ├── styles/         # Global styles
-│   │
-│   ├── utils/          # Utility functions
-│   │
-│   ├── App.jsx         # Root component
-│   └── main.jsx        # Entry point
-│
-├── .env                # Environment variables
-├── .gitignore         # Git ignore file
-├── package.json       # Dependencies
-├── vite.config.js     # Vite configuration
-└── tailwind.config.js # Tailwind configuration
+└── ...
 ```
 
 ### ⚙️ Backend (server)
 ```
 server/
-├── config/            # Configuration files
-│   ├── database.js   # Database config
-│   └── ...
-│
-├── controllers/      # Route controllers
+├── controllers/                # Route controllers
 │   ├── AuthController.js
 │   ├── ProductController.js
 │   └── ...
 │
-├── data/            # Static data/seeds
+├── data/                       # Static data/seeds
 │   └── trainingData.js
 │
-├── mail/            # Email templates & handlers
+├── mail/                       # Email templates & handlers
 │   ├── EmailController.js
 │   └── templates/
 │
-├── middlewares/     # Custom middlewares
+├── middlewares/                # Custom middlewares
 │   ├── auth.js
 │   └── ...
 │
-├── models/          # Database models
+├── models/                     # Database models
 │   ├── User.js
 │   ├── Product.js
 │   └── ...
 │
-├── routes/          # API routes
+├── routes/                     # API routes
 │   ├── auth.js
 │   ├── products.js
 │   └── ...
 │
-├── services/        # Business logic
-│   ├── PaymentService.js
-│   └── ...
+├── uploads/                    # Uploaded files
 │
-├── uploads/         # Uploaded files
-│
-├── utils/           # Utility functions
-│   ├── helpers.js
-│   └── ...
+├── utils/                      # Utility functions
 │
 ├── .env            # Environment variables
 ├── .gitignore      # Git ignore file
