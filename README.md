@@ -181,10 +181,10 @@ server/
 │
 ├── utils/                      # Utility functions
 │
-├── .env            # Environment variables
-├── .gitignore      # Git ignore file
-├── package.json    # Dependencies
-└── server.js       # Entry point
+├── .env                        # Environment variables
+├── .gitignore                  # Git ignore file
+├── package.json                # Dependencies
+└── server.js                   # Entry point
 ```
 
 ## 🤝 Đóng góp
