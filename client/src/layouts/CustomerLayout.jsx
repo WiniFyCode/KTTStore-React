@@ -604,14 +604,14 @@ const CustomerLayout = () => {
                       Tất cả sản phẩm
                     </Link>
                     <Link
-                      to="/nam"
+                      to="/male"
                       className="block px-6 py-2 text-white hover:bg-white/10"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Nam
                     </Link>
                     <Link
-                      to="/nu"
+                      to="/female"
                       className="block px-6 py-2 text-white hover:bg-white/10"
                       onClick={() => setIsMenuOpen(false)}
                     >
