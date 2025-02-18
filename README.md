@@ -33,7 +33,7 @@ KTT Store là website bán giày thể thao trực tuyến được xây dựng 
 ## 🚀 Hướng dẫn cài đặt
 
 ### Yêu cầu hệ thống
-- Node.js phiên bản 16.x trở lên
+- Node.js phiên bản 18.x trở lên
 - MySQL 8.x
 - Git
 
@@ -58,7 +58,7 @@ npm install
 ```
 
 4. Cấu hình database
-- Tạo database MySQL mới
+- Tạo database MongoDB mới
 - Copy file `.env.example` thành `.env` trong thư mục server
 - Cập nhật thông tin kết nối database trong file `.env`
 
@@ -67,32 +67,119 @@ npm install
 Chạy server:
 ```bash
 cd server
-npm start
+npm run dev
 ```
 
 Chạy client:
 ```bash
 cd client
-npm start
+npm run dev
 ```
 
 Ứng dụng sẽ chạy tại:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:8000
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
 
 ## 📁 Cấu trúc thư mục
 
+### 🖥️ Frontend (client)
 ```
-KTTStore-React/
-├── client/               # Frontend React
-│   ├── public/          # Static files
-│   └── src/             # Source code
-├── server/              # Backend Node.js
-│   ├── config/         # Cấu hình
-│   ├── controllers/    # Xử lý logic
-│   ├── models/         # Models database
-│   └── routes/         # API routes
-└── docs/               # Tài liệu
+client/
+├── public/                 # Static files
+│   ├── images/            # Hình ảnh tĩnh
+│   ├── favicon.ico        
+│   └── index.html         # HTML template
+│
+├── src/                   # Source code
+│   ├── assets/           # Assets (images, fonts, etc.)
+│   │
+│   ├── components/       # Shared components
+│   │   ├── AI/          # Components AI chat
+│   │   ├── Products/    # Components sản phẩm
+│   │   └── ...
+│   │
+│   ├── contexts/        # React contexts
+│   │   ├── AdminThemeContext.jsx
+│   │   └── CustomerThemeContext.jsx 
+│   │
+│   ├── hooks/           # Custom hooks
+│   │
+│   ├── layouts/         # Layout components
+│   │   ├── AdminLayout/
+│   │   └── CustomerLayout/
+│   │
+│   ├── pages/           # Page components
+│   │   ├── admin/      # Admin pages
+│   │   ├── customer/   # Customer pages
+│   │   └── ...
+│   │
+│   ├── redux/          # Redux store & slices
+│   │   ├── slices/
+│   │   └── store.js
+│   │
+│   ├── services/       # API services
+│   │
+│   ├── styles/         # Global styles
+│   │
+│   ├── utils/          # Utility functions
+│   │
+│   ├── App.jsx         # Root component
+│   └── main.jsx        # Entry point
+│
+├── .env                # Environment variables
+├── .gitignore         # Git ignore file
+├── package.json       # Dependencies
+├── vite.config.js     # Vite configuration
+└── tailwind.config.js # Tailwind configuration
+```
+
+### ⚙️ Backend (server)
+```
+server/
+├── config/            # Configuration files
+│   ├── database.js   # Database config
+│   └── ...
+│
+├── controllers/      # Route controllers
+│   ├── AuthController.js
+│   ├── ProductController.js
+│   └── ...
+│
+├── data/            # Static data/seeds
+│   └── trainingData.js
+│
+├── mail/            # Email templates & handlers
+│   ├── EmailController.js
+│   └── templates/
+│
+├── middlewares/     # Custom middlewares
+│   ├── auth.js
+│   └── ...
+│
+├── models/          # Database models
+│   ├── User.js
+│   ├── Product.js
+│   └── ...
+│
+├── routes/          # API routes
+│   ├── auth.js
+│   ├── products.js
+│   └── ...
+│
+├── services/        # Business logic
+│   ├── PaymentService.js
+│   └── ...
+│
+├── uploads/         # Uploaded files
+│
+├── utils/           # Utility functions
+│   ├── helpers.js
+│   └── ...
+│
+├── .env            # Environment variables
+├── .gitignore      # Git ignore file
+├── package.json    # Dependencies
+└── server.js       # Entry point
 ```
 
 ## 🤝 Đóng góp
@@ -107,5 +194,5 @@ Mọi đóng góp đều được chào đón! Vui lòng:
 Dự án được phân phối dưới giấy phép MIT. Xem `LICENSE` để biết thêm thông tin.
 
 ## 📧 Liên hệ
-- Email: kttstore.dev@gmail.com
+- Email: kttstore3cg@gmail.com
 - GitHub: [@WiniFyCode](https://github.com/WiniFyCode)
