@@ -1,0 +1,69 @@
+/* NotFound.css - Styles cho trang 404 */
+
+@keyframes grid-fade {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.1; }
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(20px, 20px) rotate(180deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(2px, -2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(-2px, 2px); }
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+.animate-grid-fade {
+  animation: grid-fade 3s ease-in-out infinite;
+}
+
+.animate-glitch-1 {
+  animation: glitch-1 0.2s ease-in-out infinite;
+}
+
+.animate-glitch-2 {
+  animation: glitch-2 0.2s ease-in-out infinite;
+}
+
+.animate-typing {
+  animation: typing 2s steps(40, end);
+}
+
+.animate-typing-2 {
+  animation: typing 2s steps(40, end);
+  animation-delay: 0.5s;
+}
+
+.animate-typing-3 {
+  animation: typing 2s steps(40, end);
+  animation-delay: 1s;
+}
+
+.floating-error {
+  position: absolute;
+  color: rgba(239, 68, 68, 0.2);
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}

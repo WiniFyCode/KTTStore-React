@@ -1,0 +1,287 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8fafc;
+}
+
+/* Banner Container */
+.banner {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #3b82f6, #4f46e5, #7c3aed);
+    min-height: 400px;
+}
+
+/* Banner Background Elements */
+.banner-background {
+    position: absolute;
+    inset: 0;
+}
+
+/* Animated Circles */
+.animated-circles {
+    position: absolute;
+    inset: 0;
+}
+
+.circle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.circle-1 {
+    width: 300px;
+    height: 300px;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    animation: float 6s ease-in-out infinite;
+}
+
+.circle-2 {
+    width: 400px;
+    height: 400px;
+    bottom: 0;
+    right: 0;
+    transform: translate(30%, 30%);
+    animation: float 6s ease-in-out infinite 2s;
+}
+
+/* Gradient Overlay */
+.gradient-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+}
+
+/* Animated Lines */
+.animated-lines {
+    position: absolute;
+    inset: 0;
+    opacity: 0.2;
+    overflow: hidden;
+}
+
+.shimmer-line {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    animation: shimmer 2s linear infinite;
+}
+
+/* Dot Pattern */
+.dot-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.1) 1px,
+        transparent 1px
+    );
+    background-size: 20px 20px;
+}
+
+/* Banner Content */
+.banner-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    text-align: center;
+    color: white;
+}
+
+/* Icon */
+.icon-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+.icon-blur {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    filter: blur(16px);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.icon-wrapper {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    padding: 16px;
+    border-radius: 50%;
+}
+
+.icon-wrapper i {
+    font-size: 48px;
+}
+
+/* Title */
+.title-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: bold;
+    letter-spacing: -0.02em;
+}
+
+.title-underline {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.underline-animation {
+    height: 100%;
+    width: 33%;
+    background: white;
+    border-radius: 2px;
+    animation: slide 2s linear infinite;
+}
+
+/* Subtitle */
+.subtitle {
+    font-size: 20px;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Wave Divider */
+.wave-divider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.wave-divider svg {
+    width: 100%;
+    height: 48px;
+    fill: #f8fafc;
+}
+
+/* Breadcrumb */
+.breadcrumb-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: -32px;
+    padding: 8px 24px;
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.9), rgba(124, 58, 237, 0.9));
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    color: white;
+}
+
+.breadcrumb-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.3s;
+}
+
+.breadcrumb-link:hover {
+    opacity: 1;
+}
+
+.separator {
+    opacity: 0.5;
+    font-size: 12px;
+}
+
+.current {
+    font-weight: 500;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(-10px, -10px);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(200%);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.2;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.3;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 36px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .icon-wrapper i {
+        font-size: 36px;
+    }
+
+    .breadcrumb-link span {
+        display: none;
+    }
+} 
