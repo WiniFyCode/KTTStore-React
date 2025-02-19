@@ -92,38 +92,26 @@ const PromotionManagement = () => {
 
     const fetchProducts = async () => {
         try {
-            console.log('Fetching products...');
             const response = await axios.get('/api/products?limit=1000');
-            console.log('Products response:', response);
             if (response.data && response.data.products) {
-                console.log('Setting products:', response.data.products);
                 setProducts(response.data.products || []);
             } else {
-                console.error('Dữ liệu sản phẩm không hợp lệ:', response.data);
                 toast.error('Dữ liệu sản phẩm không hợp lệ');
             }
         } catch (error) {
-            console.error('Lỗi khi tải danh sách sản phẩm:', error);
-            console.error('Chi tiết lỗi:', error.response?.data);
             toast.error('Không thể tải danh sách sản phẩm');
         }
     };
 
     const fetchCategories = async () => {
         try {
-            console.log('Fetching categories...');
             const response = await axios.get('/api/categories');
-            console.log('Categories response:', response);
             if (Array.isArray(response.data)) {
-                console.log('Setting categories:', response.data);
                 setCategories(response.data);
             } else {
-                console.error('Dữ liệu danh mục không hợp lệ:', response.data);
                 toast.error('Dữ liệu danh mục không hợp lệ');
             }
         } catch (error) {
-            console.error('Lỗi khi tải danh sách danh mục:', error);
-            console.error('Chi tiết lỗi:', error.response?.data);
             toast.error('Không thể tải danh sách danh mục');
         }
     };

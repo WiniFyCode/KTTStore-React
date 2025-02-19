@@ -674,7 +674,7 @@ const Profile = () => {
       <PageBanner
         theme={theme}
         icon={FaUser}
-        title="Thông tin cá nhân"
+        title="THÔNG TIN CÁ NHÂN"
         subtitle={`Xin chào, ${userInfo.fullname}`}
         breadcrumbText="Thông tin cá nhân"
       />

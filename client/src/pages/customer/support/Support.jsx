@@ -73,7 +73,7 @@ const Support = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Trung tâm hỗ trợ"
+          title="TRUNG TÂM HỖ TRỢ"
           description="Chúng tôi luôn sẵn sàng hỗ trợ bạn"
         />
 

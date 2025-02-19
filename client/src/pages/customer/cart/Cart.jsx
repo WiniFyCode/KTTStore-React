@@ -567,7 +567,7 @@ const Cart = () => {
         <PageBanner
           theme={theme}
           icon={FaShoppingCart}
-          title="Giỏ hàng của bạn"
+          title="GIỎ HÀNG CỦA BẠN"
           breadcrumbText="Giỏ hàng"
           extraContent={
             <div className="flex items-center justify-center gap-3 text-xl text-white/90">
@@ -660,7 +660,7 @@ const Cart = () => {
       <PageBanner
         theme={theme}
         icon={FaShoppingCart}
-        title="Giỏ hàng của bạn"
+        title="GIỎ HÀNG CỦA BẠN"
         breadcrumbText="Giỏ hàng"
         extraContent={
           <div className="flex items-center justify-center gap-3 text-xl text-white/90">

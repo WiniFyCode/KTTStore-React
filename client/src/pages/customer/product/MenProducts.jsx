@@ -7,6 +7,8 @@ import PageBanner from '../../../components/PageBanner';
 import axiosInstance from '../../../utils/axios';
 import { toast } from 'react-toastify';
 import { getColorCode, isPatternOrStripe, getBackgroundSize } from '../../../utils/colorUtils';
+import ColorTooltip from '../../../components/Products/ColorTooltip';
+import SizeTooltip from '../../../components/Products/SizeTooltip';
 
 const MenProducts = () => {
    const { theme } = useTheme();
@@ -22,6 +24,7 @@ const MenProducts = () => {
    const [selectedImages, setSelectedImages] = useState({});
    const [activeTooltip, setActiveTooltip] = useState(null);
    const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+   const [activeSizeTooltip, setActiveSizeTooltip] = useState(null);
 
    // State cho filter và sort
    const [filters, setFilters] = useState({
@@ -39,7 +42,7 @@ const MenProducts = () => {
          { id: '100-300', label: '100.000đ - 300.000đ', range: [100000, 300000] },
          { id: '300-500', label: '300.000đ - 500.000đ', range: [300000, 500000] },
          { id: '500-1000', label: '500.000đ - 1.000.000đ', range: [500000, 1000000] },
-         { id: '1000-up', label: 'Trên 1.000.000đ', range: [1000000, Infinity] }
+         { id: '1000-up', label: 'Trên 1.000.000đ', range: [1000000, 999999999] }
       ],
       sortOptions: [
          { id: 'popular', label: 'Phổ biến nhất', icon: FaFire },
@@ -99,21 +102,21 @@ const MenProducts = () => {
       }
    };
 
-   // Filter và sort sản phẩm
+   // Effect xử lý lọc và sắp xếp sản phẩm
    useEffect(() => {
       // Lọc sản phẩm theo các điều kiện
       const filtered = products.filter(product => {
-         // Lọc theo search
+         // Lọc theo từ khóa tìm kiếm
          if (filters.search && !product.name.toLowerCase().includes(filters.search.toLowerCase())) {
             return false;
          }
 
-         // Lọc theo categories
+         // Lọc theo danh mục
          if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
             return false;
          }
 
-         // Lọc theo price ranges
+         // Lọc theo khoảng giá
          if (filters.priceRanges.length > 0) {
             const productPrice = convertPriceToNumber(product.price);
             const matchesRange = filters.priceRanges.some(rangeId => {
@@ -124,7 +127,7 @@ const MenProducts = () => {
             if (!matchesRange) return false;
          }
 
-         // Lọc theo stock
+         // Lọc theo tình trạng còn hàng
          if (filters.inStock && product.stock === 0) {
             return false;
          }
@@ -176,23 +179,20 @@ const MenProducts = () => {
             sort: filters.sort || 'popular'
          });
 
-         // Thêm các điều kiện lọc vào params
-         if (filters.search) params.append('search', filters.search);// tìm kiếm sản phẩm
+         // Thêm các params tùy chọn
+         if (filters.search) params.append('search', filters.search);
          if (filters.categories.length > 0) {
-            params.append('categories', filters.categories.join(','));// lọc theo danh mục
+            params.append('categories', filters.categories.join(','));
          }
-         // lọc theo giá
+
          if (filters.priceRanges.length > 0) {
-            const selectedRanges = filters.priceRanges.map(rangeId =>
-               filterOptions.priceRanges.find(r => r.id === rangeId)
-            );
+            const selectedRanges = filters.priceRanges.map(rangeId => filterOptions.priceRanges.find(r => r.id === rangeId));
             if (selectedRanges.length > 0) {
                params.append('minPrice', selectedRanges[0].range[0]);
                params.append('maxPrice', selectedRanges[selectedRanges.length - 1].range[1]);
             }
          }
 
-         // lọc theo stock
          if (filters.inStock) params.append('inStock', 'true');
 
          // gọi api lấy sản phẩm
@@ -280,6 +280,14 @@ const MenProducts = () => {
       }));
    };
 
+   // Hàm sắp xếp size theo thứ tự chuẩn
+   const sortSizes = (sizes) => {
+      const sizeOrder = { 'S': 1, 'M': 2, 'L': 3, 'XL': 4, 'XXL': 5 };
+      return [...sizes].sort((a, b) => {
+         return (sizeOrder[a.size] || 99) - (sizeOrder[b.size] || 99);
+      });
+   };
+
    // Render component
    return (
       // Container chính với gradient background tùy theo theme
@@ -288,7 +296,7 @@ const MenProducts = () => {
          <PageBanner
             theme={theme}
             icon={FaTags}
-            title="Thời Trang Nam"
+            title="THỜI TRANG NAM"
             subtitle="Phong cách nam tính, mạnh mẽ và cuốn hút"
             breadcrumbText="Thời trang nam"
          />
@@ -492,15 +500,15 @@ const MenProducts = () => {
 
                                  {/* Overlay gradient khi hover */}
                                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${theme === 'tet'
-                                       ? 'bg-gradient-to-t from-red-900/20 via-transparent to-transparent'
-                                       : 'bg-gradient-to-t from-blue-900/20 via-transparent to-transparent'
+                                    ? 'bg-gradient-to-t from-red-900/20 via-transparent to-transparent'
+                                    : 'bg-gradient-to-t from-blue-900/20 via-transparent to-transparent'
                                     }`} />
 
                                  {/* Overlay khi hết hàng */}
                                  {!isInStock && (
                                     <div className={`absolute inset-0 flex items-center justify-center backdrop-blur-[2px] ${theme === 'tet'
-                                          ? 'bg-gradient-to-br from-red-900/40 via-red-800/40 to-red-900/40'
-                                          : 'bg-gradient-to-br from-blue-900/40 via-blue-800/40 to-blue-900/40'
+                                       ? 'bg-gradient-to-br from-red-900/40 via-red-800/40 to-red-900/40'
+                                       : 'bg-gradient-to-br from-blue-900/40 via-blue-800/40 to-blue-900/40'
                                        }`}>
                                        <span className={`font-medium px-3 py-1.5 rounded-full text-sm text-white ${theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'
                                           }`}>
@@ -530,8 +538,8 @@ const MenProducts = () => {
                                              key={index}
                                              onClick={(e) => handleThumbnailClick(e, product.productID, index)}
                                              className={`w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition-all transform hover:scale-105 ${selectedImages[product.productID]?.imageIndex === index
-                                                   ? 'border-2 border-white ring-2 ring-offset-2 ' + (theme === 'tet' ? 'ring-red-500' : 'ring-blue-500')
-                                                   : 'border-2 border-white hover:border-gray-300'
+                                                ? 'border-2 border-white ring-2 ring-offset-2 ' + (theme === 'tet' ? 'ring-red-500' : 'ring-blue-500')
+                                                : 'border-2 border-white hover:border-gray-300'
                                                 }`}
                                           >
                                              <img
@@ -581,10 +589,7 @@ const MenProducts = () => {
                                                 <div
                                                    key={index}
                                                    className="group relative p-1"
-                                                   onClick={(e) => {
-                                                      e.preventDefault();
-                                                      handleColorClick(e, product.productID, index);
-                                                   }}
+                                                   onClick={(e) => handleColorClick(e, product.productID, index)}
                                                    onMouseEnter={() => setActiveTooltip(`${product.productID}-${index}`)}
                                                    onMouseLeave={() => setActiveTooltip(null)}
                                                 >
@@ -600,12 +605,11 @@ const MenProducts = () => {
                                                       }}
                                                    />
                                                    {/* Tooltip tên màu */}
-                                                   <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded transition-all ${activeTooltip === `${product.productID}-${index}`
-                                                         ? 'opacity-100 visible'
-                                                         : 'opacity-0 invisible'
-                                                      }`}>
-                                                      {color.colorName}
-                                                   </div>
+                                                   <ColorTooltip 
+                                                      isVisible={activeTooltip === `${product.productID}-${index}`}
+                                                      colorName={color.colorName}
+                                                      theme={theme}
+                                                   />
                                                 </div>
                                              ))}
                                           </div>
@@ -617,16 +621,47 @@ const MenProducts = () => {
                                        <div className="flex items-center gap-2">
                                           <span className="text-sm text-gray-500">Size:</span>
                                           <div className="flex items-center gap-1">
-                                             {product.colors[selectedImages[product.productID]?.colorIndex || 0].sizes.map((size, index) => (
+                                             {sortSizes(product.colors[selectedImages[product.productID]?.colorIndex || 0].sizes).map((size, index) => (
                                                 <div
                                                    key={index}
-                                                   className={`px-2 py-1 text-xs rounded ${size.stock > 0
-                                                         ? 'bg-gray-100 text-gray-700'
-                                                         : 'bg-gray-50 text-gray-400 line-through'
-                                                      }`}
-                                                   title={`${size.stock > 0 ? 'Còn hàng' : 'Hết hàng'}`}
+                                                   className="relative"
+                                                   onMouseEnter={(e) => {
+                                                      e.preventDefault();
+                                                      e.stopPropagation();
+                                                      setActiveSizeTooltip(`${product.productID}-${product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}-${size.size}`);
+                                                   }}
+                                                   onMouseLeave={(e) => {
+                                                      e.preventDefault();
+                                                      e.stopPropagation();
+                                                      setActiveSizeTooltip(null);
+                                                   }}
+                                                   onClick={(e) => {
+                                                      e.preventDefault();
+                                                      e.stopPropagation();
+                                                   }}
                                                 >
-                                                   {size.size}
+                                                   <div
+                                                      className={`min-w-[2.5rem] h-8 flex items-center justify-center text-sm rounded cursor-help transition-all ${
+                                                         size.stock > 0
+                                                            ? theme === 'tet'
+                                                               ? 'bg-red-50 text-red-700 hover:bg-red-100'
+                                                               : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                                                            : 'bg-gray-50 text-gray-400'
+                                                      }`}
+                                                      onClick={(e) => {
+                                                         e.preventDefault();
+                                                         e.stopPropagation();
+                                                      }}
+                                                   >
+                                                      {size.size}
+                                                   </div>
+                                                   {/* Tooltip */}
+                                                   <SizeTooltip 
+                                                      isVisible={activeSizeTooltip === `${product.productID}-${product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}-${size.size}`}
+                                                      stock={size.stock}
+                                                      colorName={product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}
+                                                      theme={theme}
+                                                   />
                                                 </div>
                                              ))}
                                           </div>
@@ -666,8 +701,8 @@ const MenProducts = () => {
                               onClick={() => handlePageChange(pagination.currentPage - 1)}
                               disabled={pagination.currentPage === 1}
                               className={`flex items-center justify-center h-10 px-4 border-r ${pagination.currentPage === 1
-                                    ? 'text-gray-300 cursor-not-allowed'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                 ? 'text-gray-300 cursor-not-allowed'
+                                 : 'text-gray-700 hover:bg-gray-100'
                                  }`}
                            >
                               <FaChevronLeft className="w-5 h-5" />
@@ -700,8 +735,8 @@ const MenProducts = () => {
                                           key={page}
                                           onClick={() => handlePageChange(page)}
                                           className={`flex items-center justify-center h-10 w-10 border-r ${pagination.currentPage === page
-                                                ? 'bg-blue-500 text-white' // Style cho trang hiện tại
-                                                : 'text-gray-700 hover:bg-gray-100' // Style cho các trang khác
+                                             ? 'bg-blue-500 text-white' // Style cho trang hiện tại
+                                             : 'text-gray-700 hover:bg-gray-100' // Style cho các trang khác
                                              }`}
                                        >
                                           {page}
@@ -714,8 +749,8 @@ const MenProducts = () => {
                                        key={page}
                                        onClick={() => handlePageChange(page)}
                                        className={`flex items-center justify-center h-10 w-10 border-r ${pagination.currentPage === page
-                                             ? 'bg-blue-500 text-white' // Style cho trang hiện tại  
-                                             : 'text-gray-700 hover:bg-gray-100' // Style cho các trang khác
+                                          ? 'bg-blue-500 text-white' // Style cho trang hiện tại  
+                                          : 'text-gray-700 hover:bg-gray-100' // Style cho các trang khác
                                           }`}
                                     >
                                        {page}
@@ -728,8 +763,8 @@ const MenProducts = () => {
                               onClick={() => handlePageChange(pagination.currentPage + 1)}
                               disabled={pagination.currentPage === pagination.totalPages}
                               className={`flex items-center justify-center h-10 px-4 ${pagination.currentPage === pagination.totalPages
-                                    ? 'text-gray-300 cursor-not-allowed'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                 ? 'text-gray-300 cursor-not-allowed'
+                                 : 'text-gray-700 hover:bg-gray-100'
                                  }`}
                            >
                               <FaChevronRight className="w-5 h-5" />

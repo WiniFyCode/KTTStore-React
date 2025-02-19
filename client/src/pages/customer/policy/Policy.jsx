@@ -72,7 +72,7 @@ const Policy = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Chính sách"
+          title="CHÍNH SÁCH"
           description="Các chính sách và quy định của KTT Store"
         />
 

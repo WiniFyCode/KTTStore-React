@@ -3,6 +3,7 @@ const Product = require('../models/Product');
 const ProductSizeStock = require('../models/ProductSizeStock');
 
 class ProductColorController {
+    //! ADMIN
     // Lấy tất cả màu của một sản phẩm
     async getProductColors(req, res) {
         try {
@@ -33,6 +34,7 @@ class ProductColorController {
         }
     }
 
+    //! ADMIN
     // Lấy chi tiết một màu
     async getColorById(req, res) {
         try {
@@ -64,7 +66,51 @@ class ProductColorController {
         }
     }
 
-    //! Toàn thêm
+    //! ADMIN
+    // Cập nhật thông tin màu
+    async updateColor(req, res) {
+        try {
+            const { id } = req.params;
+            const { colorName, images } = req.body;
+
+            const color = await ProductColor.findOne({ colorID: id });
+            if (!color) {
+                return res.status(404).json({ message: 'Không tìm thấy màu sắc' });
+            }
+
+            // Nếu đổi tên màu, kiểm tra tên mới đã tồn tại chưa
+            if (colorName && colorName.trim().toLowerCase() !== color.colorName.trim().toLowerCase()) {
+                const existingColor = await ProductColor.findOne({
+                    productID: color.productID,
+                    colorName: { $regex: new RegExp(`^${colorName.trim().toLowerCase()}$`, 'i') },
+                    colorID: { $ne: id }
+                });
+                if (existingColor) {
+                    return res.status(400).json({ message: 'Màu này đã tồn tại cho sản phẩm' });
+                }
+                color.colorName = colorName.trim();
+            }
+
+            // Cập nhật hình ảnh nếu có
+            if (images) {
+                color.images = images;
+            }
+
+            await color.save();
+
+            res.json({
+                message: 'Cập nhật màu sắc thành công',
+                color
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: 'Có lỗi xảy ra khi cập nhật màu sắc',
+                error: error.message
+            });
+        }
+    }
+
+    //!ADMIN
     // ADMIN: Thêm màu mới cho sản phẩm
     async addColor(req, res) {
         try {
@@ -133,50 +179,7 @@ class ProductColorController {
         }
     }
 
-    // ADMIN: Cập nhật thông tin màu
-    async updateColor(req, res) {
-        try {
-            const { id } = req.params;
-            const { colorName, images } = req.body;
-
-            const color = await ProductColor.findOne({ colorID: id });
-            if (!color) {
-                return res.status(404).json({ message: 'Không tìm thấy màu sắc' });
-            }
-
-            // Nếu đổi tên màu, kiểm tra tên mới đã tồn tại chưa
-            if (colorName && colorName.trim().toLowerCase() !== color.colorName.trim().toLowerCase()) {
-                const existingColor = await ProductColor.findOne({
-                    productID: color.productID,
-                    colorName: { $regex: new RegExp(`^${colorName.trim().toLowerCase()}$`, 'i') },
-                    colorID: { $ne: id }
-                });
-                if (existingColor) {
-                    return res.status(400).json({ message: 'Màu này đã tồn tại cho sản phẩm' });
-                }
-                color.colorName = colorName.trim();
-            }
-
-            // Cập nhật hình ảnh nếu có
-            if (images) {
-                color.images = images;
-            }
-
-            await color.save();
-
-            res.json({
-                message: 'Cập nhật màu sắc thành công',
-                color
-            });
-        } catch (error) {
-            res.status(500).json({
-                message: 'Có lỗi xảy ra khi cập nhật màu sắc',
-                error: error.message
-            });
-        }
-    }
-
-    //! Toàn thêm
+    //!ADMIN
     // ADMIN: Xóa màu
     async deleteColor(req, res) {
         try {
@@ -202,6 +205,7 @@ class ProductColorController {
         }
     }
 
+    //!ADMIN
     // ADMIN: Upload hình ảnh cho màu
     async uploadImages(req, res) {
         try {
@@ -229,6 +233,7 @@ class ProductColorController {
         }
     }
 
+    //!ADMIN
     // ADMIN: Xóa hình ảnh của màu
     async deleteImage(req, res) {
         try {

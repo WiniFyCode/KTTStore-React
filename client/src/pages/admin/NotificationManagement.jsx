@@ -128,7 +128,7 @@ const NotificationManagement = () => {
     const fetchUsers = async () => {
         try {
             setIsLoadingUsers(true);
-            const response = await axios.get('/api/admin/users', {
+            const response = await axios.get('/api/admin/users/admin/users', {
                 params: {
                     limit: 1000 // Lấy tối đa 1000 users
                 }

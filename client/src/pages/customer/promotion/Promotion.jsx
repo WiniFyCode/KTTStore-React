@@ -132,7 +132,7 @@ const Promotion = () => {
         {/* Banner trang */}
         <PageBanner 
           icon={FaGift}
-          title="Khuyến Mãi"
+          title="KHUYẾN MÃI"
           subtitle="Các chương trình ưu đãi hấp dẫn từ KTT Store"
           breadcrumbText="Khuyến mãi"
         />

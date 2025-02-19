@@ -121,7 +121,7 @@ const Contact = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Liên hệ"
+          title="LIÊN HỆ"
           description="Chúng tôi luôn sẵn sàng hỗ trợ bạn"
           className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
         />

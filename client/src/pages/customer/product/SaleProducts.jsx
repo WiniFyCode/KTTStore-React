@@ -63,7 +63,7 @@ const SaleProducts = () => {
       { id: '100-300', label: '100.000đ - 300.000đ', range: [100000, 300000] },
       { id: '300-500', label: '300.000đ - 500.000đ', range: [300000, 500000] },
       { id: '500-1000', label: '500.000đ - 1.000.000đ', range: [500000, 1000000] },
-      { id: '1000-up', label: 'Trên 1.000.000đ', range: [1000000, Infinity] }
+      { id: '1000-up', label: 'Trên 1.000.000đ', range: [1000000, 999999999] }
     ],
     // Các khoảng giảm giá
     discountRanges: [
@@ -90,8 +90,9 @@ const SaleProducts = () => {
     if (filters.search.trim()) {
       const searchTerm = filters.search.toLowerCase().trim();
       result = result.filter(product =>
-        product.name.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm)
+        (product.name?.toLowerCase() || '').includes(searchTerm) ||
+        (product.description?.toLowerCase() || '').includes(searchTerm) ||
+        (product.category?.toLowerCase() || '').includes(searchTerm)
       );
     }
 

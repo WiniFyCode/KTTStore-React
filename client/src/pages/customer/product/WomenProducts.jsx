@@ -8,6 +8,9 @@ import PageBanner from '../../../components/PageBanner';
 import axiosInstance from '../../../utils/axios';
 import { toast } from 'react-toastify';
 import { getColorCode, isPatternOrStripe, getBackgroundSize } from '../../../utils/colorUtils';
+import Loading from '../../../components/Products/Loading';
+import ColorTooltip from '../../../components/Products/ColorTooltip';
+import SizeTooltip from '../../../components/Products/SizeTooltip';
 
 const WomenProducts = () => {
    // Sử dụng theme context và lấy params từ URL
@@ -26,14 +29,15 @@ const WomenProducts = () => {
    const [selectedImages, setSelectedImages] = useState({}); // Lưu trữ ảnh đang được chọn cho mỗi sản phẩm
    const [activeTooltip, setActiveTooltip] = useState(null); // Quản lý tooltip đang hiển thị
    const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false); // Quản lý trạng thái hiển thị modal filter trên mobile
+   const [activeSizeTooltip, setActiveSizeTooltip] = useState(null);
 
    // Khởi tạo state filters với giá trị mặc định
    const [filters, setFilters] = useState({
-      search: searchParams.get('search') || '', // Từ khóa tìm kiếm, lấy từ URL nếu có
-      categories: [], // Danh mục đã chọn
-      priceRange: null, // Khoảng giá đã chọn
-      inStock: false, // Lọc sản phẩm còn hàng
-      sort: 'popular' // Tiêu chí sắp xếp mặc định
+      search: searchParams.get('search') || '',
+      categories: [],
+      priceRanges: [],
+      inStock: false,
+      sort: 'popular'
    });
 
    // Hàm xử lý khi click vào màu sắc của sản phẩm
@@ -68,7 +72,7 @@ const WomenProducts = () => {
          { id: '100-300', label: '100.000đ - 300.000đ', range: [100000, 300000] },
          { id: '300-500', label: '300.000đ - 500.000đ', range: [300000, 500000] },
          { id: '500-1000', label: '500.000đ - 1.000.000đ', range: [500000, 1000000] },
-         { id: '1000-up', label: 'Trên 1.000.000đ', range: [1000000, Infinity] }
+         { id: '1000-up', label: 'Trên 1.000.000đ', range: [1000000, 999999999] }
       ],
       // Các tùy chọn sắp xếp sản phẩm
       sortOptions: [
@@ -113,11 +117,13 @@ const WomenProducts = () => {
 
    // Hàm xử lý thay đổi bộ lọc
    const handleFilterChange = (type, value) => {
-      if (type === 'priceRange') {
-         // Xử lý đặc biệt cho khoảng giá
+      if (type === 'priceRanges') {
+         // Xử lý đặc biệt cho khoảng giá - cho phép chọn nhiều
          setFilters(prev => ({
             ...prev,
-            [type]: prev[type] === value ? null : value
+            [type]: prev[type].includes(value)
+               ? prev[type].filter(item => item !== value) // Nếu đã có thì xóa đi
+               : [...prev[type], value] // Nếu chưa có thì thêm vào
          }));
       } else {
          // Xử lý cho các loại filter khác
@@ -132,7 +138,7 @@ const WomenProducts = () => {
       }
    };
 
-   // Effect xử lý lọc và sắp xếp sản phẩm khi filters hoặc products thay đổi
+   // Effect xử lý lọc và sắp xếp sản phẩm
    useEffect(() => {
       // Lọc sản phẩm theo các điều kiện
       const filtered = products.filter(product => {
@@ -147,11 +153,14 @@ const WomenProducts = () => {
          }
 
          // Lọc theo khoảng giá
-         if (filters.priceRange) {
+         if (filters.priceRanges.length > 0) {
             const productPrice = convertPriceToNumber(product.price);
-            const range = filterOptions.priceRanges.find(r => r.id === filters.priceRange);
-            if (!range) return false;
-            if (!(productPrice >= range.range[0] && productPrice <= range.range[1])) return false;
+            const matchesRange = filters.priceRanges.some(rangeId => {
+               const range = filterOptions.priceRanges.find(r => r.id === rangeId);
+               if (!range) return false;
+               return productPrice >= range.range[0] && productPrice <= range.range[1];
+            });
+            if (!matchesRange) return false;
          }
 
          // Lọc theo tình trạng còn hàng
@@ -202,11 +211,11 @@ const WomenProducts = () => {
          if (filters.categories.length > 0) {
             params.append('categories', filters.categories.join(','));
          }
-         if (filters.priceRange) {
-            const selectedRange = filterOptions.priceRanges.find(r => r.id === filters.priceRange);
-            if (selectedRange) {
-               params.append('minPrice', selectedRange.range[0]);
-               params.append('maxPrice', selectedRange.range[1]);
+         if (filters.priceRanges.length > 0) {
+            const selectedRanges = filters.priceRanges.map(rangeId => filterOptions.priceRanges.find(r => r.id === rangeId));
+            if (selectedRanges.length > 0) {
+               params.append('minPrice', selectedRanges[0].range[0]);
+               params.append('maxPrice', selectedRanges[selectedRanges.length - 1].range[1]);
             }
          }
          if (filters.inStock) params.append('inStock', 'true');
@@ -271,13 +280,21 @@ const WomenProducts = () => {
       }
    }, [searchParams]);
 
+   // Hàm sắp xếp size theo thứ tự chuẩn
+   const sortSizes = (sizes) => {
+      const sizeOrder = { 'S': 1, 'M': 2, 'L': 3, 'XL': 4, 'XXL': 5 };
+      return [...sizes].sort((a, b) => {
+         return (sizeOrder[a.size] || 99) - (sizeOrder[b.size] || 99);
+      });
+   };
+
    return (
       <div className={`min-h-screen ${theme === 'tet' ? 'bg-red-50' : 'bg-gray-50'}`}>
          {/* Banner */}
          <PageBanner
             theme={theme}
             icon={FaTags}
-            title="Thời Trang Nữ"
+            title="THỜI TRANG NỮ"
             subtitle="Phong cách thời thượng, cá tính cho phái đẹp"
             breadcrumbText="Thời trang nữ"
          />
@@ -311,9 +328,9 @@ const WomenProducts = () => {
                            >
                               <FaFilter className="text-gray-500" />
                               <span>Bộ lọc</span>
-                              {filters.categories.length > 0 || filters.priceRange || filters.inStock || filters.sort ? (
+                              {filters.categories.length > 0 || filters.priceRanges.length > 0 || filters.inStock || filters.sort ? (
                                  <span className="ml-1 w-5 h-5 flex items-center justify-center bg-pink-500 text-white text-xs rounded-full">
-                                    {filters.categories.length + (filters.priceRange ? 1 : 0) + (filters.inStock ? 1 : 0) + (filters.sort ? 1 : 0)}
+                                    {filters.categories.length + (filters.priceRanges.length > 0 ? filters.priceRanges.length : 0) + (filters.inStock ? 1 : 0) + (filters.sort ? 1 : 0)}
                                  </span>
                               ) : null}
                            </button>
@@ -331,7 +348,7 @@ const WomenProducts = () => {
                   </div>
 
                   {/* Các bộ lọc đang chọn */}
-                  {(filters.categories.length > 0 || filters.priceRange || filters.inStock || filters.sort) && (
+                  {(filters.categories.length > 0 || filters.priceRanges.length > 0 || filters.inStock || filters.sort) && (
                      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-100">
                         <span className="text-xs font-medium text-gray-500 uppercase">Bộ lọc đang chọn:</span>
 
@@ -352,17 +369,20 @@ const WomenProducts = () => {
                         ))}
 
                         {/* Khoảng giá */}
-                        {filters.priceRange && (
-                           <div className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100">
-                              <span>{filterOptions.priceRanges.find(r => r.id === filters.priceRange)?.label}</span>
+                        {filters.priceRanges.map((range, index) => (
+                           <div
+                              key={index}
+                              className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100"
+                           >
+                              <span>{filterOptions.priceRanges.find(r => r.id === range)?.label}</span>
                               <button
-                                 onClick={() => handleFilterChange('priceRange', null)}
+                                 onClick={() => handleFilterChange('priceRanges', range)}
                                  className="text-pink-400 hover:text-pink-600"
                               >
                                  <FaTimes className="w-3 h-3" />
                               </button>
                            </div>
-                        )}
+                        ))}
 
                         {/* Tình trạng còn hàng */}
                         {filters.inStock && (
@@ -396,7 +416,7 @@ const WomenProducts = () => {
                               setFilters({
                                  search: '',
                                  categories: [],
-                                 priceRange: null,
+                                 priceRanges: [],
                                  inStock: false,
                                  sort: 'popular'
                               });
@@ -473,32 +493,28 @@ const WomenProducts = () => {
                                  <img
                                     src={
                                        product.colors?.[selectedImages[product.productID]?.colorIndex || 0]
-                                          ?.images?.[selectedImages[product.productID]?.imageIndex || 0] 
+                                          ?.images?.[selectedImages[product.productID]?.imageIndex || 0]
                                        || product.thumbnail
                                     }
                                     alt={product.name}
-                                    className={`w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500 ${
-                                       !isInStock ? 'opacity-50' : ''
-                                    }`}
+                                    className={`w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500 ${!isInStock ? 'opacity-50' : ''
+                                       }`}
                                  />
 
                                  {/* Overlay gradient khi hover */}
-                                 <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-                                    theme === 'tet' 
-                                       ? 'bg-gradient-to-t from-red-900/20 via-transparent to-transparent' 
+                                 <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${theme === 'tet'
+                                       ? 'bg-gradient-to-t from-red-900/20 via-transparent to-transparent'
                                        : 'bg-gradient-to-t from-pink-900/20 via-transparent to-transparent'
-                                 }`} />
+                                    }`} />
 
                                  {/* Overlay khi hết hàng */}
                                  {!isInStock && (
-                                    <div className={`absolute inset-0 flex items-center justify-center backdrop-blur-[2px] ${
-                                       theme === 'tet' 
-                                          ? 'bg-gradient-to-br from-red-900/40 via-red-800/40 to-red-900/40' 
+                                    <div className={`absolute inset-0 flex items-center justify-center backdrop-blur-[2px] ${theme === 'tet'
+                                          ? 'bg-gradient-to-br from-red-900/40 via-red-800/40 to-red-900/40'
                                           : 'bg-gradient-to-br from-pink-900/40 via-pink-800/40 to-pink-900/40'
-                                    }`}>
-                                       <span className={`font-medium px-3 py-1.5 rounded-full text-sm text-white ${
-                                          theme === 'tet' ? 'bg-red-500' : 'bg-pink-500'
                                        }`}>
+                                       <span className={`font-medium px-3 py-1.5 rounded-full text-sm text-white ${theme === 'tet' ? 'bg-red-500' : 'bg-pink-500'
+                                          }`}>
                                           Hết hàng
                                        </span>
                                     </div>
@@ -507,9 +523,8 @@ const WomenProducts = () => {
                                  {/* Badge số lượng còn lại */}
                                  {totalStock <= 5 && totalStock > 0 && (
                                     <div className="absolute top-3 right-3">
-                                       <span className={`text-white text-xs font-medium px-3 py-1.5 rounded-full ${
-                                          theme === 'tet' ? 'bg-red-500' : 'bg-orange-500'
-                                       }`}>
+                                       <span className={`text-white text-xs font-medium px-3 py-1.5 rounded-full ${theme === 'tet' ? 'bg-red-500' : 'bg-orange-500'
+                                          }`}>
                                           Chỉ còn {totalStock}
                                        </span>
                                     </div>
@@ -518,9 +533,8 @@ const WomenProducts = () => {
                                  {/* Badge giảm giá */}
                                  {product.promotion?.discountPercent > 0 && (
                                     <div className="absolute top-3 left-3">
-                                       <span className={`text-white text-xs font-medium px-3 py-1.5 rounded-full ${
-                                          theme === 'tet' ? 'bg-red-500' : 'bg-pink-500'
-                                       }`}>
+                                       <span className={`text-white text-xs font-medium px-3 py-1.5 rounded-full ${theme === 'tet' ? 'bg-red-500' : 'bg-pink-500'
+                                          }`}>
                                           -{product.promotion.discountPercent}%
                                        </span>
                                     </div>
@@ -536,8 +550,7 @@ const WomenProducts = () => {
                                           <div
                                              key={index}
                                              onClick={(e) => handleThumbnailClick(e, product.productID, index)}
-                                             className={`w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition-all transform hover:scale-105 ${
-                                                selectedImages[product.productID]?.imageIndex === index
+                                             className={`w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition-all transform hover:scale-105 ${selectedImages[product.productID]?.imageIndex === index
                                                    ? 'border-2 border-white ring-2 ring-offset-2 ' + (theme === 'tet' ? 'ring-red-500' : 'ring-pink-500')
                                                    : 'border-2 border-white hover:border-gray-300'
                                                 }`}
@@ -594,26 +607,22 @@ const WomenProducts = () => {
                                                    onMouseLeave={() => setActiveTooltip(null)}
                                                 >
                                                    <div
-                                                      className={`w-7 h-7 rounded-full border shadow-sm cursor-pointer transition-all hover:scale-110 ${
-                                                         color.colorName.toLowerCase() === 'trắng' ? 'border-gray-300' : ''
-                                                      } ${
-                                                         selectedImages[product.productID]?.colorIndex === index 
-                                                            ? 'ring-2 ring-pink-500 ring-offset-2' 
+                                                      className={`w-7 h-7 rounded-full border shadow-sm cursor-pointer transition-all hover:scale-110 ${color.colorName.toLowerCase() === 'trắng' ? 'border-gray-300' : ''
+                                                         } ${selectedImages[product.productID]?.colorIndex === index
+                                                            ? 'ring-2 ring-pink-500 ring-offset-2'
                                                             : ''
-                                                      }`}
+                                                         }`}
                                                       style={{
                                                          background: getColorCode(color.colorName),
                                                          backgroundSize: getBackgroundSize(color.colorName)
                                                       }}
                                                    />
                                                    {/* Tooltip tên màu */}
-                                                   <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded transition-all ${
-                                                      activeTooltip === `${product.productID}-${index}` 
-                                                         ? 'opacity-100 visible' 
-                                                         : 'opacity-0 invisible'
-                                                   }`}>
-                                                      {color.colorName}
-                                                   </div>
+                                                   <ColorTooltip 
+                                                      isVisible={activeTooltip === `${product.productID}-${index}`}
+                                                      colorName={color.colorName}
+                                                      theme={theme}
+                                                   />
                                                 </div>
                                              ))}
                                           </div>
@@ -625,17 +634,47 @@ const WomenProducts = () => {
                                        <div className="flex items-center gap-2">
                                           <span className="text-sm text-gray-500">Size:</span>
                                           <div className="flex items-center gap-1">
-                                             {product.colors[selectedImages[product.productID]?.colorIndex || 0].sizes.map((size, index) => (
+                                             {sortSizes(product.colors[selectedImages[product.productID]?.colorIndex || 0].sizes).map((size, index) => (
                                                 <div
                                                    key={index}
-                                                   className={`px-2 py-1 text-xs rounded ${
-                                                      size.stock > 0
-                                                         ? 'bg-gray-100 text-gray-700'
-                                                         : 'bg-gray-50 text-gray-400 line-through'
-                                                   }`}
-                                                   title={`${size.stock > 0 ? 'Còn hàng' : 'Hết hàng'}`}
+                                                   className="relative"
+                                                   onMouseEnter={(e) => {
+                                                      e.preventDefault();
+                                                      e.stopPropagation();
+                                                      setActiveSizeTooltip(`${product.productID}-${product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}-${size.size}`);
+                                                   }}
+                                                   onMouseLeave={(e) => {
+                                                      e.preventDefault();
+                                                      e.stopPropagation();
+                                                      setActiveSizeTooltip(null);
+                                                   }}
+                                                   onClick={(e) => {
+                                                      e.preventDefault();
+                                                      e.stopPropagation();
+                                                   }}
                                                 >
-                                                   {size.size}
+                                                   <div
+                                                      className={`min-w-[2.5rem] h-8 flex items-center justify-center text-sm rounded cursor-help transition-all ${
+                                                         size.stock > 0
+                                                            ? theme === 'tet'
+                                                               ? 'bg-red-50 text-red-700 hover:bg-red-100'
+                                                               : 'bg-pink-50 text-pink-700 hover:bg-pink-100'
+                                                            : 'bg-gray-50 text-gray-400'
+                                                      }`}
+                                                      onClick={(e) => {
+                                                         e.preventDefault();
+                                                         e.stopPropagation();
+                                                      }}
+                                                   >
+                                                      {size.size}
+                                                   </div>
+                                                   {/* Tooltip */}
+                                                   <SizeTooltip 
+                                                      isVisible={activeSizeTooltip === `${product.productID}-${product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}-${size.size}`}
+                                                      stock={size.stock}
+                                                      colorName={product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}
+                                                      theme={theme}
+                                                   />
                                                 </div>
                                              ))}
                                           </div>
@@ -684,11 +723,10 @@ const WomenProducts = () => {
                            <button
                               onClick={() => handlePageChange(pagination.currentPage - 1)}
                               disabled={pagination.currentPage === 1}
-                              className={`flex items-center justify-center h-10 px-4 border-r ${
-                                 pagination.currentPage === 1
+                              className={`flex items-center justify-center h-10 px-4 border-r ${pagination.currentPage === 1
                                     ? 'text-gray-300 cursor-not-allowed'
                                     : 'text-gray-700 hover:bg-gray-100'
-                              }`}
+                                 }`}
                            >
                               <FaChevronLeft className="w-5 h-5" />
                            </button>
@@ -710,28 +748,26 @@ const WomenProducts = () => {
                                        <button
                                           key={page}
                                           onClick={() => handlePageChange(page)}
-                                          className={`flex items-center justify-center h-10 w-10 border-r ${
-                                             pagination.currentPage === page
+                                          className={`flex items-center justify-center h-10 w-10 border-r ${pagination.currentPage === page
                                                 ? 'bg-pink-500 text-white'
                                                 : 'text-gray-700 hover:bg-gray-100'
-                                          }`}
+                                             }`}
                                        >
                                           {page}
                                        </button>
                                     ];
                                  }
                                  return (
-                              <button
-                                 key={page}
-                                 onClick={() => handlePageChange(page)}
-                                       className={`flex items-center justify-center h-10 w-10 border-r ${
-                                          pagination.currentPage === page
-                                       ? 'bg-pink-500 text-white'
+                                    <button
+                                       key={page}
+                                       onClick={() => handlePageChange(page)}
+                                       className={`flex items-center justify-center h-10 w-10 border-r ${pagination.currentPage === page
+                                             ? 'bg-pink-500 text-white'
                                              : 'text-gray-700 hover:bg-gray-100'
-                                    }`}
-                              >
-                                 {page}
-                              </button>
+                                          }`}
+                                    >
+                                       {page}
+                                    </button>
                                  );
                               })}
 
@@ -739,11 +775,10 @@ const WomenProducts = () => {
                            <button
                               onClick={() => handlePageChange(pagination.currentPage + 1)}
                               disabled={pagination.currentPage === pagination.totalPages}
-                              className={`flex items-center justify-center h-10 px-4 ${
-                                 pagination.currentPage === pagination.totalPages
+                              className={`flex items-center justify-center h-10 px-4 ${pagination.currentPage === pagination.totalPages
                                     ? 'text-gray-300 cursor-not-allowed'
                                     : 'text-gray-700 hover:bg-gray-100'
-                              }`}
+                                 }`}
                            >
                               <FaChevronRight className="w-5 h-5" />
                            </button>
@@ -830,9 +865,9 @@ const WomenProducts = () => {
                                     {filterOptions.priceRanges.map(range => (
                                        <button
                                           key={range.id}
-                                          onClick={() => handleFilterChange('priceRange', range.id)}
+                                          onClick={() => handleFilterChange('priceRanges', range.id)}
                                           className={`px-4 py-3 rounded-lg text-sm font-medium transition-all
-                              ${filters.priceRange === range.id
+                              ${filters.priceRanges.includes(range.id)
                                                 ? 'bg-pink-500 text-white'
                                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                              }`}
@@ -867,7 +902,7 @@ const WomenProducts = () => {
                            onClick={() => setIsMobileFilterOpen(false)}
                            className="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-pink-500 text-base font-medium text-white hover:bg-pink-600 focus:outline-none sm:w-auto sm:text-sm"
                         >
-                           Áp dụng ({filters.categories.length + (filters.priceRange ? 1 : 0) + (filters.inStock ? 1 : 0) + (filters.sort ? 1 : 0)})
+                           Áp dụng ({filters.categories.length + (filters.priceRanges.length > 0 ? filters.priceRanges.length : 0) + (filters.inStock ? 1 : 0) + (filters.sort ? 1 : 0)})
                         </button>
                         <button
                            type="button"
@@ -875,7 +910,7 @@ const WomenProducts = () => {
                               setFilters({
                                  search: '',
                                  categories: [],
-                                 priceRange: null,
+                                 priceRanges: [],
                                  inStock: false,
                                  sort: 'popular'
                               });

@@ -110,7 +110,7 @@ const FAQ = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Câu hỏi thường gặp"
+          title="CÂU HỎI THƯỜNG GẶP"
           description="Giải đáp các thắc mắc của khách hàng"
           className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
         />

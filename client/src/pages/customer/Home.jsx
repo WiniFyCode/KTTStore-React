@@ -219,7 +219,7 @@ const Home = () => {
                 ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' 
                 : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
             } text-lg font-medium mx-8 tracking-wide`}>
-              🎉 Chào mừng đến với cửa hàng thói trang của chúng tôi! 
+              🎉 Chào mừng đến với cửa hàng thời trang của chúng tôi! 
             </span>
             <span className={`inline-block ${
               theme === 'tet' 

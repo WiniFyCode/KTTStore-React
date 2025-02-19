@@ -206,7 +206,7 @@ const Wishlist = () => {
         <PageBanner
           theme={theme}
           icon={FaHeart}
-          title={theme === 'tet' ? 'Danh Sách Yêu Thích Tết' : 'Danh Sách Yêu Thích'}
+          title={'DANH SÁCH YÊU THÍCH'}
           breadcrumbText="Danh sách yêu thích"
           extraContent={
             <div className="flex items-center justify-center gap-3 text-xl text-white/90">
@@ -272,7 +272,7 @@ const Wishlist = () => {
       <PageBanner
         theme={theme}
         icon={FaHeart}
-        title={theme === 'tet' ? 'Danh Sách Yêu Thích Tết' : 'Danh Sách Yêu Thích'}
+        title="DANH SÁCH YÊU THÍCH"
         breadcrumbText="Danh sách yêu thích"
         extraContent={
           <div className="flex items-center justify-center gap-3 text-xl text-white/90">

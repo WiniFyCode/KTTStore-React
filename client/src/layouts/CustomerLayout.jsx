@@ -58,7 +58,7 @@ const CustomerLayout = () => {
 
   // Xử lý đổi theme và chuyển trang tương ứng với theme mới
   const handleThemeToggle = () => {
-    const newTheme = theme === 'tet' ? 'normal' : 'tet'; // Sửa 'default' thành 'normal' cho đồng nhất
+    const newTheme = theme === 'tet' ? 'normal' : 'tet';
     toggleTheme();
 
     // Chuyển trang tương ứng với theme mới

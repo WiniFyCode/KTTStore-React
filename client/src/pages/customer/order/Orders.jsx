@@ -516,7 +516,7 @@ const Orders = () => {
         <PageBanner
           theme={theme}
           icon={FaShoppingBag}
-          title="Đơn Hàng Của Tôi"
+          title="ĐƠN HÀNG CỦA TÔI"
           breadcrumbText="Đơn hàng"
         />
 

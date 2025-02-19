@@ -4,6 +4,37 @@ const User = require('../models/User');
 
 class NotificationController {
 
+    //!ADMIN
+    // ADMIN: Lấy tất cả thông báo cho admin
+    async getNotficationChoADMIN(req, res) {
+        try {
+            // Lấy tất cả thông báo không cần lọc
+            const notifications = await Notification.find()
+                .select('_id notificationID title type message readCount scheduledFor expiresAt createdAt createdBy')
+                .lean();
+
+            // Tính toán thống kê
+            const stats = {
+                totalNotifications: notifications.length,
+                totalPendingNotifications: notifications.filter(n => n.scheduledFor > new Date()).length,
+                totalExpiredNotifications: notifications.filter(n => n.expiresAt < new Date()).length,
+                totalActiveNotifications: notifications.filter(n => n.scheduledFor <= new Date() && n.expiresAt >= new Date()).length
+            };
+
+            res.json({
+                notifications,
+                stats
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: 'Có lỗi xảy ra khi lấy danh sách thông báo',
+                error: error.message
+            });
+        }
+    }
+
+    //!ADMIN
     // ADMIN: Tạo thông báo mới
     async createNotification(req, res) {
         try {
@@ -76,7 +107,7 @@ class NotificationController {
         }
     }
 
-    //!Toàn thêm
+    //!ADMIN
     // ADMIN: Cập nhật thông báo
     async updateNotification(req, res) {
         try {
@@ -114,6 +145,7 @@ class NotificationController {
         }
     }
 
+    //!ADMIN
     // ADMIN: Xóa thông báo
     async deleteNotification(req, res) {
         try {
@@ -134,35 +166,6 @@ class NotificationController {
         } catch (error) {
             res.status(500).json({
                 message: 'Có lỗi xảy ra khi xóa thông báo',
-                error: error.message
-            });
-        }
-    }
-
-    // ADMIN: Lấy tất cả thông báo cho admin
-    async getNotficationChoADMIN(req, res) {
-        try {
-            // Lấy tất cả thông báo không cần lọc
-            const notifications = await Notification.find()
-                .select('_id notificationID title type message readCount scheduledFor expiresAt createdAt createdBy')
-                .lean();
-
-            // Tính toán thống kê
-            const stats = {
-                totalNotifications: notifications.length,
-                totalPendingNotifications: notifications.filter(n => n.scheduledFor > new Date()).length,
-                totalExpiredNotifications: notifications.filter(n => n.expiresAt < new Date()).length,
-                totalActiveNotifications: notifications.filter(n => n.scheduledFor <= new Date() && n.expiresAt >= new Date()).length
-            };
-
-            res.json({
-                notifications,
-                stats
-            });
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({
-                message: 'Có lỗi xảy ra khi lấy danh sách thông báo',
                 error: error.message
             });
         }

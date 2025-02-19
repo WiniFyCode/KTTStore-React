@@ -234,7 +234,7 @@ const SizeGuide = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner
-          title="Hướng dẫn chọn size"
+          title="HƯỚNG DẪN CHỌN SIZE"
           description="Bảng size chi tiết và cách đo size chuẩn"
           className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
         />

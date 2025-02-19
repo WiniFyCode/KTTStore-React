@@ -243,7 +243,7 @@ const Notification = () => {
       <div className={`min-h-screen ${theme === 'tet' ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50' : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'}`}>
         <PageBanner
           icon={FaBell}
-          title="Thông Báo"
+          title="THÔNG BÁO"
           subtitle="Cập nhật những thông tin mới nhất từ KTT Store"
           breadcrumbText="Thông báo"
         />

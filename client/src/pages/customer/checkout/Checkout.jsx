@@ -596,7 +596,7 @@ const Checkout = () => {
         <PageBanner
           theme={theme}
           icon={FaCreditCard}
-          title="Thanh toán đơn hàng"
+          title="THANH TOÁN ĐƠN HÀNG"
           breadcrumbText="Thanh toán"
           extraContent={
             <div className="flex items-center justify-center gap-3 text-xl text-white/90">
@@ -626,7 +626,7 @@ const Checkout = () => {
         <PageBanner
           theme={theme}
           icon={FaCreditCard}
-          title="Thanh toán đơn hàng"
+          title="THANH TOÁN ĐƠN HÀNG"
           breadcrumbText="Thanh toán"
           extraContent={
             <div className="flex items-center justify-center gap-3 text-xl text-white/90">
@@ -663,7 +663,7 @@ const Checkout = () => {
       <PageBanner
         theme={theme}
         icon={FaCreditCard}
-        title="Thanh toán đơn hàng"
+        title="THANH TOÁN ĐƠN HÀNG"
         breadcrumbText="Thanh toán"
         extraContent={
           <div className="flex items-center justify-center gap-3 text-xl text-white/90">

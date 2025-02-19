@@ -171,7 +171,7 @@ const Dashboard = () => {
                 setCategoryData(categoryData);
 
                 // Fetch users data
-                const usersResponse = await axiosInstance.get('/api/admin/users');
+                const usersResponse = await axiosInstance.get('/api/admin/users/admin/users');
                 const users = usersResponse.data.users;
                 const totalUsers = usersResponse.data.total;
 
@@ -284,55 +284,66 @@ const Dashboard = () => {
 
                 // Fetch promotions data
                 const promotionsResponse = await axiosInstance.get('/api/admin/promotions/all');
-                const promotions = promotionsResponse.data.data;
+                const promotions = promotionsResponse.data.promotions;
+                const promotionStats = promotionsResponse.data.stats;
 
                 // Phân tích chi tiết khuyến mãi
                 const promotionAnalytics = promotions.reduce((acc, promo) => {
-                    // Đếm theo loại khuyến mãi
+                    // Đếm theo loại khuyến mãi (normal hoặc flash-sale)
                     acc.types[promo.type] = (acc.types[promo.type] || 0) + 1;
 
-                    // Đếm theo trạng thái
+                    // Đếm theo trạng thái (active hoặc inactive)
                     acc.status[promo.status] = (acc.status[promo.status] || 0) + 1;
 
-                    // Tính số danh mục được áp dụng
+                    // Tính tổng số danh mục được áp dụng
                     acc.totalCategories += promo.categories.length;
 
-                    // Tính mức giảm giá trung bình
+                    // Tính tổng và trung bình phần trăm giảm giá
                     acc.totalDiscount += promo.discountPercent;
                     acc.count++;
 
-                    // Kiểm tra thời gian
-                    const now = new Date();
-                    const startDate = new Date(promo.startDate);
-                    const endDate = new Date(promo.endDate);
-
-                    if (now < startDate) acc.upcoming++;
-                    else if (now > endDate) acc.ended++;
-                    else acc.active++;
+                    // Tính số danh mục unique được áp dụng
+                    promo.categories.forEach(category => {
+                        if (!acc.uniqueCategories.includes(category)) {
+                            acc.uniqueCategories.push(category);
+                        }
+                    });
 
                     return acc;
                 }, {
-                    types: {},
-                    status: {},
-                    totalCategories: 0,
-                    totalDiscount: 0,
-                    count: 0,
-                    active: 0,
-                    upcoming: 0,
-                    ended: 0
+                    types: {},           // Phân loại theo type (normal/flash-sale)
+                    status: {},          // Phân loại theo status (active/inactive)
+                    totalCategories: 0,  // Tổng số lần danh mục được sử dụng
+                    uniqueCategories: [], // Danh sách unique các danh mục
+                    totalDiscount: 0,    // Tổng phần trăm giảm giá
+                    count: 0             // Số lượng khuyến mãi
                 });
 
                 setExtendedStats(prev => ({
                     ...prev,
                     promotions: {
-                        total: promotions.length,
-                        active: promotionAnalytics.active,
-                        upcoming: promotionAnalytics.upcoming,
-                        ended: promotionAnalytics.ended,
+                        // Sử dụng stats từ API
+                        total: promotionStats.totalPromotions,
+                        active: promotionStats.activePromotions,
+                        upcoming: promotionStats.upcomingPromotions,
+                        ended: promotionStats.endedPromotions,
+                        
+                        // Thông tin phân tích thêm
                         avgDiscount: promotionAnalytics.count > 0 
                             ? (promotionAnalytics.totalDiscount / promotionAnalytics.count).toFixed(1) 
                             : 0,
-                        analytics: promotionAnalytics
+                        analytics: {
+                            ...promotionAnalytics,
+                            uniqueCategoriesCount: promotionAnalytics.uniqueCategories.length,
+                            typeDistribution: {
+                                normal: promotionAnalytics.types['normal'] || 0,
+                                flashSale: promotionAnalytics.types['flash-sale'] || 0
+                            },
+                            statusDistribution: {
+                                active: promotionAnalytics.status['active'] || 0,
+                                inactive: promotionAnalytics.status['inactive'] || 0
+                            }
+                        }
                     }
                 }));
 
@@ -782,13 +793,13 @@ const Dashboard = () => {
                             <div className="flex justify-between items-center">
                                 <span>Đang hoạt động</span>
                                 <span className="font-semibold text-green-600">
-                                    {userStats.active} ({((userStats.active / userStats.total) * 100).toFixed(1)}%)
+                                    {userStats.active}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span>Bị khóa</span>
                                 <span className="font-semibold text-red-600">
-                                    {userStats.disabled} ({((userStats.disabled / userStats.total) * 100).toFixed(1)}%)
+                                    {userStats.disabled}
                                 </span>
                             </div>
                         </div>
@@ -799,14 +810,14 @@ const Dashboard = () => {
                         <div className="mt-2 space-y-2">
                             <div className="flex justify-between items-center">
                                 <span>Khách hàng</span>
-                                <span className="font-semibold">
-                                    {userStats.customerCount} ({((userStats.customerCount / userStats.total) * 100).toFixed(1)}%)
+                                <span className="font-semibold  text-green-600">
+                                    {userStats.customerCount}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span>Quản trị viên</span>
-                                <span className="font-semibold">
-                                    {userStats.adminCount} ({((userStats.adminCount / userStats.total) * 100).toFixed(1)}%)
+                                <span className="font-semibold  text-red-600">
+                                    {userStats.adminCount}
                                 </span>
                             </div>
                         </div>
@@ -818,8 +829,12 @@ const Dashboard = () => {
                             {Object.entries(userStats.genderDistribution).map(([gender, count]) => (
                                 <div key={gender} className="flex justify-between items-center">
                                     <span>{gender === 'male' ? 'Nam' : gender === 'female' ? 'Nữ' : 'Khác'}</span>
-                                    <span className="font-semibold">
-                                        {count} ({((count / userStats.total) * 100).toFixed(1)}%)
+                                    <span className={`font-semibold ${
+                                        gender === 'male' ? 'text-blue-600' : 
+                                        gender === 'female' ? 'text-pink-600' : 
+                                        ''
+                                    }`}>
+                                        {count}
                                     </span>
                                 </div>
                             ))}
@@ -962,7 +977,7 @@ const Dashboard = () => {
                             <div className="flex justify-between items-center">
                                 <span>Tổng số khuyến mãi</span>
                                 <span className="font-semibold">
-                                    {extendedStats.promotions.total}
+                                    {console.log(extendedStats.promotions.total) || extendedStats.promotions.total}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">

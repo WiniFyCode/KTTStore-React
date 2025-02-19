@@ -35,7 +35,7 @@ const News = () => {
       <PageBanner
         theme={theme}
         icon={FaNewspaper}
-        title="Tin Tức & Sự Kiện"
+        title="TIN TỨC & SỰ KIỆN"
         subtitle="Cập nhật những tin tức mới nhất về thời trang và xu hướng"
         breadcrumbText="Tin tức"
       />

@@ -3,49 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 class UserController {
-    // ADMIN: Lấy danh sách người dùng
-    async getUsers(req, res) {
-        try {
-            const { page = 1, limit = 10, search, role } = req.query;
 
-            // Tạo filter dựa trên search và role
-            const filter = {};
-            if (search) {
-                filter.$or = [
-                    { fullname: { $regex: search, $options: 'i' } },
-                    { email: { $regex: search, $options: 'i' } },
-                    { phone: { $regex: search, $options: 'i' } }
-                ];
-            }
-            if (role) {
-                filter.role = role;
-            }
-
-            // Lấy danh sách người dùng với phân trang
-            const users = await User.find(filter)
-                .select('-password -resetPasswordToken -resetPasswordExpires')
-                .sort('-createdAt')
-                .skip((page - 1) * limit)
-                .limit(limit);
-
-            // Đếm tổng số người dùng
-            const total = await User.countDocuments(filter);
-
-            res.json({
-                users,
-                total,
-                totalPages: Math.ceil(total / limit),
-                currentPage: page
-            });
-        } catch (error) {
-            res.status(500).json({
-                message: 'Có lỗi xảy ra khi lấy danh sách người dùng',
-                error: error.message
-            });
-        }
-    }
-
-    // Lấy danh sách người dùng cho ADMIN bao gồm
+    //! ADMIN
     // "user" + "stats : tổng người dùng , người dùng đang hoạt động , người dùng bị khóa"
     async getUsersChoADMIN(req, res) {
         try {
@@ -73,28 +32,7 @@ class UserController {
         }
     }
 
-    // ADMIN: Lấy thông tin chi tiết người dùng
-    async getUserById(req, res) {
-        try {
-            const { id } = req.params;
-
-            const user = await User.findOne({ userID: id })
-                .select('-password -resetPasswordToken -resetPasswordExpires')
-                .populate('addresses');
-
-            if (!user) {
-                return res.status(404).json({ message: 'Không tìm thấy người dùng' });
-            }
-
-            res.json(user);
-        } catch (error) {
-            res.status(500).json({
-                message: 'Có lỗi xảy ra khi lấy thông tin người dùng',
-                error: error.message
-            });
-        }
-    }
-
+    //! ADMIN
     // ADMIN: Tạo tài khoản mới
     async createUser(req, res) {
         try {
@@ -152,7 +90,8 @@ class UserController {
         }
     }
 
-    // ADMIN: Cập nhật thông tin người dùng
+    //! ADMIN
+    // Cập nhật thông tin người dùng
     async updateUser(req, res) {
         try {
             // Lấy userID từ params thay vì token

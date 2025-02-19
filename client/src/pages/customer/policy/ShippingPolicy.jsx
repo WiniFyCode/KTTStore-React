@@ -70,7 +70,7 @@ const ShippingPolicy = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Chính sách vận chuyển"
+          title="CHÍNH SÁCH VẬN CHUYỂN"
           description="Thông tin chi tiết về dịch vụ vận chuyển của KTT Store"
           className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
         />

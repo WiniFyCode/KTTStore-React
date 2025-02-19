@@ -70,7 +70,7 @@ const ReturnPolicy = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Chính sách đổi trả"
+          title="CHÍNH SÁCH ĐỔI TRẢ"
           description="Thông tin về quy định đổi trả hàng tại KTT Store"
           className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
         />

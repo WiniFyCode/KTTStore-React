@@ -101,7 +101,7 @@ const teamMembers = [
     name: 'Trần Đình Thành',
     role: 'Thành viên nhóm phát triển',
     birthday: '2005',
-    avatar: 'https://picsum.photos/400/400',
+    avatar: '../images/avatar2.jpg',
     icon: FaLaptopCode,
     skills: ['HTML/CSS', 'JavaScript', 'ReactJS', 'TailwindCSS'],
     color: 'blue',
@@ -145,7 +145,7 @@ const teamMembers = [
     name: 'Nguyễn Thanh Toàn',
     role: 'Thành viên nhóm phát triển',
     birthday: '2005',
-    avatar: 'https://picsum.photos/401/400',
+    avatar: '../images/avatar3.jpg',
     icon: FaCode,
     skills: ['JavaScript', 'NodeJS', 'MongoDB', 'ExpressJS'],
     color: 'green',
@@ -189,7 +189,7 @@ const teamMembers = [
     name: 'Nguyễn Duy Khôi',
     role: 'Thành viên nhóm phát triển',
     birthday: '2005',
-    avatar: 'https://picsum.photos/402/400',
+    avatar: '../images/avatar.jpg',
     icon: FaDatabase,
     skills: ['JavaScript', 'SQL', 'MongoDB', 'System Design'],
     color: 'purple',
@@ -990,7 +990,7 @@ const About = () => {
     >
       <PageBanner 
         theme={theme}
-        title="Về Chúng Tôi" 
+        title="VỀ CHÚNG TÔI" 
         icon={FaInfoCircle}
         breadcrumbText="Về Chúng Tôi"
         subtitle="Đội ngũ phát triển KTT Store"
@@ -1320,18 +1320,6 @@ const About = () => {
                       </div>
                     </div>
                   ))}
-                </div>
-
-                {/* View All Reviews Button */}
-                <div className="text-center mt-8">
-                  <button
-                    className={`px-6 py-3 rounded-xl font-medium transition-all duration-300
-                      ${theme === 'tet'
-                        ? 'bg-red-500 hover:bg-red-600 text-white'
-                        : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
-                  >
-                    Xem tất cả đánh giá
-                  </button>
                 </div>
               </div>
 

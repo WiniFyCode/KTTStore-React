@@ -103,6 +103,7 @@ class PromotionController {
         }
     }
 
+    //! ADMIN
     // Lấy danh sách tất cả promotion và thống kê
     async getAllPromotions(req, res) {
         try {
@@ -171,6 +172,7 @@ class PromotionController {
         }
     }
 
+    //! ADMIN
     // Cập nhật promotion
     async updatePromotion(req, res) {
         try {
@@ -214,6 +216,7 @@ class PromotionController {
         }
     }
 
+    //! ADMIN
     // Xóa promotion
     async deletePromotion(req, res) {
         try {
@@ -241,6 +244,7 @@ class PromotionController {
         }
     }
 
+    //! ADMIN
     // Lấy các promotion đang active
     async getActivePromotions(req, res) {
         try {
@@ -266,7 +270,7 @@ class PromotionController {
             });
         }
     }
-
+    
     // Lấy promotion áp dụng cho một sản phẩm
     async getPromotionsForProduct(req, res) {
         try {
@@ -300,6 +304,7 @@ class PromotionController {
         }
     }
 
+    //! ADMIN
     // Thêm hàm xử lý toggle status
     async toggleStatus(req, res) {
         try {

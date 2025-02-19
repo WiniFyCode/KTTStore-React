@@ -356,8 +356,8 @@ const OrderManagement = () => {
                 case 'createdAt':
                     compareValue = new Date(b.createdAt) - new Date(a.createdAt);
                     break;
-                case 'totalPrice':
-                    compareValue = b.totalPrice - a.totalPrice;
+                case 'paymentPrice':
+                    compareValue = b.paymentPrice - a.paymentPrice;
                     break;
                 case 'orderStatus':
                     compareValue = a.orderStatus.localeCompare(b.orderStatus);
@@ -615,10 +615,36 @@ const OrderManagement = () => {
                                                 ))}
                                             </tbody>
                                             <tfoot>
-                                                <tr className={`font-medium ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
-                                                    <td colSpan="5" className="px-6 py-4 text-right">Tổng cộng:</td>
-                                                    <td className="px-6 py-4 text-right font-bold">
+                                                <tr className={isDarkMode ? 'bg-gray-700/50' : 'bg-gray-50'}>
+                                                    <td colSpan="5" className="px-5 py-3 text-right font-medium text-gray-500">
+                                                        Tổng tiền hàng:
+                                                    </td>
+                                                    <td className="px-5 py-3 text-right font-medium">
+                                                        {orderTotalPrice?.toLocaleString('vi-VN')}đ
+                                                    </td>
+                                                </tr>
+                                                <tr className={isDarkMode ? 'bg-gray-700/50' : 'bg-gray-50'}>
+                                                    <td colSpan="5" className="px-5 py-3 text-right font-medium text-gray-500">
+                                                        Tổng tiền hàng sau khuyến mãi:
+                                                    </td>
+                                                    <td className="px-5 py-3 text-right font-medium text-purple-500">
                                                         {selectedOrder?.totalPrice?.toLocaleString('vi-VN')}đ
+                                                    </td>
+                                                </tr>
+                                                <tr className={isDarkMode ? 'bg-gray-700/50' : 'bg-gray-50'}>
+                                                    <td colSpan="5" className="px-5 py-3 text-right font-medium text-gray-500">
+                                                        Áp dụng Voucher:
+                                                    </td>
+                                                    <td className="px-5 py-3 text-right font-medium text-red-500">
+                                                        -{(selectedOrder?.totalPrice - selectedOrder?.paymentPrice || 0).toLocaleString('vi-VN')}đ
+                                                    </td>
+                                                </tr>
+                                                <tr className={`${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'} font-bold`}>
+                                                    <td colSpan="5" className="px-5 py-3 text-right">
+                                                        Tổng thanh toán:
+                                                    </td>
+                                                    <td className="px-5 py-3 text-right text-green-600">
+                                                        {selectedOrder?.paymentPrice?.toLocaleString('vi-VN')}đ
                                                     </td>
                                                 </tr>
                                             </tfoot>
@@ -953,7 +979,7 @@ const OrderManagement = () => {
                                 <p className={`text-base font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                     Doanh thu
                                 </p>
-                                <p className="text-3xl font-bold mt-1">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(orders.reduce((total, order) => total + order.totalPrice, 0))}</p>
+                                <p className="text-3xl font-bold mt-1">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(orders.reduce((total, order) => total + order.paymentPrice, 0))}</p>
                             </div>
                             <div className="p-3 rounded-xl bg-green-100/80">
                                 <FiDollarSign className="text-2xl text-green-600" />
@@ -994,7 +1020,7 @@ const OrderManagement = () => {
                             value={filters.orderStatus}
                             onChange={(e) => handleFilterChange('orderStatus', e.target.value)}
                         >
-                            <option value="all">🔄 Tất cả trạng thái đơn hàng</option>
+                            <option value="all">🔄 Trạng thái đơn hàng</option>
                             <option value="pending">⏳ Chờ xác nhận</option>
                             <option value="confirmed">✅ Đã xác nhận</option>
                             <option value="processing">🔄 Đang xử lý</option>
@@ -1012,7 +1038,7 @@ const OrderManagement = () => {
                             value={filters.shippingStatus}
                             onChange={(e) => handleFilterChange('shippingStatus', e.target.value)}
                         >
-                            <option value="all">🚚 Tất cả trạng thái vận chuyển</option>
+                            <option value="all">🚚 Trạng thái vận chuyển</option>
                             <option value="preparing">📦 Đang chuẩn bị</option>
                             <option value="shipping">🚚 Đang giao hàng</option>
                             <option value="delivered">✅ Đã giao hàng</option>
@@ -1044,7 +1070,7 @@ const OrderManagement = () => {
                             onChange={(e) => handleFilterChange('sort', e.target.value)}
                         >
                             <option value="createdAt">📅 Ngày đặt hàng</option>
-                            <option value="totalPrice">💰 Tổng tiền</option>
+                            <option value="paymentPrice">💰 Tổng tiền</option>
                             <option value="orderStatus">📊 Trạng thái đơn hàng</option>
                             <option value="shippingStatus">🚚 Trạng thái vận chuyển</option>
                         </select>
@@ -1142,7 +1168,7 @@ const OrderManagement = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="text-base font-semibold text-green-600">
-                                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.totalPrice)}
+                                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.paymentPrice)}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">

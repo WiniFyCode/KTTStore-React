@@ -4,6 +4,7 @@ const UserCoupon = require('../models/UserCoupon');
 
 class CouponController {
     
+    //!ADMIN
     // ADMIN: Lấy danh sách mã giảm giá
     // "coupon" + "stats : tổng mã giảm giá , mã giảm giá đang hoạt động , mã giảm giá hết hạn, tổng lượt sử dụng"
     async getCouponsChoADMIN(req, res) {
@@ -65,6 +66,7 @@ class CouponController {
         }
     }
 
+    //!ADMIN
     // ADMIN: Tạo mã giảm giá mới
     async createCoupon(req, res) {
         try {
@@ -128,6 +130,7 @@ class CouponController {
         }
     }
 
+    //!ADMIN
     // ADMIN: Cập nhật mã giảm giá
     async updateCoupon(req, res) {
         try {
@@ -167,6 +170,7 @@ class CouponController {
         }
     }
 
+    //!ADMIN
     // ADMIN: Xóa mã giảm giá
     async deleteCoupon(req, res) {
         try {
@@ -197,7 +201,7 @@ class CouponController {
         }
     }
 
-    //!Toàn thêm
+    //!ADMIN
     // ADMIN: Bật/tắt trạng thái mã giảm giá
     async toggleCouponStatus(req, res) {
         try {

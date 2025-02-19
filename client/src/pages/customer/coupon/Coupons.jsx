@@ -468,7 +468,7 @@ const Coupons = () => {
       }`}>
         <PageBanner 
           icon={FaGift}
-          title="Mã Giảm Giá"
+          title="MÃ GIẢM GIÁ"
           subtitle="Danh sách mã giảm giá của bạn"
           breadcrumbText="Mã giảm giá"
         />

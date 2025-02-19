@@ -97,7 +97,7 @@ const Connect = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Kết nối với chúng tôi"
+          title="KẾT NỐI VỚI CHÚNG TÔI"
           description="Theo dõi KTT Store trên các nền tảng mạng xã hội"
         />
 

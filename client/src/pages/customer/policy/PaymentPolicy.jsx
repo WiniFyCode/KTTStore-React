@@ -70,7 +70,7 @@ const PaymentPolicy = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
-          title="Phương thức thanh toán"
+          title="PHƯƠNG THỨC THANH TOÁN"
           description="Các hình thức thanh toán được chấp nhận tại KTT Store"
           className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
         />
