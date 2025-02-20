@@ -25,7 +25,7 @@ const tetFlashSale = {
   featuredButtonLink: "/tet-collection",
   featuredStyle: {
     bg: "bg-red-50",
-    title: "text-red-800",
+    title: "text-red-700",
     subtitle: "text-red-600",
     button: "border-2 border-red-700 text-red-700 hover:bg-red-700 hover:text-white"
   }
@@ -57,7 +57,7 @@ const normalFlashSale = {
   featuredButtonLink: "/products",
   featuredStyle: {
     bg: "bg-blue-50",
-    title: "text-blue-800",
+    title: "text-blue-700",
     subtitle: "text-blue-600",
     button: "border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
   }

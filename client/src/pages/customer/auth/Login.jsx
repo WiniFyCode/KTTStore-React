@@ -65,23 +65,29 @@ const Login = () => {
 
   // Hàm xử lý khi submit form đăng nhập
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     
     // Validate form trước khi gửi request
     if (!validateForm()) {
       return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
       // Gọi API đăng nhập
       const response = await axiosInstance.post('/api/auth/login', {
         email: formData.email,
         password: formData.password
-      })
+      });
 
-      const { token, user } = response.data
+      const { token, user } = response.data;
+
+      // Reset errors nếu đăng nhập thành công
+      setErrors({
+        email: '',
+        password: ''
+      });
 
       // Xử lý phân quyền và lưu thông tin đăng nhập
       if (user.role === 'admin') {
@@ -138,14 +144,48 @@ const Login = () => {
         navigate('/') // Chuyển về trang chủ
       }
       
-      toast.success('Đăng nhập thành công!')
+      toast.success('Đăng nhập thành công!');
 
     } catch (error) {
-      toast.error(error.response?.data.message || 'Có lỗi xảy ra, vui lòng thử lại sau')
+      // Xử lý các loại lỗi khác nhau
+      const newErrors = {
+        email: '',
+        password: ''
+      };
+
+      if (error.response?.data) {
+        const { message, attemptsLeft } = error.response.data;
+        
+        // Nếu là lỗi đăng nhập sai
+        if (attemptsLeft !== undefined) {
+          newErrors.email = 'Email hoặc mật khẩu không đúng';
+          newErrors.password = `Còn ${attemptsLeft} lần thử trước khi tài khoản bị khóa`;
+        } 
+        // Nếu tài khoản bị khóa
+        else if (message.includes('Tài khoản đang bị khóa')) {
+          newErrors.password = message;
+        }
+        // Nếu tài khoản bị vô hiệu hóa
+        else if (message.includes('Tài khoản đã bị vô hiệu hóa')) {
+          newErrors.email = message;
+        }
+        // Các lỗi khác
+        else {
+          newErrors.password = message;
+        }
+      } else {
+        newErrors.password = 'Có lỗi xảy ra, vui lòng thử lại sau';
+      }
+
+      // Cập nhật errors state một lần duy nhất
+      setErrors(newErrors);
+      
+      // Hiển thị toast thông báo
+      toast.error(error.response?.data.message || 'Có lỗi xảy ra, vui lòng thử lại sau');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     // Container chính với gradient background theo theme
@@ -246,17 +286,18 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Input email */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaEnvelope className="h-5 w-5 text-gray-400" />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                <FaEnvelope className="h-5 w-5 text-gray-400 transform translate-y-0.5" />
               </div>
               <input
                 id="email"
                 name="email"
                 type="email"
-                required
                 value={formData.email}
                 onChange={handleChange}
-                className={`pl-10 block w-full px-3 py-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-xl shadow-sm focus:outline-none focus:ring-2 ${
+                className={`pl-10 block w-full px-3 py-3 border ${
+                  errors.email ? 'border-red-500' : 'border-gray-300'
+                } rounded-xl shadow-sm focus:outline-none focus:ring-2 ${
                   theme === 'tet'
                     ? 'focus:ring-red-500'
                     : 'focus:ring-indigo-500'
@@ -273,43 +314,54 @@ const Login = () => {
 
             {/* Input mật khẩu */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className="h-5 w-5 text-gray-400" />
+              {/* Icon khóa */}
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10 ">
+                <FaLock className="h-5 w-5 text-gray-400 transform translate-y-0.5" />
               </div>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className={`pl-10 block w-full px-3 py-3 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-xl shadow-sm focus:outline-none focus:ring-2 ${
-                  theme === 'tet'
-                    ? 'focus:ring-red-500'
-                    : 'focus:ring-indigo-500'
-                } focus:border-transparent bg-white/60`}
-                placeholder="Mật khẩu"
-              />
+
+              {/* Input field */}
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`pl-10 pr-12 block w-full px-3 py-3 border ${
+                    errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-300'
+                  } rounded-xl shadow-sm focus:outline-none focus:ring-2 ${
+                    theme === 'tet'
+                      ? 'focus:ring-red-500/50'
+                      : 'focus:ring-indigo-500/50'
+                  } focus:border-transparent bg-white/60 transition-all duration-200`}
+                  placeholder="Mật khẩu"
+                  autoComplete="current-password"
+                />
+
+                {/* Nút hiện/ẩn mật khẩu */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={`absolute inset-y-0 right-0 pr-3 flex items-center transition-colors duration-200 z-10 ${
+                    errors.password ? 'text-red-500' : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                  title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                >
+                  {showPassword ? (
+                    <FaEyeSlash className="h-5 w-5 transform translate-y-0.5" />
+                  ) : (
+                    <FaEye className="h-5 w-5 transform translate-y-0.5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Thông báo lỗi */}
               {errors.password && (
-                <p className="mt-1 text-sm text-red-500 flex items-center gap-1">
-                  <FaTimes className="w-4 h-4" />
-                  {errors.password}
-                </p>
+                <div className="mt-1.5 text-sm text-red-500 flex items-center gap-1.5 animate-slideDown">
+                  <FaTimes className="w-4 h-4 flex-shrink-0" />
+                  <span className="flex-1">{errors.password}</span>
+                </div>
               )}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-              >
-                {showPassword ? (
-                  <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                ) : (
-                  <FaEye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                )}
-              </button>
             </div>
 
             {/* Phần ghi nhớ đăng nhập và quên mật khẩu */}

@@ -464,7 +464,7 @@ class OrderController {
                 phone,
                 email,
                 address,
-                note: note || '',
+                note,
                 paymentMethod: paymentMethod,
                 totalPrice,
                 paymentPrice: finalPaymentPrice,
@@ -480,6 +480,12 @@ class OrderController {
             if (paymentMethod === 'banking') {
                 order.orderStatus = 'processing';
                 order.isPayed = true;
+            }
+
+            // Nếu là thanh toán banking, cập nhật trạng thái
+            if (paymentMethod === 'cod') {
+                order.orderStatus = 'pending';
+                order.isPayed = false;
             }
 
             await order.save();
@@ -775,10 +781,18 @@ class OrderController {
                 return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
             }
 
-            // Cập nhật trạng thái đơn hàng
-            order.isPayed = true;
-            order.orderStatus = 'processing';
-            await order.save();
+            console.log('Order data in confirmPayment:', {
+                orderID: order.orderID,
+                note: order.note,
+                orderData: order.toObject()
+            });
+
+            // Chỉ cập nhật isPayed = true nếu là thanh toán banking
+            if (order.paymentMethod === 'banking') {
+                order.isPayed = true;
+                order.orderStatus = 'processing';
+                await order.save();
+            }
 
             // Lấy chi tiết đơn hàng và thông tin sản phẩm
             const orderDetails = await OrderDetail.find({ orderID });
@@ -817,6 +831,12 @@ class OrderController {
                 ...order.toObject(),
                 orderDetails: detailsWithProducts.filter(detail => detail !== null)
             };
+
+            console.log('Order data after processing:', {
+                orderID: orderData.orderID,
+                note: orderData.note,
+                originalNote: order.note
+            });
 
             // Lấy email của người dùng từ order
             const userEmail = order.email || req.user.email;
@@ -893,7 +913,7 @@ class OrderController {
                         <p><strong>Người nhận:</strong> ${orderData.fullname}</p>
                         <p><strong>Địa chỉ:</strong> ${orderData.address}</p>
                         <p><strong>Số điện thoại:</strong> ${orderData.phone}</p>
-                        <p><strong>Ghi chú:</strong> ${orderData.note || 'Không có'}</p>
+                        <p><strong>Ghi chú:</strong> ${order.note || 'Không có'}</p>
                         <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod === 'banking' ? 'Chuyển khoản ngân hàng' : 'Thanh toán khi nhận hàng (COD)'}</p>
                     </div>
 
@@ -951,7 +971,7 @@ class OrderController {
                         <p><strong>Email:</strong> ${userEmail}</p>
                         <p><strong>Số điện thoại:</strong> ${orderData.phone}</p>
                         <p><strong>Địa chỉ:</strong> ${orderData.address}</p>
-                        <p><strong>Ghi chú:</strong> ${orderData.note || 'Không có'}</p>
+                        <p><strong>Ghi chú:</strong> ${order.note || 'Không có'}</p>
                         <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod === 'banking' ? 'Chuyển khoản ngân hàng' : 'Thanh toán khi nhận hàng (COD)'}</p>
                     </div>
 

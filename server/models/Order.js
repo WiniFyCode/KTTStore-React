@@ -24,9 +24,17 @@ const orderSchema = new Schema({
         trim: true,
         match: [/^[0-9]{10}$/, 'Số điện thoại không hợp lệ'] // Kiểm tra số điện thoại 10 số
     },
+    email: {
+        type: String,
+        trim: true
+    },
     address: {
         type: String,
         required: true,
+        trim: true
+    },
+    note: {
+        type: String,
         trim: true
     },
     totalPrice: {

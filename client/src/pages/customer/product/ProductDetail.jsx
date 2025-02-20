@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaHeart, FaStar, FaMinus, FaPlus, FaArrowRight, FaHome, FaChevronRight, FaRegHeart, FaTag, FaEye, FaMedal, FaRuler, FaPalette, FaBolt, FaChevronDown, FaInfoCircle, FaPhoneAlt, FaFacebookMessenger } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaStar, FaMinus, FaPlus, FaArrowRight, FaHome, FaChevronRight, FaRegHeart, FaTag, FaEye, FaMedal, FaRuler, FaPalette, FaBolt, FaChevronDown, FaInfoCircle, FaPhoneAlt, FaFacebookMessenger, FaEdit, FaTrash, FaTshirt } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, Thumbs, EffectFade } from 'swiper/modules';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
@@ -15,6 +15,7 @@ import 'swiper/css/thumbs';
 import 'swiper/css/effect-fade';
 import 'swiper/css/autoplay';
 import { getColorCode, isPatternOrStripe, getBackgroundSize } from '../../../utils/colorUtils';
+import PageBanner from '../../../components/PageBanner';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -462,39 +463,67 @@ const ProductDetail = () => {
 
   // Hiển thị nội dung sản phẩm
   return (
-    <div className={`min-h-screen ${theme === 'tet' ? 'bg-red-50' : 'bg-gray-50'} py-8`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
-        <nav className="flex mb-8 text-lg" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            {/* Breadcrumb item 1 */}
-            <li className="inline-flex items-center">
-              <Link to="/" className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
-                <FaHome className="w-4 h-4" />
-                <span>Trang chủ</span>
-              </Link>
-            </li>
-            {/* Breadcrumb item 2 */}
-            <li>
-              <div className="flex items-center">
-                <FaChevronRight className="w-3 h-3 text-gray-400" />
-                <Link to="/products" className="ml-1 md:ml-2 text-gray-700 hover:text-gray-900">
-                  Sản phẩm
-                </Link>
-              </div>
-            </li>
-            {/* Breadcrumb item 3 */}
-            <li aria-current="page">
-              <div className="flex items-center">
-                <FaChevronRight className="w-3 h-3 text-gray-400" />
-                <span className={`ml-1 md:ml-2 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`}>
-                  {product.name}
-                </span>
-              </div>
-            </li>
-          </ol>
-        </nav>
+    <div className={`min-h-screen ${theme === 'tet' ? 'bg-gray-50' : 'bg-gray-50'}`}>
+      {/* Thay thế breadcrumb bằng PageBanner */}
+      <PageBanner
+        icon={FaTshirt}
+        title={product.name}
+        subtitle={
+          product.promotion 
+            ? `Giảm giá ${product.promotion.discountPercent}% - Còn ${formatPrice(product.promotion.discountedPrice)}đ` 
+            : `${formatPrice(product.price)}đ`
+        }
+        extraContent={
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            {/* Số lượng đã bán */}
+            <div className={`px-4 py-2 rounded-full ${
+              theme === 'tet' 
+                ? 'bg-red-500/20 text-yellow-300' 
+                : 'bg-blue-500/20 text-blue-200'
+            }`}>
+              <span className="text-sm font-medium">
+                Đã bán: {product.soldCount || 0}
+              </span>
+            </div>
 
+            {/* Số lượng màu sắc */}
+            <div className={`px-4 py-2 rounded-full ${
+              theme === 'tet' 
+                ? 'bg-red-500/20 text-yellow-300' 
+                : 'bg-blue-500/20 text-blue-200'
+            }`}>
+              <span className="text-sm font-medium">
+                {product.availableColors.length} màu sắc
+              </span>
+            </div>
+
+            {/* Số lượng kích thước */}
+            <div className={`px-4 py-2 rounded-full ${
+              theme === 'tet' 
+                ? 'bg-red-500/20 text-yellow-300' 
+                : 'bg-blue-500/20 text-blue-200'
+            }`}>
+              <span className="text-sm font-medium">
+                {product.availableSizes.length} kích thước
+              </span>
+            </div>
+
+            {/* Rating trung bình */}
+            <div className={`px-4 py-2 rounded-full ${
+              theme === 'tet' 
+                ? 'bg-yellow-500/20 text-yellow-300' 
+                : 'bg-green-500/20 text-green-200'
+            }`}>
+              <span className="text-sm font-medium flex items-center gap-1">
+                <FaStar className="inline-block" />
+                {reviewStats.averageRating.toFixed(1)} ({reviewStats.totalReviews} đánh giá)
+              </span>
+            </div>
+          </div>
+        }
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Ảnh và thông tin sản phẩm */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {/* Ảnh */}
@@ -581,37 +610,73 @@ const ProductDetail = () => {
 
             {/* Giá và khuyến mãi */}
             <div className="space-y-2">
-              {product.promotion ? (
-                <>
-                  {/* Hiển thị giá sau khi giảm */}
-                  <div className="flex items-center space-x-2">
-                    <span className="text-3xl font-bold text-red-600">
-                      {formatPrice(product.promotion.discountedPrice)}đ
-                    </span>
-                    <span className="text-xl text-gray-500 line-through">
+              <div className={`p-4 rounded-lg ${
+                theme === 'tet' 
+                  ? 'bg-red-50 border border-red-200' 
+                  : 'bg-blue-50 border border-blue-200'
+              }`}>
+                {product.promotion ? (
+                  <>
+                    {/* Giá gốc */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <span className="text-gray-600 min-w-[100px]">Giá gốc:</span>
+                        <span className="text-xl text-gray-500 line-through">
+                          {formatPrice(product.price)}đ
+                        </span>
+                      </div>
+
+                      {/* Giá khuyến mãi */}
+                      <div className="flex items-center">
+                        <span className="text-gray-600 min-w-[100px]">Giá ưu đãi:</span>
+                        <span className={`text-2xl font-bold ${
+                          theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                        }`}>
+                          {formatPrice(product.promotion.discountedPrice)}đ
+                        </span>
+                      </div>
+
+                      {/* Tiết kiệm */}
+                      <div className="flex items-center">
+                        <span className="text-gray-600 min-w-[100px]">Tiết kiệm:</span>
+                        <span className={`px-3 py-1 text-sm font-semibold text-white rounded-full ${
+                          theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'
+                        }`}>
+                          {formatPrice((product.price - product.promotion.discountedPrice)*1000)}đ
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Hiển thị thông tin khuyến mãi */}
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <p className={`font-medium ${
+                        theme === 'tet' ? 'text-red-700' : 'text-blue-700'
+                      }`}>
+                        {product.promotion.name}
+                      </p>
+                      <p className={`text-sm mt-1 ${
+                        theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                      }`}>
+                        {product.promotion.description}
+                      </p>
+                      <p className={`text-sm mt-1 ${
+                        theme === 'tet' ? 'text-red-500' : 'text-blue-500'
+                      }`}>
+                        Kết thúc: {new Date(product.promotion.endDate).toLocaleDateString('vi-VN')}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center">
+                    <span className="text-gray-600 min-w-[100px]">Giá bán:</span>
+                    <span className={`text-2xl font-bold ${
+                      theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                    }`}>
                       {formatPrice(product.price)}đ
                     </span>
-
-                    {/* Hiển thị phần trăm khuyến mãi */}
-                    <span className="px-2 py-1 text-sm font-semibold text-white bg-red-500 rounded">
-                      -{product.promotion.discountPercent}%
-                    </span>
                   </div>
-
-                  {/* Hiển thị thông tin khuyến mãi */}
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <p className="text-red-700 font-medium">{product.promotion.name}</p>
-                    <p className="text-red-600 text-sm mt-1">{product.promotion.description}</p>
-                    <p className="text-red-500 text-sm mt-1">
-                      Kết thúc: {new Date(product.promotion.endDate).toLocaleDateString('vi-VN')}
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <span className="text-3xl font-bold text-gray-900">
-                  {formatPrice(product.price)}đ
-                </span>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Chọn kích thước */}
@@ -976,7 +1041,7 @@ const ProductDetail = () => {
                     }`}
                 >
                   <span className="font-medium flex items-center">
-                    <FaInfoCircle className="h-4 w-4 mr-2 text-red-600" />
+                    <FaInfoCircle className={`h-4 w-4 mr-2 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`} />
                     Chi tiết sản phẩm
                   </span>
                   <FaChevronDown
@@ -1112,7 +1177,7 @@ const ProductDetail = () => {
                     }`}
                 >
                   <span className="font-medium flex items-center">
-                    <FaInfoCircle className="h-4 w-4 mr-2 text-red-600" />
+                    <FaInfoCircle className={`h-4 w-4 mr-2 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`} />
                     Hướng dẫn bảo quản
                   </span>
                   <FaChevronDown

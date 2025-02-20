@@ -368,7 +368,7 @@ const Checkout = () => {
         note: shippingInfo.note || '',
 
         // Chuyển đổi paymentMethod thành đúng format
-        paymentMethod: paymentMethod === 'cod' ? 'cod' : 'banking',
+        paymentMethod: 'cod',
 
         // Thông tin sản phẩm - Chỉ lấy SKU và quantity
         items: checkoutData.items.map(item => ({
@@ -396,8 +396,8 @@ const Checkout = () => {
         // Cập nhật UI giỏ hàng
         window.dispatchEvent(new Event('cartChange'));
 
-         // Gửi email thông báo cho cả COD và banking
-         try {
+        // Gửi email thông báo cho COD
+        try {
           await axiosInstance.post(`/api/order/confirm-payment/${order.orderID}`, {
             userEmail: shippingInfo.email
           });

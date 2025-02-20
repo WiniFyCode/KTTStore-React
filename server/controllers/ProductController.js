@@ -415,7 +415,8 @@ class ProductController {
         }
     }
 
-    //Lấy chi tiết sản phẩm theo ID có cloudinary
+    //!ADMIN
+    // Lấy chi tiết sản phẩm theo ID có cloudinary
     async getProductByIdChoADMIN(req, res) {
         try {
             const { id } = req.params;
@@ -439,23 +440,24 @@ class ProductController {
                 colors.map(async (color) => {
                     const sizes = await ProductSizeStock.find({
                         colorID: color.colorID,
-                    }).select("size stock");
+                    }).select("size stock SKU");
 
-                // Xử lý hình ảnh cho từng màu sắc
+                    // Xử lý hình ảnh cho từng màu sắc
                     const imagesPromises = color.images.map(
                         async (img) => await getImageLink(img)
                     );
-                const images = await Promise.all(imagesPromises);
+                    const images = await Promise.all(imagesPromises);
 
-                return {
-                    colorID: color.colorID,
-                    colorName: color.colorName,
-                    images: images || [],
+                    return {
+                        colorID: color.colorID,
+                        colorName: color.colorName,
+                        images: images || [],
                         sizes: sizes.map((size) => ({
-                        size: size.size,
+                            size: size.size,
                             stock: size.stock,
+                            SKU: size.SKU
                         })),
-                };
+                    };
                 })
             );
 
@@ -527,7 +529,7 @@ class ProductController {
                 product: formattedProduct,
             });
         } catch (error) {
-            console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
+            console.error("Error in getProductById:", error);
             res.status(500).json({
                 message: "Có lỗi xảy ra khi lấy chi tiết sản phẩm",
                 error: error.message,

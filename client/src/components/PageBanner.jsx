@@ -22,14 +22,15 @@ const PageBanner = ({
     // Object map các path segment sang tên hiển thị
     const pathNames = {
       'products': 'Sản phẩm',
+      'product': 'Sản phẩm',
       'cart': 'Giỏ hàng',
       'checkout': 'Thanh toán',
       'order-history': 'Lịch sử đơn hàng',
       'wishlist': 'Yêu thích',
       'policy': 'Chính sách',
       'shipping': 'Vận chuyển',
-      'male': 'Nam',
-      'female': 'Nữ',
+      'nam': 'Nam',
+      'nu': 'Nữ',
       'sale': 'Giảm giá',
       'sale-tet': 'Giảm giá Tết',
       'new-arrivals': 'Hàng mới về',
@@ -113,8 +114,8 @@ const PageBanner = ({
             )}
 
             {/* Tiêu đề với đường chữ nổi */}
-            <h1 className="relative text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight inline-block">
-              {title}
+            <h1 className="relative text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight inline-block">
+              {title.toUpperCase()}
               <div className="absolute bottom-0 left-0 w-full h-1 bg-white/30 rounded">
                 <div className="h-full w-1/3 bg-white rounded animate-slide"></div>
               </div>
@@ -137,48 +138,60 @@ const PageBanner = ({
         </div>
 
         {/* Đường chia hiệu ứng động */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-24 overflow-hidden">
-          <div 
-            className="w-full h-full bg-[#F8FAFC]"
-            style={{
-              clipPath: 'polygon(0 100%, 100% 100%, 100% 30%, 85% 50%, 50% 80%, 15% 60%, 0 30%)'
-            }}
-          ></div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg className="w-full h-16 sm:h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path 
+              d="M0,0 C150,90 400,120 600,100 C800,80 1050,40 1200,100 L1200,120 L0,120 Z" 
+              className="fill-[#F8FAFC]"
+            ></path>
+          </svg>
         </div>
       </div>
 
       {/* Breadcrumb hiệu ứng động */}
       <div className="container mx-auto px-4">
-        <div className={`relative -mt-8 sm:-mt-12 mb-8 inline-flex items-center gap-2 px-6 py-2 rounded-full shadow-lg ${
+        <div className={`relative -mt-8 sm:-mt-12 mb-8 inline-flex items-center gap-2 px-6 py-3 rounded-full shadow-lg ${
           theme === 'tet'
-            ? 'bg-gradient-to-r from-red-600/90 to-orange-600/90 text-white'
-            : 'bg-gradient-to-r from-blue-600/90 to-purple-600/90 text-white'
+            ? 'bg-gradient-to-r from-red-500 to-red-600 text-white' 
+            : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
         } backdrop-blur-md`}>
           <Link 
             to="/" 
-            className="flex items-center gap-2 opacity-90 hover:opacity-100 transition-opacity"
+            className={`flex items-center gap-2 ${
+              theme === 'tet'
+                ? 'text-yellow-300 hover:text-yellow-400'
+                : 'text-blue-200 hover:text-blue-100'
+            } transition-colors duration-300`}
           >
-            <FaHome className={`w-4 h-4 ${
-              theme === 'tet'
-                ? 'text-yellow-300/90'
-                : 'text-white'
-            }`} />
-            <span className={`hidden sm:inline ${
-              theme === 'tet'
-                ? 'text-yellow-300/90'
-                : 'text-white'
-            }`}>Trang chủ</span>
+            <FaHome className="w-4 h-4" />
+            <span className="hidden sm:inline font-medium">
+              Trang chủ
+            </span>
           </Link>
           
           {breadcrumbs.map((crumb, index) => (
             <React.Fragment key={crumb.path}>
-              <FaChevronRight className="w-3 h-3 opacity-50" />
+              <FaChevronRight className={`w-3 h-3 ${
+                theme === 'tet' 
+                  ? 'text-yellow-300/70'
+                  : 'text-blue-200/70'
+              }`} />
               {index === breadcrumbs.length - 1 ? (
-                <span className="font-medium">{crumb.label}</span>
+                <span className={`font-medium ${
+                  theme === 'tet'
+                    ? 'text-yellow-300'
+                    : 'text-blue-200'
+                }`}>
+                  {crumb.label}
+                </span>
               ) : (
                 <Link 
                   to={crumb.path}
-                  className="opacity-90 hover:opacity-100 transition-opacity"
+                  className={`hover:opacity-90 transition-opacity ${
+                    theme === 'tet'
+                      ? 'text-yellow-300/90'
+                      : 'text-blue-200/90'
+                  }`}
                 >
                   {crumb.label}
                 </Link>

@@ -264,17 +264,20 @@ const Home = () => {
               {slide.benefits.map((benefit, idx) => (
                 <div 
                   key={idx}
+                  // Background color
                   className={`p-4 md:p-6 rounded-lg backdrop-blur-sm ${
                     theme === 'tet' 
-                      ? 'bg-red-900/50 border border-yellow-400'
+                      ? 'bg-red-800/50 border border-yellow-400'
                       : 'bg-blue-900/50'
                   }`}
                 >
+                  {/* Icon */}
                   <div className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${
                     theme === 'tet' ? 'text-yellow-400' : 'text-white'
                   }`}>
                     {benefit.value}
                   </div>
+                  {/* Description */}
                   <div className="text-xs sm:text-sm md:text-base">{benefit.description}</div>
                 </div>
               ))}
@@ -285,7 +288,7 @@ const Home = () => {
               to="/products"
               className={`inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all ${
                 theme === 'tet'
-                  ? 'bg-yellow-400 text-red-700 hover:bg-yellow-300'
+                  ? 'bg-yellow-400 text-red-700 hover:bg-yellow-300 hover:text-white'
                   : 'bg-blue-500 text-white hover:bg-blue-400'
               }`}
             >
@@ -302,10 +305,7 @@ const Home = () => {
           effect="fade"
           spaceBetween={0}
           slidesPerView={1}
-          navigation={{
-            enabled: false,
-            hideOnClick: true
-          }}
+          navigation={false}
           pagination={{
             clickable: true,
             dynamicBullets: true,
@@ -407,23 +407,23 @@ const Home = () => {
             {banners.map((banner) => (
               <div 
                 key={banner.id} 
-                className={`relative overflow-hidden group rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 ${
+                className={`relative overflow-hidden group rounded-2xl shadow-lg md:hover:shadow-2xl transition-all duration-500 ${
                   theme === 'tet' 
-                    ? 'hover:shadow-red-200/50' 
-                    : 'hover:shadow-blue-200/50'
+                    ? 'md:hover:shadow-red-200/50' 
+                    : 'md:hover:shadow-blue-200/50'
                 }`}
               >
                 {/* Banner Image */}
                 <img
                   src={banner.image}
                   alt={banner.title}
-                  className="w-full h-[500px] object-cover transition duration-700 group-hover:scale-110"
+                  className="w-full h-[500px] object-cover transition duration-700 md:group-hover:scale-110"
                 />
 
                 {/* Gradient Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-t ${banner.gradientColor} to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500`}>
+                <div className={`absolute inset-0 bg-gradient-to-t ${banner.gradientColor} to-transparent opacity-80 md:group-hover:opacity-90 transition-opacity duration-500`}>
                   {/* Content Container */}
-                  <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                  <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 transform md:translate-y-6 md:group-hover:translate-y-0 transition-transform duration-500">
                     {/* Title */}
                     <h2 className={`text-4xl md:text-5xl font-light ${theme === 'tet' ? 'text-yellow-300' : 'text-white'} mb-4 drop-shadow-lg`}
                         style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
@@ -431,7 +431,7 @@ const Home = () => {
                     </h2>
 
                     {/* Description */}
-                    <p className={`${banner.textColor} text-lg md:text-xl mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100`}>
+                    <p className={`${banner.textColor} text-lg md:text-xl mb-6 md:opacity-0 opacity-100 md:group-hover:opacity-100 transition-opacity duration-500 delay-100`}>
                       {banner.description}
                     </p>
 
@@ -442,10 +442,10 @@ const Home = () => {
                         theme === 'tet'
                           ? 'bg-yellow-400 text-red-700 hover:bg-yellow-300'
                           : 'bg-white/90 hover:bg-white'
-                      } transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 shadow-lg`}
+                      } transition-all duration-300 transform md:-translate-y-2 md:group-hover:translate-y-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 shadow-lg`}
                     >
                       <span className="font-medium">{banner.buttonText}</span>
-                      <FaArrowRight className={`ml-2 transform group-hover:translate-x-1 transition-transform duration-300 ${
+                      <FaArrowRight className={`ml-2 transform md:group-hover:translate-x-1 transition-transform duration-300 ${
                         theme === 'tet' ? 'text-red-700' : 'text-blue-600'
                       }`} />
                     </Link>
@@ -476,11 +476,13 @@ const Home = () => {
           : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
       }`}>
         <div className="container mx-auto px-4">
-          {/* Header Flash Sale - Giữ nguyên không có skeleton */}
+          {/* Header Flash Sale */}
           <div className="flex flex-col items-center justify-center mb-8 md:mb-12">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-3xl md:text-4xl">{theme === 'tet' ? '🧧' : '⚡'}</span>
-              <h2 className={`text-3xl md:text-4xl font-bold ${theme === 'tet' ? 'text-red-600' : 'text-orange-500'}`}>
+              <h2 className={`text-3xl md:text-4xl font-bold ${
+                theme === 'tet' ? 'text-red-700' : 'text-indigo-600'
+              }`}>
                 {theme === 'tet' ? 'FLASH SALE TẾT' : 'FLASH SALE'}
               </h2>
             </div>
@@ -498,7 +500,9 @@ const Home = () => {
                 </div>
               )}
             </div>
-            <p className={`text-base md:text-lg mt-1 ${theme === 'tet' ? 'text-red-500' : 'text-orange-500'}`}>
+            <p className={`text-base md:text-lg mt-1 ${
+              theme === 'tet' ? 'text-red-500' : 'text-indigo-500'
+            }`}>
               {theme === 'tet' ? 'Săn deal hot - Đón Tết sang' : 'Săn deal hot - Giá sốc mỗi ngày'}
             </p>
           </div>
@@ -543,12 +547,16 @@ const Home = () => {
                         }}
                       />
                       {/* Label SALE */}
-                      <div className={`absolute top-0 left-0 ${theme === 'tet' ? 'bg-red-600' : 'bg-orange-500'} text-white px-2 md:px-3 py-1 rounded-tl-lg rounded-br-lg`}>
+                      <div className={`absolute top-0 left-0 ${
+                        theme === 'tet' ? 'bg-red-600' : 'bg-indigo-600'
+                      } text-white px-2 md:px-3 py-1 rounded-tl-lg rounded-br-lg`}>
                         {theme === 'tet' ? 'SALE TẾT' : 'FLASH SALE'}
                       </div>
                       {/* Label giảm giá */}
                       {isFlashSaleActive ? (
-                        <div className={`absolute top-0 right-0 ${theme === 'tet' ? 'bg-yellow-500' : 'bg-orange-500'} text-white px-2 md:px-3 py-1 rounded font-medium text-sm md:text-base`}>
+                        <div className={`absolute top-0 right-0 ${
+                          theme === 'tet' ? 'bg-yellow-500' : 'bg-indigo-500'
+                        } text-white px-2 md:px-3 py-1 rounded font-medium text-sm md:text-base`}>
                           -{product.discountPercent}%
                         </div>
                       ) : (
@@ -559,7 +567,11 @@ const Home = () => {
                       {/* Overlay khi hover */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
                         <div className="absolute bottom-2 md:bottom-4 left-0 right-0 text-center">
-                          <button className={`${theme === 'tet' ? 'bg-red-600 hover:bg-red-700' : 'bg-orange-500 hover:bg-orange-600'} text-white px-4 md:px-6 py-2 rounded-full font-medium transition duration-300 text-sm md:text-base`}>
+                          <button className={`${
+                            theme === 'tet' 
+                              ? 'bg-red-600 hover:bg-red-700' 
+                              : 'bg-indigo-600 hover:bg-indigo-700'
+                          } text-white px-4 md:px-6 py-2 rounded-full font-medium transition duration-300 text-sm md:text-base`}>
                             Xem chi tiết
                           </button>
                         </div>
@@ -578,7 +590,7 @@ const Home = () => {
                       {/* Giá sản phẩm */}
                       <div className="space-x-2 mb-2">
                         {/* Giá sau khi giảm */}
-                        <span className={`text-base md:text-lg ${theme === 'tet' ? 'text-red-600' : 'text-orange-500'} font-bold`}>
+                        <span className={`text-base md:text-lg ${theme === 'tet' ? 'text-red-600' : 'text-indigo-500'} font-bold`}>
                           {formatPrice(product.discountedPrice)}đ
                         </span>
 
@@ -593,7 +605,9 @@ const Home = () => {
                       {/* Progress bar */}
                       <div className="w-full bg-gray-100 rounded-full h-2.5 mb-2 overflow-hidden">
                         <div
-                          className={`h-full ${theme === 'tet' ? 'bg-red-600' : 'bg-orange-500'} transition-all duration-300`}
+                          className={`h-full ${
+                            theme === 'tet' ? 'bg-red-600' : 'bg-indigo-600'
+                          } transition-all duration-300`}
                           style={{
                             width: `${Math.min((product.soldQuantity / product.totalQuantity) * 100, 100)}%`
                           }}
@@ -611,7 +625,11 @@ const Home = () => {
               <div className="text-center mt-8 md:mt-12">
                 <Link
                   to="/sale"
-                  className={`inline-flex items-center ${theme === 'tet' ? 'bg-red-600 hover:bg-red-700' : 'bg-orange-500 hover:bg-orange-600'} text-white px-6 md:px-8 py-2 md:py-3 rounded-full transition-colors text-sm md:text-base`}
+                  className={`inline-flex items-center ${
+                    theme === 'tet' 
+                      ? 'bg-red-600 hover:bg-red-700' 
+                      : 'bg-indigo-600 hover:bg-indigo-700'
+                  } text-white px-6 md:px-8 py-2 md:py-3 rounded-full transition-colors text-sm md:text-base`}
                 >
                   {theme === 'tet' ? 'XEM TẤT CẢ FLASH SALE TẾT' : 'XEM TẤT CẢ FLASH SALE'}
                   <FaArrowRight className="ml-2" />
@@ -701,7 +719,7 @@ const Home = () => {
           <div className="text-center mt-8 md:mt-12">
             <Link
               to={flashSaleData.featuredButtonLink}
-              className={`inline-flex items-center ${flashSaleData.featuredStyle.button} px-6 md:px-8 py-2 md:py-3 transition duration-300 text-sm md:text-base`}
+              className={`inline-flex items-center ${flashSaleData.featuredStyle.button} px-6 md:px-8 py-2 md:py-3 transition duration-300 text-sm md:text-base rounded-full`}
             >
               {flashSaleData.featuredButtonText}
               <FaArrowRight className="ml-2" />

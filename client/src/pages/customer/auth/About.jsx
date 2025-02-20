@@ -1008,9 +1008,11 @@ const About = () => {
                   className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-300
                     ${activeTab === tab 
                       ? theme === 'tet'
-                        ? 'bg-red-500 text-white shadow-lg transform scale-105'
-                        : 'bg-blue-500 text-white shadow-lg transform scale-105'
-                      : 'text-gray-600 hover:text-red-500'
+                        ? 'bg-red-500 text-white shadow-lg transform scale-105 hover:scale-110'
+                        : 'bg-blue-500 text-white shadow-lg transform scale-105 hover:scale-110'
+                      : theme === 'tet'
+                        ? 'text-gray-600 hover:text-red-500'
+                        : 'text-gray-600 hover:text-blue-500'
                     }`}
                 >
                   {tab === 'about' && 'Về KTT Store'}
@@ -1486,24 +1488,36 @@ const About = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 </div>
 
-                {/* Content */}
-                <div className="relative h-full flex flex-col justify-end p-8">
-                  <h2 className="text-4xl font-bold text-white mb-2">{schoolInfo.name}</h2>
-                  <p className="text-xl text-white/90">{schoolInfo.shortName}</p>
-                  <div className="flex items-center gap-4 mt-4 text-white/80 text-sm">
-                    <div className="flex items-center gap-2">
-                      <FaMapMarkerAlt />
-                      <span>{schoolInfo.address}</span>
+                {/* Logo và Content */}
+                <div className="relative h-full flex items-center justify-between p-8">
+                  {/* Logo */}
+                  <div className="w-32 h-32 bg-white rounded-full p-2 shadow-xl transform hover:scale-105 transition-transform duration-300">
+                    <img 
+                      src="/images/logo_itc.jpeg" 
+                      alt="Logo ITC"
+                      className="w-full h-full object-contain rounded-full"
+                    />
+                  </div>
+
+                  {/* Text Content */}
+                  <div className="flex-1 ml-8">
+                    <h2 className="text-4xl font-bold text-white mb-2">{schoolInfo.name}</h2>
+                    <p className="text-xl text-white/90">{schoolInfo.shortName}</p>
+                    <div className="flex items-center gap-4 mt-4 text-white/80 text-sm">
+                      <div className="flex items-center gap-2">
+                        <FaMapMarkerAlt />
+                        <span>{schoolInfo.address}</span>
+                      </div>
+                      <a 
+                        href={schoolInfo.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 hover:text-white transition-colors"
+                      >
+                        <FaGlobe />
+                        <span>Website</span>
+                      </a>
                     </div>
-                    <a 
-                      href={schoolInfo.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 hover:text-white transition-colors"
-                    >
-                      <FaGlobe />
-                      <span>Website</span>
-                    </a>
                   </div>
                 </div>
               </div>

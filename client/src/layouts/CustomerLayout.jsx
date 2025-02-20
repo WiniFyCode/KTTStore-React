@@ -773,22 +773,132 @@ const CustomerLayout = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Thông tin cửa hàng */}
             <div>
-              <h3 className="text-lg font-bold mb-4">{shopInfo.name}</h3>
-              <p className="text-sm text-gray-300 mb-2">Địa chỉ: &nbsp;{shopInfo.address} &nbsp;
-                <a href={`https://maps.google.com/?q=${shopInfo.address}`} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors">
-                  <FaMapMarker size={16} className="inline-block mr-1" />
-                </a>
-              </p>
-              <p className="text-sm text-gray-300 mb-2">Điện thoại: &nbsp;
-                <a href={`tel:${shopInfo.phone}`} className="text-gray-300 hover:text-white transition-colors">
-                  {shopInfo.phone}
-                </a>
-              </p>
-              <p className="text-sm text-gray-300">Email: &nbsp;
-                <a href={`mailto:${shopInfo.email}`} className="text-gray-300 hover:text-white transition-colors">
-                  {shopInfo.email}
-                </a>
-              </p>
+              <div className="mb-6 flex items-center">
+                <img 
+                  src="/logo.png" 
+                  alt="KTT Store Logo" 
+                  className="h-16 w-auto object-contain"
+                />
+                {/* Logo Text với hiệu ứng giống như ở nav */}
+                <div className="ml-4 relative">
+                  <span className={`text-2xl font-bold ${
+                    theme === 'tet'
+                      ? 'text-yellow-300/90'
+                      : 'text-white'
+                  } transition-all duration-300 animate-pulse-slow`}>
+                    KTT
+                  </span>
+                  <span className={`ml-2 text-2xl font-light ${
+                    theme === 'tet'
+                      ? 'text-yellow-200/90'
+                      : 'text-gray-300'
+                  } transition-all duration-300`}>
+                    Store
+                  </span>
+
+                  {/* Glow Effect */}
+                  <div className={`absolute inset-0 opacity-75 ${theme === 'tet'
+                    ? 'animate-glow-gold'
+                    : 'animate-glow-blue'
+                  }`} />
+
+                  {/* Sparkles */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute top-0 left-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-1" />
+                    <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full animate-sparkle-2" />
+                    <div className="absolute bottom-0 right-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-3" />
+                  </div>
+
+                  {/* Glowing Border */}
+                  <div className={`absolute -inset-0.5 opacity-0 ${theme === 'tet'
+                    ? 'bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-400'
+                    : 'bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400'
+                  } rounded-lg blur animate-border-glow`} />
+
+                  {/* Glowing Dot */}
+                  <div className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${theme === 'tet'
+                    ? 'bg-yellow-400'
+                    : 'bg-blue-400'
+                  } transition-all duration-300 animate-ping`} />
+
+                  {/* Theme-based Decoration */}
+                  {theme === 'tet' && (
+                    <>
+                      {/* Mai Flower */}
+                      <div className="absolute -top-3 -right-6 text-yellow-400 animate-bounce-slow">
+                        ✿
+                      </div>
+                      {/* Red Envelope */}
+                      <div className="absolute -bottom-2 -right-4 animate-bounce-slow" style={{ animationDelay: '0.5s' }}>
+                        🧧
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Thông tin liên hệ với hiệu ứng hover mới */}
+              <div className="space-y-2">
+                <p className={`text-sm ${theme === 'tet' ? 'text-yellow-100' : 'text-gray-300'}`}>
+                  Địa chỉ: &nbsp;
+                  <a 
+                    href={`https://maps.google.com/?q=${shopInfo.address}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className={`relative group inline-flex items-center ${
+                      theme === 'tet' 
+                        ? 'text-yellow-300 hover:text-yellow-500' 
+                        : 'text-blue-300 hover:text-blue-500'
+                    } transition-colors duration-300`}
+                  >
+                    <span>{shopInfo.address}</span>
+                    <FaMapMarker size={16} className="ml-1" />
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-400' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
+                  </a>
+                </p>
+
+                <p className={`text-sm ${theme === 'tet' ? 'text-yellow-100' : 'text-gray-300'}`}>
+                  Điện thoại: &nbsp;
+                  <a 
+                    href={`tel:${shopInfo.phone}`} 
+                    className={`relative group inline-block ${
+                      theme === 'tet' 
+                        ? 'text-yellow-300 hover:text-yellow-500' 
+                        : 'text-blue-300 hover:text-blue-500'
+                    } transition-colors duration-300`}
+                  >
+                    <span>{shopInfo.phone}</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-400' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
+                  </a>
+                </p>
+
+                <p className={`text-sm ${theme === 'tet' ? 'text-yellow-100' : 'text-gray-300'}`}>
+                  Email: &nbsp;
+                  <a 
+                    href={`mailto:${shopInfo.email}`} 
+                    className={`relative group inline-block ${
+                      theme === 'tet' 
+                        ? 'text-yellow-300 hover:text-yellow-500' 
+                        : 'text-blue-300 hover:text-blue-500'
+                    } transition-colors duration-300`}
+                  >
+                    <span>{shopInfo.email}</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-400' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
+                  </a>
+                </p>
+              </div>
             </div>
 
             {/* Footer Links */}
@@ -796,23 +906,71 @@ const CustomerLayout = () => {
               <h3 className="text-lg font-bold mb-4">Chính sách</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/policy" className="text-gray-300 hover:text-white transition-colors">
-                    Tất cả chính sách
+                  <Link 
+                    to="/policy" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Tất cả chính sách</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/policy/shipping" className="text-gray-300 hover:text-white transition-colors">
-                    Chính sách vận chuyển
+                  <Link 
+                    to="/policy/shipping" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Chính sách vận chuyển</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/policy/return" className="text-gray-300 hover:text-white transition-colors">
-                    Chính sách đổi trả
+                  <Link 
+                    to="/policy/return" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Chính sách đổi trả</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/policy/payment" className="text-gray-300 hover:text-white transition-colors">
-                    Chính sách thanh toán
+                  <Link 
+                    to="/policy/payment" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Chính sách thanh toán</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
               </ul>
@@ -823,23 +981,71 @@ const CustomerLayout = () => {
               <h3 className="text-lg font-bold mb-4">Hỗ trợ khách hàng</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/support" className="text-gray-300 hover:text-white transition-colors">
-                    Trung tâm hỗ trợ
+                  <Link 
+                    to="/support" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Trung tâm hỗ trợ</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/support/faq" className="text-gray-300 hover:text-white transition-colors">
-                    Câu hỏi thường gặp
+                  <Link 
+                    to="/support/faq" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Câu hỏi thường gặp</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/support/size-guide" className="text-gray-300 hover:text-white transition-colors">
-                    Hướng dẫn chọn size
+                  <Link 
+                    to="/support/size-guide" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Hướng dẫn chọn size</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/support/contact" className="text-gray-300 hover:text-white transition-colors">
-                    Liên hệ - Báo cáo lỗi
+                  <Link 
+                    to="/support/contact" 
+                    className={`text-gray-300 relative group block w-fit ${
+                      theme === 'tet' 
+                        ? 'hover:text-yellow-300' 
+                        : 'hover:text-blue-300'
+                    } transition-colors duration-300`}
+                  >
+                    <span>Liên hệ - Báo cáo lỗi</span>
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                      theme === 'tet' 
+                        ? 'bg-yellow-300' 
+                        : 'bg-blue-300'
+                    } transition-all duration-300 group-hover:w-full`}></span>
                   </Link>
                 </li>
               </ul>
@@ -849,15 +1055,27 @@ const CustomerLayout = () => {
             <div>
               <h3 className="text-lg font-bold mb-4">Kết nối với chúng tôi</h3>
               <div className="flex flex-col space-y-2">
-                <Link to="/connect" className="text-gray-300 hover:text-white transition-colors">
-                  Tất cả kênh kết nối
+                <Link 
+                  to="/connect" 
+                  className={`text-gray-300 relative group block w-fit ${
+                    theme === 'tet' 
+                      ? 'hover:text-yellow-300' 
+                      : 'hover:text-blue-300'
+                  } transition-colors duration-300`}
+                >
+                  <span>Tất cả kênh kết nối</span>
+                  <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
+                    theme === 'tet' 
+                      ? 'bg-yellow-300' 
+                      : 'bg-blue-300'
+                  } transition-all duration-300 group-hover:w-full`}></span>
                 </Link>
                 <div className="flex space-x-6 mt-2">
                   <a
                     href="#"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#1877F2]"
+                    className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#1877F2]`}
                   >
                     <FaFacebook className="text-2xl" />
                   </a>
@@ -865,7 +1083,7 @@ const CustomerLayout = () => {
                     href="#"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#E4405F]"
+                    className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#E4405F]`}
                   >
                     <FaInstagram className="text-2xl" />
                   </a>
@@ -873,7 +1091,7 @@ const CustomerLayout = () => {
                     href="#"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-white"
+                    className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-white`}
                   >
                     <FaTiktok className="text-2xl" />
                   </a>
@@ -881,7 +1099,7 @@ const CustomerLayout = () => {
                     href="#"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#FF0000]"
+                    className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#FF0000]`}
                   >
                     <FaYoutube className="text-2xl" />
                   </a>

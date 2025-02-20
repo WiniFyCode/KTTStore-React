@@ -150,6 +150,7 @@ const Orders = () => {
       },
       { 
         status: 'shipping', 
+        shippingStatus: true,
         icon: FaShippingFast, 
         label: 'Đang giao hàng',
         description: 'Đơn hàng đang được giao đến bạn',
@@ -158,9 +159,10 @@ const Orders = () => {
         borderColor: 'border-indigo-200'
       },
       { 
-        status: 'delivered', 
-        icon: FaHome, 
-        label: 'Đã giao hàng',
+        status: 'completed',
+        requireDelivered: true,
+        icon: FaCheckCircle, 
+        label: 'Hoàn thành',
         description: 'Đơn hàng đã được giao thành công',
         color: 'from-green-500 to-emerald-500',
         bgColor: 'bg-green-50',
@@ -170,19 +172,29 @@ const Orders = () => {
 
     // Hàm xác định bước hiện tại của đơn hàng
     const getCurrentStep = () => {
-      // Nếu đơn đã hủy hoặc hoàn trả
-      if (order.orderStatus === 'cancelled' || order.shippingStatus === 'returned') {
-        return -1; // Trả về -1 để hiển thị trạng thái đặc biệt
+      // Nếu đơn đã hủy, hoàn tiền hoặc hoàn trả
+      if (order.orderStatus === 'cancelled' || 
+          order.orderStatus === 'refunded' || 
+          order.shippingStatus === 'returned' ||
+          order.shippingStatus === 'cancelled') {
+        return -1;
       }
 
       // Ánh xạ trạng thái đơn hàng sang index trong timeline
       const statusMap = {
         'pending': 0,
         'confirmed': 1,
-        'processing': 2,
-        'shipping': 3,
-        'delivered': 4
+        'processing': 2
       };
+
+      // Xử lý trạng thái đặc biệt
+      if (order.shippingStatus === 'shipping') {
+        return 3;
+      }
+
+      if (order.orderStatus === 'completed' && order.shippingStatus === 'delivered') {
+        return 4;
+      }
 
       // Trả về index của bước hiện tại
       return statusMap[order.orderStatus] || 0;
@@ -191,32 +203,47 @@ const Orders = () => {
     // Lấy bước hiện tại
     const currentStep = getCurrentStep();
 
-    // Nếu đơn hàng đã hủy hoặc hoàn trả
+    // Nếu đơn hàng đã hủy, hoàn tiền hoặc hoàn trả
     if (currentStep === -1) {
       return (
         <div className={`p-4 rounded-xl ${
-          order.orderStatus === 'cancelled' 
+          order.orderStatus === 'cancelled' || order.shippingStatus === 'cancelled'
             ? 'bg-red-50 border border-red-200'
-            : 'bg-orange-50 border border-orange-200'
+            : order.orderStatus === 'refunded' || order.shippingStatus === 'returned'
+              ? 'bg-orange-50 border border-orange-200'
+              : 'bg-gray-50 border border-gray-200'
         }`}>
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              order.orderStatus === 'cancelled'
+              order.orderStatus === 'cancelled' || order.shippingStatus === 'cancelled'
                 ? 'bg-red-100 text-red-600'
-                : 'bg-orange-100 text-orange-600'
+                : order.orderStatus === 'refunded' || order.shippingStatus === 'returned'
+                  ? 'bg-orange-100 text-orange-600'
+                  : 'bg-gray-100 text-gray-600'
             }`}>
-              {order.orderStatus === 'cancelled' ? <FaTimes /> : <FaUndo />}
+              {order.orderStatus === 'cancelled' || order.shippingStatus === 'cancelled' ? <FaTimes /> : <FaUndo />}
             </div>
             <div>
               <h4 className={`font-medium ${
-                order.orderStatus === 'cancelled' ? 'text-red-600' : 'text-orange-600'
+                order.orderStatus === 'cancelled' || order.shippingStatus === 'cancelled'
+                  ? 'text-red-600'
+                  : order.orderStatus === 'refunded' || order.shippingStatus === 'returned'
+                    ? 'text-orange-600'
+                    : 'text-gray-600'
               }`}>
-                {order.orderStatus === 'cancelled' ? 'Đơn hàng đã hủy' : 'Đơn hàng đã hoàn trả'}
+                {order.orderStatus === 'cancelled' || order.shippingStatus === 'cancelled'
+                  ? 'Đơn hàng đã hủy'
+                  : order.orderStatus === 'refunded'
+                    ? 'Đơn hàng đã hoàn tiền'
+                    : 'Đơn hàng đã hoàn trả'
+                }
               </h4>
               <p className="text-sm text-gray-500">
-                {order.orderStatus === 'cancelled' 
+                {order.orderStatus === 'cancelled' || order.shippingStatus === 'cancelled'
                   ? 'Đơn hàng đã bị hủy và không thể tiếp tục xử lý'
-                  : 'Đơn hàng đã được hoàn trả về cửa hàng'
+                  : order.orderStatus === 'refunded'
+                    ? 'Đơn hàng đã được hoàn tiền'
+                    : 'Đơn hàng đã được hoàn trả về cửa hàng'
                 }
               </p>
             </div>
@@ -231,15 +258,26 @@ const Orders = () => {
         {/* Timeline Steps */}
         <div className="grid grid-cols-5 gap-4">
           {steps.map((step, index) => {
+            // Kiểm tra xem bước này có active không
             const isActive = index <= currentStep;
+            // Kiểm tra xem đây có phải là bước hiện tại không
             const isCurrent = index === currentStep;
+            // Kiểm tra điều kiện đặc biệt cho các bước
+            const isAvailable = step.shippingStatus 
+              ? ['shipping', 'delivered'].includes(order.shippingStatus)
+              : step.requireDelivered
+                ? order.shippingStatus === 'delivered'
+                : true;
+
+            // Kiểm tra trạng thái hoàn thành
+            const isCompleted = index < currentStep;
 
             return (
               <div key={step.status} className="relative">
                 {/* Đường kẻ ngang kết nối các bước */}
                 {index < steps.length - 1 && (
                   <div className="absolute top-5 left-1/2 w-full h-0.5 transform translate-y-px">
-                    <div className={`h-full ${isActive ? 'bg-gradient-to-r ' + step.color : 'bg-gray-200'}`} />
+                    <div className={`h-full ${isCompleted ? 'bg-gradient-to-r ' + step.color : 'bg-gray-200'}`} />
                   </div>
                 )}
 
@@ -247,7 +285,7 @@ const Orders = () => {
                 <div className={`relative flex flex-col items-center ${isCurrent ? 'scale-110 transform transition-transform' : ''}`}>
                   {/* Icon Circle */}
                   <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all 
-                    ${isActive 
+                    ${isActive && isAvailable
                       ? step.bgColor + ' ' + step.borderColor + ' border-2 shadow-lg'
                       : 'bg-gray-100 border-2 border-gray-200'
                     }
@@ -255,7 +293,7 @@ const Orders = () => {
                   `}>
                     <step.icon
                       className={`w-5 h-5 ${
-                        isActive
+                        isActive && isAvailable
                           ? 'text-' + step.color.split('-')[1].split('/')[0]
                           : 'text-gray-400'
                       }`}
@@ -265,7 +303,7 @@ const Orders = () => {
                   {/* Step Label */}
                   <div className="mt-3 text-center">
                     <h4 className={`text-sm font-medium ${
-                      isActive ? 'text-gray-900' : 'text-gray-500'
+                      isActive && isAvailable ? 'text-gray-900' : 'text-gray-500'
                     }`}>
                       {step.label}
                     </h4>
@@ -277,7 +315,7 @@ const Orders = () => {
                   </div>
 
                   {/* Completed Check Mark */}
-                  {isActive && !isCurrent && (
+                  {isCompleted && isAvailable && (
                     <div className="absolute top-0 right-0 w-4 h-4 rounded-full bg-green-500 text-white flex items-center justify-center transform translate-x-1/4 -translate-y-1/4 shadow-lg">
                       <FaCheck className="w-2.5 h-2.5" />
                     </div>
