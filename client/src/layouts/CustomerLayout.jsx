@@ -535,7 +535,7 @@ const CustomerLayout = () => {
                 <div className="mt-3">
                   <div className="text-xs font-medium text-gray-400 mb-2">Gợi ý tìm kiếm:</div>
                   <div className="flex flex-wrap gap-2">
-                    {['Áo thun', 'Quần jean', 'Váy', 'Áo khoác'].map((tag) => (
+                    {['Áo thun', 'Quần jean', 'Váy', 'Áo khoác', 'Quần dài', 'Áo dài'].map((tag) => (
                       <button
                         key={tag}
                         onClick={() => {
@@ -763,7 +763,7 @@ const CustomerLayout = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg">
         <Outlet />
       </main>
 
@@ -802,20 +802,20 @@ const CustomerLayout = () => {
                     : 'animate-glow-blue'
                   }`} />
 
-                  {/* Sparkles */}
+                  {/* Lấp lánh */}
                   <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute top-0 left-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-1" />
                     <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full animate-sparkle-2" />
                     <div className="absolute bottom-0 right-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-3" />
                   </div>
 
-                  {/* Glowing Border */}
+                  {/* Đường viền sáng */}
                   <div className={`absolute -inset-0.5 opacity-0 ${theme === 'tet'
                     ? 'bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-400'
                     : 'bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400'
                   } rounded-lg blur animate-border-glow`} />
 
-                  {/* Glowing Dot */}
+                  {/* Điểm sáng */}
                   <div className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${theme === 'tet'
                     ? 'bg-yellow-400'
                     : 'bg-blue-400'
@@ -824,11 +824,11 @@ const CustomerLayout = () => {
                   {/* Theme-based Decoration */}
                   {theme === 'tet' && (
                     <>
-                      {/* Mai Flower */}
+                      {/* Hoa Mai */}
                       <div className="absolute -top-3 -right-6 text-yellow-400 animate-bounce-slow">
                         ✿
                       </div>
-                      {/* Red Envelope */}
+                      {/* Thiệp đỏ */}
                       <div className="absolute -bottom-2 -right-4 animate-bounce-slow" style={{ animationDelay: '0.5s' }}>
                         🧧
                       </div>
@@ -1074,6 +1074,7 @@ const CustomerLayout = () => {
                   <a
                     href="#"
                     target="_blank"
+                    onClick={(e) => e.preventDefault()}
                     rel="noopener noreferrer"
                     className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#1877F2]`}
                   >
@@ -1082,6 +1083,7 @@ const CustomerLayout = () => {
                   <a
                     href="#"
                     target="_blank"
+                    onClick={(e) => e.preventDefault()}
                     rel="noopener noreferrer"
                     className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#E4405F]`}
                   >
@@ -1090,6 +1092,7 @@ const CustomerLayout = () => {
                   <a
                     href="#"
                     target="_blank"
+                    onClick={(e) => e.preventDefault()}
                     rel="noopener noreferrer"
                     className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-white`}
                   >
@@ -1098,6 +1101,7 @@ const CustomerLayout = () => {
                   <a
                     href="#"
                     target="_blank"
+                    onClick={(e) => e.preventDefault()}
                     rel="noopener noreferrer"
                     className={`transform transition-all duration-300 hover:scale-110 text-gray-300 hover:text-[#FF0000]`}
                   >

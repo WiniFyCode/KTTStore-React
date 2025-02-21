@@ -72,8 +72,8 @@ const PageBanner = ({
     <div className="relative">
       {/* Banner chính */}
       <div className={`relative overflow-hidden ${theme === 'tet'
-          ? 'bg-gradient-to-br from-red-600 via-red-500 to-orange-500'
-          : 'bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600'
+        ? 'bg-gradient-to-br from-red-600 via-red-500 to-orange-500'
+        : 'bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600'
         }`}>
         {/* Các phần tử trang trí */}
         <div className="absolute inset-0">
@@ -115,7 +115,7 @@ const PageBanner = ({
             {/* Tiêu đề với đường chữ nổi */}
             <h1 className="relative text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight inline-block">
               {title.toUpperCase()}
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-white/30 rounded">
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-white/30 rounded overflow-hidden">
                 <div className="h-full w-1/3 bg-white rounded animate-slide"></div>
               </div>
             </h1>
@@ -123,8 +123,8 @@ const PageBanner = ({
             {/* Chữ mờ với gradient */}
             {subtitle && (
               <p className={`text-xl ${theme === 'tet'
-                  ? 'text-yellow-200'
-                  : 'text-blue-200'
+                ? 'text-yellow-200'
+                : 'text-blue-200'
                 } font-medium mt-4`}>
                 {subtitle}
               </p>
@@ -149,14 +149,14 @@ const PageBanner = ({
       {/* Breadcrumb hiệu ứng động */}
       <div className="container mx-auto px-4">
         <div className={`relative -mt-8 sm:-mt-12 mb-8 inline-flex items-center gap-2 px-6 py-3 rounded-full shadow-lg ${theme === 'tet'
-            ? 'bg-gradient-to-r from-red-600 to-red-700 text-white'
-            : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+          ? 'bg-gradient-to-r from-red-600 to-red-700 text-white'
+          : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
           } backdrop-blur-md`}>
           <Link
             to="/"
             className={`flex items-center gap-2 ${theme === 'tet'
-                ? 'text-yellow-300 hover:text-yellow-400'
-                : 'text-blue-200 hover:text-blue-300'
+              ? 'text-yellow-300 hover:text-yellow-400'
+              : 'text-blue-200 hover:text-blue-300'
               } transition-colors duration-300`}
           >
             <FaHome className="w-4 h-4" />
@@ -165,25 +165,32 @@ const PageBanner = ({
             </span>
           </Link>
 
+          {/* Breadcrumb */}
           {breadcrumbs.map((crumb, index) => (
             <React.Fragment key={crumb.path}>
+
+              {/* Icon chevron */}
               <FaChevronRight className={`w-3 h-3 ${theme === 'tet'
-                  ? 'text-yellow-200'
-                  : 'text-blue-200'
+                ? 'text-yellow-200'
+                : 'text-blue-200'
                 }`} />
               {index === breadcrumbs.length - 1 ? (
+                
+                // Label
                 <span className={`font-medium ${theme === 'tet'
-                    ? 'text-yellow-300'
-                    : 'text-blue-300'
+                  ? 'text-yellow-300'
+                  : 'text-blue-300'
                   }`}>
                   {crumb.label}
                 </span>
               ) : (
+                
+                // Link
                 <Link
                   to={crumb.path}
                   className={`hover:opacity-90 transition-opacity ${theme === 'tet'
-                      ? 'text-yellow-300/90'
-                      : 'text-blue-300/90'
+                    ? 'text-yellow-300/90'
+                    : 'text-blue-300/90'
                     }`}
                 >
                   {crumb.label}

@@ -109,6 +109,7 @@ const Connect = () => {
               <a
                 key={index}
                 href={social.url}
+                onClick={(e) => e.preventDefault()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl backdrop-blur-sm group ${

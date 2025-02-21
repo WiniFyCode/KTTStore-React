@@ -606,10 +606,10 @@ const OrderManagement = () => {
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            {detail.product?.price?.toLocaleString('vi-VN')}đ
+                                                            {Number(detail.product?.price?.toString().replace(/\./g, ''))?.toLocaleString('vi-VN')}đ
                                                         </td>
                                                         <td className="px-6 py-4 text-right font-medium">
-                                                            {(detail.product?.price * 1000 * detail.quantity)?.toLocaleString('vi-VN')}đ
+                                                            {(Number(detail.product?.price?.toString().replace(/\./g, '')) * detail.quantity)?.toLocaleString('vi-VN')}đ
                                                         </td>
                                                     </tr>
                                                 ))}

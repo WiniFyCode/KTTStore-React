@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import PageBanner from '../../../components/PageBanner';
-import { FaMale, FaFemale, FaRuler, FaWeight, FaArrowRight, FaCalculator } from 'react-icons/fa';
+import { FaMale, FaFemale, FaRuler, FaWeight, FaArrowRight, FaCalculator, FaInfoCircle, FaRegQuestionCircle } from 'react-icons/fa';
 import { BsRulers } from 'react-icons/bs';
 import { MdHeight } from 'react-icons/md';
 import { FaTshirt, FaRuler as FaRulerIcon, FaMale as FaMaleIcon, FaFemale as FaFemaleIcon } from 'react-icons/fa';
@@ -234,9 +234,10 @@ const SizeGuide = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner
+          icon={FaRegQuestionCircle}
           title="HƯỚNG DẪN CHỌN SIZE"
-          description="Bảng size chi tiết và cách đo size chuẩn"
-          className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
+          subtitle="Bảng size chi tiết và cách đo size chuẩn"
+          breadcrumbText="Hướng dẫn chọn size"
         />
 
         <div className="max-w-6xl mx-auto px-4 py-12">

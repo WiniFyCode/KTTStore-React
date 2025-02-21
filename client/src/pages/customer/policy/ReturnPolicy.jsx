@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import PageBanner from '../../../components/PageBanner';
-import { FaExchangeAlt, FaBoxOpen, FaTruck, FaTimesCircle } from 'react-icons/fa';
+import { FaExchangeAlt, FaBoxOpen, FaTruck, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
 
 const ReturnPolicy = () => {
   // Sử dụng theme từ context
@@ -70,9 +70,10 @@ const ReturnPolicy = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
+          icon={FaInfoCircle}
           title="CHÍNH SÁCH ĐỔI TRẢ"
-          description="Thông tin về quy định đổi trả hàng tại KTT Store"
-          className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
+          subtitle="Thông tin về quy định đổi trả hàng tại KTT Store"
+          breadcrumbText="Đổi trả"
         />
 
         {/* Nội dung chính */}

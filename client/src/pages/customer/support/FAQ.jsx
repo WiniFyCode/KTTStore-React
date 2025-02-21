@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import PageBanner from '../../../components/PageBanner';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaQuestionCircle, FaRegQuestionCircle } from 'react-icons/fa';
 
 const FAQ = () => {
   // Sử dụng theme context để quản lý giao diện theo chủ đề
@@ -110,9 +110,10 @@ const FAQ = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
+          icon={FaRegQuestionCircle}
           title="CÂU HỎI THƯỜNG GẶP"
-          description="Giải đáp các thắc mắc của khách hàng"
-          className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
+          subtitle="Giải đáp các thắc mắc của khách hàng"
+          breadcrumbText="Câu hỏi thường gặp"
         />
 
         {/* Nội dung chính */}

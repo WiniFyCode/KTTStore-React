@@ -1,7 +1,7 @@
 // NewsDetail.jsx - Trang hiển thị chi tiết tin tức
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaEye, FaTags, FaArrowLeft, FaFacebookF, FaTwitter } from 'react-icons/fa';
+import { FaCalendarAlt, FaEye, FaTags, FaArrowLeft, FaFacebookF, FaTwitter, FaNewspaper } from 'react-icons/fa';
 import PageBanner from '../../../components/PageBanner';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import { getNews, getRelatedNewsItems } from '../../../services/newsService';
@@ -36,11 +36,12 @@ const NewsDetail = () => {
   const decodedContent = newsDetail.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 
   return (
-    <div className="min-h-screen">
-      {/* Banner với tiêu đề bài viết */}
-      <PageBanner 
+    <div className={`min-h-screen ${theme === 'tet' ? 'bg-gradient-to-br from-red-50 to-yellow-50' : 'bg-gradient-to-br from-gray-50 to-blue-50'}`}>
+      <PageBanner
+        icon={FaNewspaper}
         title={newsDetail.title}
-        description={`Danh mục: ${newsDetail.category}`}
+        subtitle={`Danh mục: ${newsDetail.category}`}
+        breadcrumbText="Tin tức"
       />
 
       {/* Container chính */}
@@ -53,19 +54,6 @@ const NewsDetail = () => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Cột chính */}
             <div className="lg:w-2/3">
-              {/* Nút quay lại */}
-              <Link 
-                to="/news"
-                className={`inline-flex items-center mb-6 px-4 py-2 rounded-full transition-all duration-300 ${
-                  theme === 'tet'
-                    ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                    : 'bg-white text-blue-600 hover:bg-blue-50'
-                }`}
-              >
-                <FaArrowLeft className="mr-2" />
-                Quay lại tin tức
-              </Link>
-
               {/* Ảnh chính */}
               <img 
                 src={newsDetail.image} 

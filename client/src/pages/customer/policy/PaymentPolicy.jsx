@@ -70,9 +70,10 @@ const PaymentPolicy = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
+          icon={FaMoneyBillWave}
           title="PHƯƠNG THỨC THANH TOÁN"
-          description="Các hình thức thanh toán được chấp nhận tại KTT Store"
-          className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
+          subtitle="Chúng tôi hỗ trợ nhiều hình thức thanh toán để phục vụ quý khách hàng"
+          breadcrumbText="Thanh toán"
         />
 
         {/* Nội dung chính */}

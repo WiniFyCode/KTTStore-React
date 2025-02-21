@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import PageBanner from '../../../components/PageBanner';
-import { FaTruck, FaExchangeAlt, FaMoneyBillWave, FaArrowRight } from 'react-icons/fa';
+import { FaTruck, FaExchangeAlt, FaMoneyBillWave, FaArrowRight, FaInfoCircle } from 'react-icons/fa';
 
 const Policy = () => {
   // Sử dụng theme từ context
@@ -72,8 +72,10 @@ const Policy = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
+          icon={FaInfoCircle}
           title="CHÍNH SÁCH"
-          description="Các chính sách và quy định của KTT Store"
+          subtitle="Các chính sách và quy định của KTT Store"
+          breadcrumbText="Chính sách"
         />
 
         {/* Nội dung chính */}

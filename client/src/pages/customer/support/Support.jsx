@@ -4,7 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import PageBanner from '../../../components/PageBanner';
-import { FaQuestionCircle, FaRuler, FaPhoneAlt, FaArrowRight } from 'react-icons/fa';
+import { FaQuestionCircle, FaRuler, FaPhoneAlt, FaArrowRight, FaRegQuestionCircle } from 'react-icons/fa';
 
 const Support = () => {
   // Sử dụng theme context để quản lý giao diện theo chủ đề
@@ -73,8 +73,10 @@ const Support = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
+          icon={FaRegQuestionCircle}
           title="TRUNG TÂM HỖ TRỢ"
-          description="Chúng tôi luôn sẵn sàng hỗ trợ bạn"
+          subtitle="Chúng tôi luôn sẵn sàng hỗ trợ bạn"
+          breadcrumbText="Hỗ trợ"
         />
 
         <div className="max-w-6xl mx-auto px-4 py-12">

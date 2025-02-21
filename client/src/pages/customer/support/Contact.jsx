@@ -121,9 +121,10 @@ const Contact = () => {
       <div className="relative">
         {/* Banner trang */}
         <PageBanner 
+          icon={FaPhoneAlt}
           title="LIÊN HỆ"
-          description="Chúng tôi luôn sẵn sàng hỗ trợ bạn"
-          className={theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'}
+          subtitle="Chúng tôi luôn sẵn sàng hỗ trợ bạn"
+          breadcrumbText="Liên hệ"
         />
 
         <div className="max-w-6xl mx-auto px-4 py-12">

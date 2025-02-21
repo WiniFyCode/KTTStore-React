@@ -77,23 +77,50 @@ app.use('/api/target', targetRoutes);// Quản lý target
 app.use('/api/user-coupon', authenticateCustomer, userCouponRoutes);// Quản lý mã giảm giá
 app.use('/api/user-notification', authenticateCustomer, userNotificationRoutes);// Quản lý thông báo
 
-// Admin routes (cần xác thực admin)
+//!=================== Admin routes (cần xác thực admin) ==================
 app.use('/api/admin', authenticateAdmin, (req, res, next) => {
   console.log("Đã xác thực admin");
   next();
 });
+
 //! VÍ DỤ 1 API CỦA ADMIN : /api/admin/products/admin/products - đây là API admin đang sử dụng
-app.use('/api/admin/products', authenticateAdmin, productRoutes);// Quản lý sản phẩm
-app.use('/api/admin/product-colors', authenticateAdmin, productColorRoutes);// Quản lý màu sắc
-app.use('/api/admin/product-size-stock', authenticateAdmin, productSizeStockRoutes);// Quản lý size và số lượng tồn
-app.use('/api/admin/categories', authenticateAdmin, categoryRoutes);// Quản lý danh mục
+//?Trang Dashboard
+//* GET /api/products/all-by-categories - Lấy thống kê sản phẩm theo danh mục
+// * GET /api/admin/users - Lấy thống kê về người dùng
+// * GET /api/admin/orders/admin/orders - Lấy thống kê về đơn hàng và doanh thu
+// * GET /api/admin/coupons/admin/coupons - Lấy thống kê về mã giảm giá
+// * GET /api/admin/promotions/all - Lấy thống kê về chương trình khuyến mãi
+// * GET /api/admin/notifications/admin/notifications - Lấy thống kê về thông báo
+// * GET /api/reviews/admin/all - Lấy thống kê về đánh giá sản phẩm
+
+//?Trang Customer Management
 app.use('/api/admin/users', authenticateAdmin, userRoutes);// Quản lý người dùng
+
+//?Trang Product Management
+app.use('/api/admin/products', authenticateAdmin, productRoutes);// Quản lý sản phẩm
+app.use('/api/admin/product-size-stock', authenticateAdmin, productSizeStockRoutes);// Quản lý size và số lượng tồn
+app.use('/api/admin/product-colors', authenticateAdmin, productColorRoutes);// Quản lý màu sắc
+//!ADMIN CALL THÊM /api/categories
+//!ADMIN CALL THÊM /api/targets
+
+//?Trang Order Management
 app.use('/api/admin/orders', authenticateAdmin, orderRoutes);// Quản lý đơn hàng
 app.use('/api/admin/order-details', authenticateAdmin, orderDetailRoutes);// Quản lý chi tiết đơn hàng
-app.use('/api/admin/coupons', authenticateAdmin, couponRoutes);// Quản lý mã giảm giá
+
+//?Trang Promotion Management
 app.use('/api/admin/promotions', authenticateAdmin, promotionRoutes);// Quản lý khuyến mãi
+//!ADMIN CALL THÊM /api/categories
+//!ADMIN CALL THÊM /api/products
+
+//?Trang Coupon Management
+app.use('/api/admin/coupons', authenticateAdmin, couponRoutes);// Quản lý mã giảm giá
+//!ADMIN CALL THÊM /api/categories
+
+//?Trang Notification Management
 app.use('/api/admin/notifications', authenticateAdmin, notificationRoutes);// Quản lý thông báo
-// app.use('/api/admin/statistics', authenticateAdmin, statisticRoutes);// Thống kê
+//!ADMIN CALL THÊM /api/users/admin/users
+
+app.use('/api/admin/categories', authenticateAdmin, categoryRoutes);// Quản lý danh mục
 
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/support', emailRoutes);// Gửi email
