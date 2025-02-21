@@ -659,35 +659,35 @@ const ProductManagement = () => {
         <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100'} py-8`}>
             <div className="container mx-auto px-4">
                 {/* Header */}
-            <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-6">
                     <div>
                         <h1 className="text-5xl font-bold mb-2">Quản lý sản phẩm</h1>
                         <p className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                             Quản lý và theo dõi tất cả sản phẩm của bạn
                         </p>
                     </div>
-                <button
-                    onClick={() => setIsAddProductModalOpen(true)}
+                    <button
+                        onClick={() => setIsAddProductModalOpen(true)}
                         className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-4 rounded-lg transition-colors duration-300"
-                >
+                    >
                         <FiPlus className="mr-2" /> Thêm sản phẩm
-                </button>
-            </div>
+                    </button>
+                </div>
 
                 {/* Thống kê */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     {/* Tổng sản phẩm */}
                     <div className={`p-6 rounded-xl shadow-sm transform hover:scale-105 transition-all duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between">
                             <div>
                                 <p className={`text-base font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                     Tổng sản phẩm
                                 </p>
                                 <p className="text-3xl font-bold mt-1">{stats.total}</p>
-                    </div>
+                            </div>
                             <div className="p-3 rounded-xl bg-blue-100/80">
                                 <FiPackage className="text-2xl text-blue-600" />
-                </div>
+                            </div>
                         </div>
                         <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
                             <div className="h-full bg-blue-500 rounded-full" style={{ width: '100%' }}></div>
@@ -696,51 +696,51 @@ const ProductManagement = () => {
 
                     {/* Sản phẩm nam */}
                     <div className={`p-6 rounded-xl shadow-sm transform hover:scale-105 transition-all duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between">
                             <div>
                                 <p className={`text-base font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                     Sản phẩm nam
                                 </p>
                                 <p className="text-3xl font-bold mt-1">{stats.totalMaleProducts}</p>
-                    </div>
+                            </div>
                             <div className="p-3 rounded-xl bg-indigo-100/80">
                                 <FiUser className="text-2xl text-indigo-600" />
-                </div>
+                            </div>
                         </div>
                         <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-indigo-500 rounded-full" 
-                                 style={{ width: `${(stats.totalMaleProducts / stats.total) * 100}%` }}></div>
+                            <div className="h-full bg-indigo-500 rounded-full"
+                                style={{ width: `${(stats.totalMaleProducts / stats.total) * 100}%` }}></div>
                         </div>
                     </div>
 
                     {/* Sản phẩm nữ */}
                     <div className={`p-6 rounded-xl shadow-sm transform hover:scale-105 transition-all duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between">
                             <div>
                                 <p className={`text-base font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                     Sản phẩm nữ
                                 </p>
                                 <p className="text-3xl font-bold mt-1">{stats.totalFemaleProducts}</p>
-                    </div>
+                            </div>
                             <div className="p-3 rounded-xl bg-pink-100/80">
                                 <FiUser className="text-2xl text-pink-600" />
-                </div>
+                            </div>
                         </div>
                         <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-pink-500 rounded-full" 
-                                 style={{ width: `${(stats.totalFemaleProducts / stats.total) * 100}%` }}></div>
+                            <div className="h-full bg-pink-500 rounded-full"
+                                style={{ width: `${(stats.totalFemaleProducts / stats.total) * 100}%` }}></div>
                         </div>
                     </div>
 
                     {/* Tổng doanh thu */}
                     <div className={`p-6 rounded-xl shadow-sm transform hover:scale-105 transition-all duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                    <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between">
                             <div>
                                 <p className={`text-base font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                     Tổng doanh thu
                                 </p>
                                 <p className="text-3xl font-bold mt-1">{formatPrice(stats.totalRevenue)}đ</p>
-                    </div>
+                            </div>
                             <div className="p-3 rounded-xl bg-green-100/80">
                                 <FiDollarSign className="text-2xl text-green-600" />
                             </div>
@@ -748,55 +748,52 @@ const ProductManagement = () => {
                         <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
                             <div className="h-full bg-green-500 rounded-full" style={{ width: '100%' }}></div>
                         </div>
+                    </div>
                 </div>
-            </div>
 
                 {/* Bộ lọc và tìm kiếm */}
                 <div className={`p-6 rounded-xl shadow-sm mb-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
                     <div className="flex flex-wrap gap-4">
                         {/* Tìm kiếm */}
                         <div className="flex-1">
-                <div className="relative">
-                    <input
-                        type="text"
+                            <div className="relative">
+                                <input
+                                    type="text"
                                     placeholder="Nhập tên sản phẩm, mã sản phẩm..."
-                                    className={`w-full pl-12 pr-4 py-3 text-base border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${
-                                        isDarkMode 
-                                            ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400' 
+                                    className={`w-full pl-12 pr-4 py-3 text-base border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${isDarkMode
+                                            ? 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400'
                                             : 'bg-gray-50 border-gray-200'
-                                    }`}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                                        }`}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
                                 <FiSearch className={`absolute left-3 top-3 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} size={24} />
-                </div>
+                            </div>
                         </div>
 
                         {/* Lọc theo danh mục */}
-                    <select
-                            className={`min-w-[210px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${
-                                isDarkMode
+                        <select
+                            className={`min-w-[210px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${isDarkMode
                                     ? 'bg-gray-700 border-gray-600 text-gray-200'
                                     : 'bg-gray-50 border-gray-200'
-                            }`}
-                        value={filters.category}
-                        onChange={(e) => handleFilterChange('category', e.target.value)}
-                    >
+                                }`}
+                            value={filters.category}
+                            onChange={(e) => handleFilterChange('category', e.target.value)}
+                        >
                             <option value="all">📁 Tất cả danh mục</option>
-                        {categories.map(category => (
+                            {categories.map(category => (
                                 <option key={category._id} value={category._id}>
                                     {category.name}
                                 </option>
-                        ))}
-                    </select>
+                            ))}
+                        </select>
 
                         {/* Lọc theo giới tính */}
                         <select
-                            className={`min-w-[180px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${
-                                isDarkMode
+                            className={`min-w-[180px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${isDarkMode
                                     ? 'bg-gray-700 border-gray-600 text-gray-200'
                                     : 'bg-gray-50 border-gray-200'
-                            }`}
+                                }`}
                             value={filters.target}
                             onChange={(e) => handleFilterChange('target', e.target.value)}
                         >
@@ -806,41 +803,39 @@ const ProductManagement = () => {
                         </select>
 
                         {/* Sắp xếp */}
-                    <select
-                            className={`min-w-[180px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${
-                                isDarkMode
+                        <select
+                            className={`min-w-[180px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${isDarkMode
                                     ? 'bg-gray-700 border-gray-600 text-gray-200'
                                     : 'bg-gray-50 border-gray-200'
-                            }`}
-                        value={filters.sort}
-                        onChange={(e) => handleFilterChange('sort', e.target.value)}
+                                }`}
+                            value={filters.sort}
+                            onChange={(e) => handleFilterChange('sort', e.target.value)}
                         >
                             <option value="createdAt">📅 Ngày tạo</option>
                             <option value="name">📝 Tên sản phẩm</option>
                             <option value="price">💰 Giá bán</option>
-                    </select>
+                        </select>
 
                         {/* Thứ tự */}
-                    <select
-                            className={`min-w-[180px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${
-                                isDarkMode
+                        <select
+                            className={`min-w-[180px] border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all hover:bg-opacity-90 cursor-pointer ${isDarkMode
                                     ? 'bg-gray-700 border-gray-600 text-gray-200'
                                     : 'bg-gray-50 border-gray-200'
-                            }`}
-                        value={filters.order}
-                        onChange={(e) => handleFilterChange('order', e.target.value)}
-                    >
+                                }`}
+                            value={filters.order}
+                            onChange={(e) => handleFilterChange('order', e.target.value)}
+                        >
                             <option value="desc">⬇️ Giảm dần</option>
                             <option value="asc">⬆️ Tăng dần</option>
-                    </select>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            {/* Products Table */}
+                {/* Products Table */}
                 <div className={`overflow-hidden rounded-xl shadow-sm ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                    <thead>
+                            <thead>
                                 <tr className={`text-left ${isDarkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
                                     <th className="px-6 py-4 text-sm font-medium">Tên sản phẩm</th>
                                     <th className="px-6 py-4 text-sm font-medium">Giá</th>
@@ -849,8 +844,8 @@ const ProductManagement = () => {
                                     <th className="px-6 py-4 text-sm font-medium">Ngày tạo</th>
                                     <th className="px-6 py-4 text-sm font-medium">Trạng thái</th>
                                     <th className="px-6 py-4 text-sm font-medium text-center">Thao tác</th>
-                        </tr>
-                    </thead>
+                                </tr>
+                            </thead>
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                 {loading ? (
                                     <tr>
@@ -875,126 +870,119 @@ const ProductManagement = () => {
                                     currentProducts.map(product => (
                                         <tr key={product.productID} className={`group transition-colors hover:${isDarkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
                                             <td className="px-6 py-4">
-                                    <div className="flex items-center gap-2">
-                                        <FiPackage className="w-5 h-5 text-green-500" />
+                                                <div className="flex items-center gap-2">
+                                                    <FiPackage className="w-5 h-5 text-green-500" />
                                                     <span className="text-sm font-medium">{product.name}</span>
-                                    </div>
-                                </td>
+                                                </div>
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <span className="text-sm font-semibold text-green-600">{product.price}đ</span>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-600">
-                                        {product.category}
-                                    </span>
-                                </td>
+                                                    {product.category}
+                                                </span>
+                                            </td>
                                             <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                                    product.target === 'Nam' 
-                                                        ? 'bg-indigo-100 text-indigo-600' 
+                                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${product.target === 'Nam'
+                                                        ? 'bg-indigo-100 text-indigo-600'
                                                         : 'bg-pink-100 text-pink-600'
-                                        }`}>
-                                        {product.target}
-                                    </span>
-                                </td>
+                                                    }`}>
+                                                    {product.target}
+                                                </span>
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <span className="text-sm">{formatDate(product.createdAt)}</span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                                    product.isActivated
+                                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${product.isActivated
                                                         ? 'bg-green-100 text-green-600'
                                                         : 'bg-red-100 text-red-600'
-                                                }`}>
-                                        {product.isActivated ? 'Hoạt động' : 'Đã khóa'}
-                                    </span>
-                                </td>
+                                                    }`}>
+                                                    {product.isActivated ? 'Hoạt động' : 'Đã khóa'}
+                                                </span>
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center justify-end space-x-2">
-                                        <button
-                                            onClick={() => handleViewDetail(product)}
-                                                        className={`p-2 rounded-lg transition-colors ${
-                                                            isDarkMode
+                                                    <button
+                                                        onClick={() => handleViewDetail(product)}
+                                                        className={`p-2 rounded-lg transition-colors ${isDarkMode
                                                                 ? 'bg-blue-400/10 hover:bg-blue-400/20 text-blue-400'
                                                                 : 'bg-blue-100 hover:bg-blue-200 text-blue-600'
-                                                        }`}
+                                                            }`}
                                                         title="Xem chi tiết"
                                                     >
                                                         <FiEye className="w-5 h-5" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleEditClick(product)}
-                                                        className={`p-2 rounded-lg transition-colors ${
-                                                            isDarkMode
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleEditClick(product)}
+                                                        className={`p-2 rounded-lg transition-colors ${isDarkMode
                                                                 ? 'bg-yellow-400/10 hover:bg-yellow-400/20 text-yellow-400'
                                                                 : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-600'
-                                                        }`}
+                                                            }`}
                                                         title="Chỉnh sửa"
                                                     >
                                                         <FiEdit className="w-5 h-5" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleViewColorAndSize(product)}
-                                                        className={`p-2 rounded-lg transition-colors ${
-                                                            isDarkMode
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleViewColorAndSize(product)}
+                                                        className={`p-2 rounded-lg transition-colors ${isDarkMode
                                                                 ? 'bg-purple-400/10 hover:bg-purple-400/20 text-purple-400'
                                                                 : 'bg-purple-100 hover:bg-purple-200 text-purple-600'
-                                                        }`}
+                                                            }`}
                                                         title="Màu & Size"
                                                     >
                                                         <FiList className="w-5 h-5" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleToggleStatus(product)}
-                                                        className={`p-2 rounded-lg transition-colors ${
-                                                            product.isActivated
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleToggleStatus(product)}
+                                                        className={`p-2 rounded-lg transition-colors ${product.isActivated
                                                                 ? isDarkMode
                                                                     ? 'bg-green-400/10 hover:bg-green-400/20 text-green-400'
                                                                     : 'bg-green-100 hover:bg-green-200 text-green-600'
                                                                 : isDarkMode
                                                                     ? 'bg-gray-400/10 hover:bg-gray-400/20 text-gray-400'
                                                                     : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-                                                        }`}
+                                                            }`}
                                                         title={product.isActivated ? 'Đang bật' : 'Đang tắt'}
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
                                                             className="w-5 h-5"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d={product.isActivated
-                                                        ? "M5 13l4 4L19 7"
-                                                        : "M6 18L18 6M6 6l12 12"
-                                                    }
-                                                />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteProduct(product)}
-                                                        className={`p-2 rounded-lg transition-colors ${
-                                                            isDarkMode
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d={product.isActivated
+                                                                    ? "M5 13l4 4L19 7"
+                                                                    : "M6 18L18 6M6 6l12 12"
+                                                                }
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteProduct(product)}
+                                                        className={`p-2 rounded-lg transition-colors ${isDarkMode
                                                                 ? 'bg-red-400/10 hover:bg-red-400/20 text-red-400'
                                                                 : 'bg-red-100 hover:bg-red-200 text-red-600'
-                                                        }`}
+                                                            }`}
                                                         title="Xóa"
                                                     >
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     ))
                                 )}
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -1055,11 +1043,10 @@ const ProductManagement = () => {
                                 </div>
                                 <button
                                     onClick={() => setIsDetailModalOpen(false)}
-                                    className={`p-2 rounded-lg transition-colors ${
-                                        isDarkMode 
-                                            ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-300' 
+                                    className={`p-2 rounded-lg transition-colors ${isDarkMode
+                                            ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-300'
                                             : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                                    }`}
+                                        }`}
                                 >
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -1077,36 +1064,36 @@ const ProductManagement = () => {
                                                 Thông tin cơ bản
                                             </h4>
                                             <div className="grid grid-cols-2 gap-6">
-                                            <div>
+                                                <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         ID sản phẩm
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                                    {productDetail.productID}
+                                                        {productDetail.productID}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
+                                                <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         MongoDB ID
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                                    {productDetail._id}
+                                                        {productDetail._id}
+                                                    </div>
                                                 </div>
-                                            </div>
                                                 <div className="col-span-2">
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Tên sản phẩm
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                                {productDetail.name}
-                                            </div>
-                                        </div>
-                                        <div>
+                                                        {productDetail.name}
+                                                    </div>
+                                                </div>
+                                                <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Giá
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'} text-green-500 font-medium`}>
-                                                {productDetail.price}đ
+                                                        {productDetail.price}đ
                                                     </div>
                                                 </div>
                                                 <div>
@@ -1114,11 +1101,10 @@ const ProductManagement = () => {
                                                         Trạng thái
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                                            productDetail.isActivated
+                                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${productDetail.isActivated
                                                                 ? 'bg-green-100 text-green-600'
                                                                 : 'bg-red-100 text-red-600'
-                                                        }`}>
+                                                            }`}>
                                                             {productDetail.isActivated ? 'Hoạt động' : 'Đã khóa'}
                                                         </span>
                                                     </div>
@@ -1132,27 +1118,26 @@ const ProductManagement = () => {
                                                 Phân loại
                                             </h4>
                                             <div className="grid grid-cols-2 gap-6">
-                                            <div>
+                                                <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Danh mục
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
                                                         <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-600">
-                                                    {productDetail.category}
+                                                            {productDetail.category}
                                                         </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
+                                                <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Đối tượng
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                                            productDetail.target === 'Nam'
+                                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${productDetail.target === 'Nam'
                                                                 ? 'bg-indigo-100 text-indigo-600'
                                                                 : 'bg-pink-100 text-pink-600'
-                                                        }`}>
-                                                    {productDetail.target}
+                                                            }`}>
+                                                            {productDetail.target}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1196,15 +1181,15 @@ const ProductManagement = () => {
                                                                 Hình ảnh
                                                             </h6>
                                                             <div className="grid grid-cols-3 gap-4">
-                                                            {color.images.map((image, idx) => (
+                                                                {color.images.map((image, idx) => (
                                                                     <div key={idx} className="relative aspect-square rounded-lg overflow-hidden">
-                                                                <img
-                                                                    src={image}
-                                                                    alt={`${productDetail.name} - ${color.colorName} - ${idx + 1}`}
+                                                                        <img
+                                                                            src={image}
+                                                                            alt={`${productDetail.name} - ${color.colorName} - ${idx + 1}`}
                                                                             className="w-full h-full object-cover"
-                                                                />
+                                                                        />
                                                                     </div>
-                                                            ))}
+                                                                ))}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1220,7 +1205,7 @@ const ProductManagement = () => {
                                                 </h4>
                                                 <div className={`p-6 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
                                                     <div className="grid grid-cols-2 gap-4">
-                                            <div>
+                                                        <div>
                                                             <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                                 Tên khuyến mãi
                                                             </label>
@@ -1263,24 +1248,24 @@ const ProductManagement = () => {
                                                 Mô tả và ảnh đại diện
                                             </h4>
                                             <div className="space-y-6">
-                                        <div>
+                                                <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Mô tả
                                                     </label>
                                                     <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'} whitespace-pre-wrap`}>
-                                                {productDetail.description}
-                                            </div>
-                                        </div>
-                                        <div>
+                                                        {productDetail.description}
+                                                    </div>
+                                                </div>
+                                                <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Ảnh đại diện
                                                     </label>
                                                     <div className="relative w-40 h-40 rounded-lg overflow-hidden">
-                                                <img
-                                                    src={productDetail.thumbnail}
-                                                    alt={productDetail.name}
+                                                        <img
+                                                            src={productDetail.thumbnail}
+                                                            alt={productDetail.name}
                                                             className="w-full h-full object-cover"
-                                                />
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1301,8 +1286,7 @@ const ProductManagement = () => {
                             <div className="flex justify-end space-x-4 mt-6">
                                 <button
                                     onClick={() => setIsDetailModalOpen(false)}
-                                    className={`px-6 py-2.5 rounded-lg transition-colors ${
-                                        isDarkMode
+                                    className={`px-6 py-2.5 rounded-lg transition-colors ${isDarkMode
                                             ? 'bg-gray-700 hover:bg-gray-600 text-gray-300'
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                                         }`}
@@ -1473,8 +1457,8 @@ const ProductManagement = () => {
                                                 <button
                                                     onClick={() => setUploadingColorImages(colorIndex)}
                                                     className={`px-3 py-1 rounded text-sm ${isDarkMode
-                                                            ? 'bg-green-600 hover:bg-green-700'
-                                                            : 'bg-green-500 hover:bg-green-600'
+                                                        ? 'bg-green-600 hover:bg-green-700'
+                                                        : 'bg-green-500 hover:bg-green-600'
                                                         } text-white`}
                                                 >
                                                     Cập nhật ảnh
@@ -1554,8 +1538,8 @@ const ProductManagement = () => {
                                                 <button
                                                     onClick={() => setUploadingColorImages(colorIndex)}
                                                     className={`px-3 py-1 rounded text-sm ${isDarkMode
-                                                            ? 'bg-green-600 hover:bg-green-700'
-                                                            : 'bg-green-500 hover:bg-green-600'
+                                                        ? 'bg-green-600 hover:bg-green-700'
+                                                        : 'bg-green-500 hover:bg-green-600'
                                                         } text-white`}
                                                 >
                                                     Cập nhật ảnh
@@ -1596,8 +1580,8 @@ const ProductManagement = () => {
                                                         <button
                                                             onClick={() => setUploadingColorImages(null)}
                                                             className={`px-4 py-2 rounded ${isDarkMode
-                                                                    ? 'bg-gray-600 hover:bg-gray-700'
-                                                                    : 'bg-gray-200 hover:bg-gray-300'
+                                                                ? 'bg-gray-600 hover:bg-gray-700'
+                                                                : 'bg-gray-200 hover:bg-gray-300'
                                                                 }`}
                                                         >
                                                             Đóng
@@ -1615,8 +1599,8 @@ const ProductManagement = () => {
                                 <button
                                     onClick={() => setIsAddColorModalOpen(true)}
                                     className={`px-4 py-2 rounded-lg ${isDarkMode
-                                            ? 'bg-green-600 hover:bg-green-700'
-                                            : 'bg-green-500 hover:bg-green-600'
+                                        ? 'bg-green-600 hover:bg-green-700'
+                                        : 'bg-green-500 hover:bg-green-600'
                                         } text-white`}
                                 >
                                     Thêm màu mới
@@ -1624,8 +1608,8 @@ const ProductManagement = () => {
                                 <button
                                     onClick={() => setIsColorSizeModalOpen(false)}
                                     className={`px-4 py-2 rounded-lg ${isDarkMode
-                                            ? 'bg-gray-600 hover:bg-gray-700'
-                                            : 'bg-gray-200 hover:bg-gray-300'
+                                        ? 'bg-gray-600 hover:bg-gray-700'
+                                        : 'bg-gray-200 hover:bg-gray-300'
                                         }`}
                                 >
                                     Đóng
@@ -1707,8 +1691,8 @@ const ProductManagement = () => {
                             <button
                                 onClick={() => setIsAddColorModalOpen(false)}
                                 className={`px-4 py-2 rounded ${isDarkMode
-                                        ? 'bg-gray-600 hover:bg-gray-700'
-                                        : 'bg-gray-200 hover:bg-gray-300'
+                                    ? 'bg-gray-600 hover:bg-gray-700'
+                                    : 'bg-gray-200 hover:bg-gray-300'
                                     }`}
                             >
                                 Hủy
@@ -1717,8 +1701,8 @@ const ProductManagement = () => {
                                 onClick={handleAddNewColor}
                                 disabled={loading}
                                 className={`px-4 py-2 rounded ${isDarkMode
-                                        ? 'bg-green-600 hover:bg-green-700'
-                                        : 'bg-green-500 hover:bg-green-600'
+                                    ? 'bg-green-600 hover:bg-green-700'
+                                    : 'bg-green-500 hover:bg-green-600'
                                     } text-white`}
                             >
                                 {loading ? 'Đang thêm...' : 'Thêm màu'}
@@ -1730,7 +1714,7 @@ const ProductManagement = () => {
 
             {/* Modal thêm sản phẩm mới */}
             {isAddProductModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto ">
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
                     <div className={`relative w-full max-w-4xl p-8 rounded-2xl shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
                         <div className="flex justify-between items-center mb-6">
@@ -1744,11 +1728,10 @@ const ProductManagement = () => {
                             </div>
                             <button
                                 onClick={() => setIsAddProductModalOpen(false)}
-                                className={`p-2 rounded-lg transition-colors ${
-                                    isDarkMode 
-                                        ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-300' 
+                                className={`p-2 rounded-lg transition-colors ${isDarkMode
+                                        ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-300'
                                         : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                                }`}
+                                    }`}
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -1763,83 +1746,79 @@ const ProductManagement = () => {
                                     Thông tin cơ bản
                                 </h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
+                                    <div>
                                         <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                             Tên sản phẩm
                                         </label>
-                                <input
-                                    type="text"
-                                    value={newProduct.name}
-                                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                                            className={`w-full p-3 rounded-lg border transition-colors ${
-                                                isDarkMode
+                                        <input
+                                            type="text"
+                                            value={newProduct.name}
+                                            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                                            className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                     ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'
                                                     : 'bg-white border-gray-300 hover:border-gray-400'
-                                            } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                                                } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                                             placeholder="Nhập tên sản phẩm..."
-                                />
-                            </div>
-                            <div>
+                                        />
+                                    </div>
+                                    <div>
                                         <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                             Giá
                                         </label>
-                                <input
-                                    type="text"
-                                    value={formatPrice(newProduct.price)}
-                                    onChange={(e) => {
-                                        const unformattedValue = unformatPrice(e.target.value);
-                                        if (/^\d*$/.test(unformattedValue)) {
-                                            setNewProduct({
-                                                ...newProduct,
-                                                price: unformattedValue
-                                            });
-                                        }
-                                    }}
-                                            className={`w-full p-3 rounded-lg border transition-colors ${
-                                                isDarkMode
+                                        <input
+                                            type="text"
+                                            value={formatPrice(newProduct.price)}
+                                            onChange={(e) => {
+                                                const unformattedValue = unformatPrice(e.target.value);
+                                                if (/^\d*$/.test(unformattedValue)) {
+                                                    setNewProduct({
+                                                        ...newProduct,
+                                                        price: unformattedValue
+                                                    });
+                                                }
+                                            }}
+                                            className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                     ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'
                                                     : 'bg-white border-gray-300 hover:border-gray-400'
-                                            } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                                                } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                                             placeholder="Nhập giá sản phẩm..."
-                                />
-                            </div>
-                                <div>
+                                        />
+                                    </div>
+                                    <div>
                                         <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                             Danh mục
                                         </label>
-                                    <select
-                                        value={newProduct.categoryID}
-                                        onChange={(e) => setNewProduct({ ...newProduct, categoryID: e.target.value })}
-                                            className={`w-full p-3 rounded-lg border transition-colors ${
-                                                isDarkMode
+                                        <select
+                                            value={newProduct.categoryID}
+                                            onChange={(e) => setNewProduct({ ...newProduct, categoryID: e.target.value })}
+                                            className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                     ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'
                                                     : 'bg-white border-gray-300 hover:border-gray-400'
-                                            } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
-                                    >
-                                        <option value="">Chọn danh mục</option>
-                                        {categories.map(cat => (
-                                            <option key={cat.categoryID} value={cat.name}>{cat.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
+                                                } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                                        >
+                                            <option value="">Chọn danh mục</option>
+                                            {categories.map(cat => (
+                                                <option key={cat.categoryID} value={cat.name}>{cat.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
                                         <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                             Đối tượng
                                         </label>
-                                    <select
-                                        value={newProduct.targetID}
-                                        onChange={(e) => setNewProduct({ ...newProduct, targetID: e.target.value })}
-                                            className={`w-full p-3 rounded-lg border transition-colors ${
-                                                isDarkMode
+                                        <select
+                                            value={newProduct.targetID}
+                                            onChange={(e) => setNewProduct({ ...newProduct, targetID: e.target.value })}
+                                            className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                     ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'
                                                     : 'bg-white border-gray-300 hover:border-gray-400'
-                                            } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
-                                    >
-                                        <option value="">Chọn đối tượng</option>
-                                        {targets.map(target => (
-                                            <option key={target.targetID} value={target.name}>{target.name}</option>
-                                        ))}
-                                    </select>
+                                                } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                                        >
+                                            <option value="">Chọn đối tượng</option>
+                                            {targets.map(target => (
+                                                <option key={target.targetID} value={target.name}>{target.name}</option>
+                                            ))}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1850,7 +1829,7 @@ const ProductManagement = () => {
                                     Mô tả và ảnh đại diện
                                 </h4>
                                 <div className="space-y-6">
-                            <div>
+                                    <div>
                                         <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                             Mô tả
                                         </label>
@@ -1858,11 +1837,10 @@ const ProductManagement = () => {
                                             value={newProduct.description}
                                             onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                                             rows="4"
-                                            className={`w-full p-3 rounded-lg border transition-colors ${
-                                                isDarkMode
+                                            className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                     ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'
                                                     : 'bg-white border-gray-300 hover:border-gray-400'
-                                            } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                                                } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                                             placeholder="Nhập mô tả sản phẩm..."
                                         />
                                     </div>
@@ -1870,23 +1848,23 @@ const ProductManagement = () => {
                                         <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                             Ảnh đại diện
                                         </label>
-                                <ImageUpload
-                                    currentImage={newProduct.thumbnail}
-                                    onImageUpload={(imageUrls) => {
-                                        setNewProduct({
-                                            ...newProduct,
-                                            thumbnail: imageUrls[0] || ''
-                                        });
-                                    }}
-                                />
-                            </div>
+                                        <ImageUpload
+                                            currentImage={newProduct.thumbnail}
+                                            onImageUpload={(imageUrls) => {
+                                                setNewProduct({
+                                                    ...newProduct,
+                                                    thumbnail: imageUrls[0] || ''
+                                                });
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Màu sắc và kích thước */}
                             <div className={`p-6 rounded-xl ${isDarkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
                                 <div className="flex justify-between items-center mb-4">
-                            <div>
+                                    <div>
                                         <h4 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                             Màu sắc và kích thước
                                         </h4>
@@ -1910,11 +1888,10 @@ const ProductManagement = () => {
                                                 }]
                                             });
                                         }}
-                                        className={`px-4 py-2 rounded-lg transition-colors ${
-                                            isDarkMode
+                                        className={`px-4 py-2 rounded-lg transition-colors ${isDarkMode
                                                 ? 'bg-green-600 hover:bg-green-700'
                                                 : 'bg-green-500 hover:bg-green-600'
-                                        } text-white flex items-center gap-2`}
+                                            } text-white flex items-center gap-2`}
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1923,46 +1900,44 @@ const ProductManagement = () => {
                                     </button>
                                 </div>
                                 <div className="space-y-6">
-                                {newProduct.colors.map((color, colorIndex) => (
+                                    {newProduct.colors.map((color, colorIndex) => (
                                         <div key={colorIndex} className={`p-6 rounded-xl relative ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                        {newProduct.colors.length > 1 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    const updatedColors = newProduct.colors.filter((_, index) => index !== colorIndex);
-                                                    setNewProduct({ ...newProduct, colors: updatedColors });
-                                                }}
-                                                    className={`absolute top-4 right-4 p-2 rounded-lg transition-colors ${
-                                                        isDarkMode
+                                            {newProduct.colors.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const updatedColors = newProduct.colors.filter((_, index) => index !== colorIndex);
+                                                        setNewProduct({ ...newProduct, colors: updatedColors });
+                                                    }}
+                                                    className={`absolute top-4 right-4 p-2 rounded-lg transition-colors ${isDarkMode
                                                             ? 'bg-red-400/10 hover:bg-red-400/20 text-red-400'
                                                             : 'bg-red-100 hover:bg-red-200 text-red-600'
-                                                    }`}
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        )}
+                                                        }`}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            )}
 
                                             <div className="space-y-4">
                                                 <div>
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Tên màu
                                                     </label>
-                                        <input
-                                            type="text"
+                                                    <input
+                                                        type="text"
                                                         placeholder="Nhập tên màu..."
-                                            value={color.colorName}
-                                            onChange={(e) => {
-                                                const updatedColors = [...newProduct.colors];
-                                                updatedColors[colorIndex].colorName = e.target.value;
-                                                setNewProduct({ ...newProduct, colors: updatedColors });
-                                            }}
-                                                        className={`w-full p-3 rounded-lg border transition-colors ${
-                                                            isDarkMode
+                                                        value={color.colorName}
+                                                        onChange={(e) => {
+                                                            const updatedColors = [...newProduct.colors];
+                                                            updatedColors[colorIndex].colorName = e.target.value;
+                                                            setNewProduct({ ...newProduct, colors: updatedColors });
+                                                        }}
+                                                        className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                                 ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'
                                                                 : 'bg-white border-gray-300 hover:border-gray-400'
-                                                        } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                                                            } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                                                     />
                                                 </div>
 
@@ -1970,14 +1945,14 @@ const ProductManagement = () => {
                                                     <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                                                         Hình ảnh màu
                                                     </label>
-                                        <MultipleImageUpload
-                                            currentImages={color.images}
-                                            onImageUpload={(imageUrls) => {
-                                                const updatedColors = [...newProduct.colors];
-                                                updatedColors[colorIndex].images = imageUrls;
-                                                setNewProduct({ ...newProduct, colors: updatedColors });
-                                            }}
-                                        />
+                                                    <MultipleImageUpload
+                                                        currentImages={color.images}
+                                                        onImageUpload={(imageUrls) => {
+                                                            const updatedColors = [...newProduct.colors];
+                                                            updatedColors[colorIndex].images = imageUrls;
+                                                            setNewProduct({ ...newProduct, colors: updatedColors });
+                                                        }}
+                                                    />
                                                 </div>
 
                                                 <div>
@@ -1985,33 +1960,32 @@ const ProductManagement = () => {
                                                         Số lượng theo size
                                                     </label>
                                                     <div className="grid grid-cols-3 gap-4">
-                                            {color.sizes.map((size, sizeIndex) => (
-                                                <div key={sizeIndex}>
+                                                        {color.sizes.map((size, sizeIndex) => (
+                                                            <div key={sizeIndex}>
                                                                 <label className={`block text-sm mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                                                     Size {size.size}
                                                                 </label>
-                                                    <input
-                                                        type="number"
-                                                        min="0"
-                                                        value={size.stock}
-                                                        onChange={(e) => {
-                                                            const updatedColors = [...newProduct.colors];
-                                                            updatedColors[colorIndex].sizes[sizeIndex].stock = parseInt(e.target.value);
-                                                            setNewProduct({ ...newProduct, colors: updatedColors });
-                                                        }}
-                                                                    className={`w-full p-3 rounded-lg border transition-colors ${
-                                                                        isDarkMode
+                                                                <input
+                                                                    type="number"
+                                                                    min="0"
+                                                                    value={size.stock}
+                                                                    onChange={(e) => {
+                                                                        const updatedColors = [...newProduct.colors];
+                                                                        updatedColors[colorIndex].sizes[sizeIndex].stock = parseInt(e.target.value);
+                                                                        setNewProduct({ ...newProduct, colors: updatedColors });
+                                                                    }}
+                                                                    className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                                             ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'
                                                                             : 'bg-white border-gray-300 hover:border-gray-400'
-                                                                    } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
-                                                    />
-                                                </div>
-                                            ))}
+                                                                        } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                                                                />
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                                 </div>
                             </div>
 
@@ -2020,8 +1994,7 @@ const ProductManagement = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsAddProductModalOpen(false)}
-                                    className={`px-6 py-2.5 rounded-lg transition-colors ${
-                                        isDarkMode
+                                    className={`px-6 py-2.5 rounded-lg transition-colors ${isDarkMode
                                             ? 'bg-gray-700 hover:bg-gray-600 text-gray-300'
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                                         }`}
@@ -2031,11 +2004,10 @@ const ProductManagement = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className={`px-6 py-2.5 rounded-lg transition-colors ${
-                                        isDarkMode
+                                    className={`px-6 py-2.5 rounded-lg transition-colors ${isDarkMode
                                             ? 'bg-green-600 hover:bg-green-700'
                                             : 'bg-green-500 hover:bg-green-600'
-                                    } text-white flex items-center gap-2`}
+                                        } text-white flex items-center gap-2`}
                                 >
                                     {loading ? (
                                         <>

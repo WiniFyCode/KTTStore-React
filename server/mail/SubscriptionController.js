@@ -27,7 +27,7 @@ const getEmailTemplate = (email) => {
             <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 40px;">
               <!-- Header -->
               <div style="text-align: center; margin-bottom: 30px;">
-                <img src="https://your-logo-url.com/logo.png" alt="KTT Store Logo" style="max-width: 150px;">
+                <img src="https://freeimage.host/i/39PERG1" alt="KTT Store Logo" style="max-width: 150px;">
                 <h1 style="color: #333; margin: 20px 0 10px;">Chào Mừng Đến Với KTT Store! 🎉</h1>
               </div>
 
@@ -55,7 +55,7 @@ const getEmailTemplate = (email) => {
                 <div style="text-align: center; background: #ff4444; color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
                   <h3 style="margin: 0 0 10px;">Mã Giảm Giá Chào Mừng</h3>
                   <div style="background: white; color: #ff4444; padding: 10px; font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 10px 0;">
-                    WELCOME10
+                    WELCOME2025
                   </div>
                   <p style="margin: 10px 0 0; font-size: 14px;">Giảm 10% cho đơn hàng đầu tiên</p>
                 </div>
