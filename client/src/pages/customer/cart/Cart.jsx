@@ -22,6 +22,7 @@ const Cart = () => {
   const [loadingCoupon, setLoadingCoupon] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showCoupons, setShowCoupons] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
 
   // State cho popup xác nhận xóa
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -900,6 +901,8 @@ const Cart = () => {
                           : 'border-blue-200 focus:ring-blue-500'
                         } focus:outline-none focus:ring-2 disabled:bg-gray-50`}
                     />
+
+                    {/* Xóa mã giảm giá */}
                     {appliedCoupon ? (
                       <button
                         onClick={handleRemoveCoupon}
@@ -913,6 +916,7 @@ const Cart = () => {
                       </button>
                     ) : (
                       <>
+                        {/* Áp dụng mã giảm giá */}
                         <button
                           onClick={handleApplyCoupon}
                           disabled={loadingCoupon || !couponCode.trim()}
@@ -927,6 +931,7 @@ const Cart = () => {
                             'Áp dụng'
                           )}
                         </button>
+                        {/* Hiển thị danh sách coupon khả dụng */}
                         <button
                           onClick={() => setShowCoupons(true)}
                           className={`px-4 py-2 rounded-xl font-medium border ${theme === 'tet'
@@ -939,6 +944,8 @@ const Cart = () => {
                       </>
                     )}
                   </div>
+
+                  {/* Hiển thị mã giảm giá đã áp dụng */}
                   {appliedCoupon && (
                     <div className="mt-2 p-3 bg-green-50 text-green-600 text-sm rounded-xl flex items-start gap-2">
                       <FaGift className="w-5 h-5 mt-0.5 flex-shrink-0" />
@@ -1216,27 +1223,34 @@ const Cart = () => {
                           )}
                           {coupon.appliedCategories?.length > 0 && (
                             <div className="flex flex-col gap-1 w-full mt-1">
-                              <span className={`text-xs ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'
-                                }`}>
+                              <span className={`text-xs ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`}>
                                 Áp dụng cho danh mục:
                               </span>
-                              <div className="flex flex-wrap gap-1">
-                                {Array.isArray(coupon.appliedCategories) && coupon.appliedCategories.map((cat, idx) => (
-                                  <span
-                                    key={idx}
-                                    className={`inline-flex items-center px-2 py-1 rounded-lg text-xs ${coupon.applicableCategories?.some(appliedCat =>
-                                      (typeof cat === 'object' ? cat.categoryID === appliedCat.categoryID : cat === appliedCat)
-                                    )
-                                        ? theme === 'tet'
-                                          ? 'bg-red-100 text-red-700 border border-red-200'
-                                          : 'bg-blue-100 text-blue-700 border border-blue-200'
-                                        : 'bg-gray-100 text-gray-600 border border-gray-200'
-                                      }`}
-                                  >
-                                    {typeof cat === 'object' ? cat.name : `Danh mục ${cat}`}
-                                  </span>
-                                ))}
-                              </div>
+                              <button
+                                onClick={() => setShowCategories(!showCategories)}
+                                className={`text-xs font-medium ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'} underline text-left`}
+                              >
+                                {showCategories ? 'Thu gọn' : 'Xem danh mục'}
+                              </button>
+                              {showCategories && (
+                                <div className="flex flex-wrap gap-1">
+                                  {Array.isArray(coupon.appliedCategories) && coupon.appliedCategories.map((cat, idx) => (
+                                    <span
+                                      key={idx}
+                                      className={`inline-flex items-center px-2 py-1 rounded-lg text-xs ${coupon.applicableCategories?.some(appliedCat =>
+                                        (typeof cat === 'object' ? cat.categoryID === appliedCat.categoryID : cat === appliedCat)
+                                      )
+                                          ? theme === 'tet'
+                                            ? 'bg-red-100 text-red-700 border border-red-200'
+                                            : 'bg-blue-100 text-blue-700 border border-blue-200'
+                                          : 'bg-gray-100 text-gray-600 border border-gray-200'
+                                        }`}
+                                    >
+                                      {typeof cat === 'object' ? cat.name : `Danh mục ${cat}`}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

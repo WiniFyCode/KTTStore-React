@@ -301,7 +301,7 @@ const Profile = () => {
       const recentOrders = (ordersRes.data.orders || []).map((order) => ({
         type: "order",
         title: `Đơn hàng #${order.orderID}`,
-        detail: `Trạng thái: ${order.orderStatus}`,
+        detail: `Trạng thái: ${getOrderStatus(order.orderStatus)}`,
         time: order.createdAt,
       }));
 
@@ -645,6 +645,26 @@ const Profile = () => {
     }
   };
 
+  // Hàm chuyển đổi trạng thái đơn hàng
+  const getOrderStatus = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'Đang chờ';
+      case 'confirmed':
+        return 'Đã xác nhận';
+      case 'processing':
+        return 'Đang xử lý';
+      case 'completed':
+        return 'Hoàn thành';
+      case 'cancelled':
+        return 'Đã hủy';
+      case 'refunded':
+        return 'Đã hoàn tiền';
+      default:
+        return status; // Trả về trạng thái gốc nếu không khớp
+    }
+  };
+
   // Nếu có lỗi, hiển thị thông báo lỗi
   if (error) {
     return (
@@ -787,7 +807,7 @@ const Profile = () => {
                         <div className="ml-4">
                           <p className="font-medium">{activity.title}</p>
                           <p className="text-sm text-gray-500">
-                            {activity.detail}
+                            {activity.detail} {/* Trạng thái đơn hàng */}
                           </p>
                           <p className="text-xs text-gray-400 mt-1">
                             {formatTime(new Date(activity.time))}

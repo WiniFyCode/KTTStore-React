@@ -43,7 +43,7 @@ export const getBannerData = (theme) =>
          link: '/sale',
          buttonText: 'MUA NGAY',
          textColor: 'text-gray-200',
-         buttonColor: 'text-blue-300 hover:text-blue-400',
+         buttonColor: 'text-blue-300 hover:text-red-400',
          gradientColor: 'from-blue-900/70'
       },
    ];

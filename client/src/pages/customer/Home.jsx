@@ -344,7 +344,11 @@ const Home = () => {
                       </p>
                       <Link
                         to={slide.buttonLink}
-                        className={`inline-flex items-center bg-red-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-full hover:bg-red-700 transition duration-300 text-sm md:text-base`}
+                        className={`inline-flex items-center ${
+                          theme === 'tet' 
+                            ? 'bg-red-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-full hover:bg-white hover:text-red-600 hover:border-2 hover:border-red-600 transition duration-300 text-sm md:text-base'
+                            : 'bg-blue-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-full hover:bg-white hover:text-blue-600 hover:border-2 hover:border-blue-600 transition duration-300 text-sm md:text-base'
+                        }`}
                       >
                         {slide.buttonText}
                         <FaArrowRight className="ml-2" />
@@ -628,7 +632,7 @@ const Home = () => {
                   className={`inline-flex items-center ${
                     theme === 'tet' 
                       ? 'bg-red-600 hover:bg-red-700' 
-                      : 'bg-indigo-600 hover:bg-indigo-700'
+                      : 'bg-indigo-600 hover:bg-white border-2 border-indigo-600 hover:text-indigo-600'
                   } text-white px-6 md:px-8 py-2 md:py-3 rounded-full transition-colors text-sm md:text-base`}
                 >
                   {theme === 'tet' ? 'XEM TẤT CẢ FLASH SALE TẾT' : 'XEM TẤT CẢ FLASH SALE'}
@@ -855,8 +859,8 @@ const Home = () => {
                     placeholder={subscriptionContent.placeholder}
                     className={`flex-1 px-6 py-3 rounded-xl focus:outline-none border-2 transition-all ${
                       theme === 'tet'
-                        ? 'border-red-200 focus:border-red-400 bg-white'
-                        : 'border-blue-200 focus:border-blue-400 bg-white'
+                        ? 'border-red-200 focus:border-red-400 bg-red-50'
+                        : 'border-blue-200 focus:border-blue-400 bg-blue-50'
                     }`}
                   />
                   <button

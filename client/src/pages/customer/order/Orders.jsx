@@ -775,7 +775,7 @@ const Orders = () => {
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70"
+                  className="px-8.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70"
                 >
                   <option value="all">Tất cả trạng thái</option>
                   <option value="pending">Chờ xác nhận</option>

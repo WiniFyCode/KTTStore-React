@@ -137,6 +137,13 @@ const OrderDetail = () => {
           color: 'bg-red-100 text-red-700',
           borderColor: 'border-red-500'
         };
+      case 'refunded':
+        return {
+          icon: <FaMoneyBillWave className="text-green-500 text-xl" />,
+          text: 'Đã hoàn tiền',
+          color: 'bg-green-100 text-green-700',
+          borderColor: 'border-green-500'
+        };
       default:
         return {
           icon: null,
@@ -282,19 +289,6 @@ const OrderDetail = () => {
   // Giao diện chính
   return (
     <div className={`min-h-screen ${theme === 'tet' ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50' : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'} py-8`}>
-      {/* Các phần tử trang trí nền */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute top-0 left-0 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob ${
-          theme === 'tet' ? 'bg-red-200' : 'bg-blue-200'
-        }`}></div>
-        <div className={`absolute top-0 right-0 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 ${
-          theme === 'tet' ? 'bg-orange-200' : 'bg-indigo-200'
-        }`}></div>
-        <div className={`absolute -bottom-8 left-20 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 ${
-          theme === 'tet' ? 'bg-yellow-200' : 'bg-purple-200'
-        }`}></div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 relative">
         {/* Phần header với nút quay lại và trạng thái */}
         <div className="flex justify-between items-center mb-6">
@@ -314,7 +308,7 @@ const OrderDetail = () => {
         </div>
 
         {/* Phần thông tin đơn hàng */}
-        <div className="backdrop-blur-md bg-white/50 rounded-2xl p-6 mb-6 border border-white/50 shadow-lg">
+        <div className="backdrop-blur-md bg-white rounded-2xl p-6 mb-6 border border-gray-300 shadow-lg">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Đơn hàng #{order.orderID}</h2>
             {/* Hiển thị nút hủy đơn chỉ khi đơn hàng đang chờ xác nhận */}
@@ -338,9 +332,7 @@ const OrderDetail = () => {
             <div className="space-y-6">
               {/* Thông tin người nhận */}
               <div className="flex items-center group">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                } group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'} group-hover:scale-110 transition-transform duration-300`}>
                   <FaUser className={`text-xl ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`} />
                 </div>
                 <div className="ml-4">
@@ -351,9 +343,7 @@ const OrderDetail = () => {
 
               {/* Số điện thoại */}
               <div className="flex items-center group">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  theme === 'tet' ? 'bg-orange-100' : 'bg-indigo-100'
-                } group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme === 'tet' ? 'bg-orange-100' : 'bg-indigo-100'} group-hover:scale-110 transition-transform duration-300`}>
                   <FaPhoneAlt className={`text-xl ${theme === 'tet' ? 'text-orange-500' : 'text-indigo-500'}`} />
                 </div>
                 <div className="ml-4">
@@ -364,9 +354,7 @@ const OrderDetail = () => {
 
               {/* Địa chỉ giao hàng */}
               <div className="flex items-center group">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  theme === 'tet' ? 'bg-yellow-100' : 'bg-purple-100'
-                } group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme === 'tet' ? 'bg-yellow-100' : 'bg-purple-100'} group-hover:scale-110 transition-transform duration-300`}>
                   <FaMapMarkerAlt className={`text-xl ${theme === 'tet' ? 'text-yellow-500' : 'text-purple-500'}`} />
                 </div>
                 <div className="ml-4">
@@ -380,9 +368,7 @@ const OrderDetail = () => {
             <div className="space-y-6">
               {/* Ngày đặt hàng */}
               <div className="flex items-center group">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                } group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'} group-hover:scale-110 transition-transform duration-300`}>
                   <FaCalendarAlt className={`text-xl ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`} />
                 </div>
                 <div className="ml-4">
@@ -394,16 +380,14 @@ const OrderDetail = () => {
                       day: 'numeric',
                       hour: '2-digit',
                       minute: '2-digit'
-                    })}
+                    }).replace('lúc', 'Lúc')}
                   </p>
                 </div>
               </div>
 
               {/* Trạng thái vận chuyển */}
               <div className="flex items-center group">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  theme === 'tet' ? 'bg-orange-100' : 'bg-indigo-100'
-                } group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme === 'tet' ? 'bg-orange-100' : 'bg-indigo-100'} group-hover:scale-110 transition-transform duration-300`}>
                   <FaShippingFast className={`text-xl ${theme === 'tet' ? 'text-orange-500' : 'text-indigo-500'}`} />
                 </div>
                 <div className="ml-4">
@@ -419,9 +403,7 @@ const OrderDetail = () => {
 
               {/* Trạng thái thanh toán */}
               <div className="flex items-center group">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  theme === 'tet' ? 'bg-yellow-100' : 'bg-purple-100'
-                } group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme === 'tet' ? 'bg-yellow-100' : 'bg-purple-100'} group-hover:scale-110 transition-transform duration-300`}>
                   <FaMoneyBillWave className={`text-xl ${theme === 'tet' ? 'text-yellow-500' : 'text-purple-500'}`} />
                 </div>
                 <div className="ml-4">
@@ -436,7 +418,7 @@ const OrderDetail = () => {
         </div>
 
         {/* Bảng chi tiết sản phẩm */}
-        <div className="backdrop-blur-md bg-white/50 rounded-2xl p-6 border border-white/50 shadow-lg">
+        <div className="backdrop-blur-md bg-white rounded-2xl p-6 border border-gray-300 shadow-lg">
           <h3 className="text-xl font-bold mb-6">Chi tiết sản phẩm</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -478,7 +460,7 @@ const OrderDetail = () => {
               {/* Footer với tổng tiền */}
               <tfoot className="bg-gray-50">
                 <tr>
-                  <td colSpan="3" className="text-right py-4 px-6 font-medium">
+                  <td colSpan="2" className="text-right py-4 px-6 font-medium">
                     Tổng tiền hàng:
                   </td>
                   <td className="text-right py-4 px-6">
@@ -490,7 +472,7 @@ const OrderDetail = () => {
                 {/* Chỉ hiển thị dòng khuyến mãi khi có giảm giá */}
                 {(order.totalProductPrice - order.totalPrice) > 0 && (
                   <tr>
-                    <td colSpan="3" className="text-right py-4 px-6 font-medium">
+                    <td colSpan="2" className="text-right py-4 px-6 font-medium">
                       Khuyến mãi:
                     </td>
                     <td className="text-right py-4 px-6">
@@ -503,7 +485,7 @@ const OrderDetail = () => {
 
                 {order.totalPrice !== order.paymentPrice && (
                   <tr>
-                    <td colSpan="3" className="text-right py-4 px-6 text-gray-600">
+                    <td colSpan="2" className="text-right py-4 px-6 text-gray-600">
                       Áp dụng giảm giá:
                     </td>
                     <td className="text-right py-4 px-6 text-green-500 font-medium">
@@ -514,7 +496,7 @@ const OrderDetail = () => {
 
                 {order.userCouponsID && (
                   <tr>
-                    <td colSpan="3" className="text-right py-4 px-6 text-gray-600">
+                    <td colSpan="2" className="text-right py-4 px-6 text-gray-600">
                       Mã giảm giá:
                     </td>
                     <td className="text-right py-4 px-6">
@@ -530,7 +512,7 @@ const OrderDetail = () => {
                 )}
 
                 <tr className="border-t border-gray-200">
-                  <td colSpan="3" className="text-right py-4 px-6 font-bold">
+                  <td colSpan="2" className="text-right py-4 px-6 font-bold">
                     Thành tiền:
                   </td>
                   <td className="text-right py-4 px-6">

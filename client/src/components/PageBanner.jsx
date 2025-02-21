@@ -4,12 +4,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { FaChevronRight, FaHome } from 'react-icons/fa';
 import { useTheme } from '../contexts/CustomerThemeContext';
 
-const PageBanner = ({ 
+const PageBanner = ({
   icon: Icon,
-  title, 
+  title,
   subtitle,
   breadcrumbText,
-  extraContent 
+  extraContent
 }) => {
   const { theme } = useTheme();
   const location = useLocation();
@@ -18,7 +18,7 @@ const PageBanner = ({
   const getBreadcrumbs = () => {
     // Bỏ qua ký tự "/" đầu tiên và split path thành array
     const pathSegments = location.pathname.split('/').filter(segment => segment);
-    
+
     // Object map các path segment sang tên hiển thị
     const pathNames = {
       'products': 'Sản phẩm',
@@ -71,14 +71,13 @@ const PageBanner = ({
   return (
     <div className="relative">
       {/* Banner chính */}
-      <div className={`relative overflow-hidden ${
-        theme === 'tet' 
-          ? 'bg-gradient-to-br from-red-600 via-red-500 to-orange-500' 
+      <div className={`relative overflow-hidden ${theme === 'tet'
+          ? 'bg-gradient-to-br from-red-600 via-red-500 to-orange-500'
           : 'bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600'
-      }`}>
+        }`}>
         {/* Các phần tử trang trí */}
         <div className="absolute inset-0">
-          
+
           {/* Các hình tròn hiệu ứng động */}
           <div className="absolute inset-0">
             <div className="absolute top-0 left-0 w-72 h-72 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 animate-float-slow"></div>
@@ -123,11 +122,10 @@ const PageBanner = ({
 
             {/* Chữ mờ với gradient */}
             {subtitle && (
-              <p className={`text-xl ${
-                theme === 'tet' 
+              <p className={`text-xl ${theme === 'tet'
                   ? 'text-yellow-200'
                   : 'text-blue-200'
-              } font-medium mt-4`}>
+                } font-medium mt-4`}>
                 {subtitle}
               </p>
             )}
@@ -140,8 +138,8 @@ const PageBanner = ({
         {/* Đường chia hiệu ứng động */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg className="w-full h-16 sm:h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path 
-              d="M0,0 C150,90 400,120 600,100 C800,80 1050,40 1200,100 L1200,120 L0,120 Z" 
+            <path
+              d="M0,0 C150,90 400,120 600,100 C800,80 1050,40 1200,100 L1200,120 L0,120 Z"
               className="fill-[#F8FAFC]"
             ></path>
           </svg>
@@ -150,48 +148,43 @@ const PageBanner = ({
 
       {/* Breadcrumb hiệu ứng động */}
       <div className="container mx-auto px-4">
-        <div className={`relative -mt-8 sm:-mt-12 mb-8 inline-flex items-center gap-2 px-6 py-3 rounded-full shadow-lg ${
-          theme === 'tet'
-            ? 'bg-gradient-to-r from-red-500 to-red-600 text-white' 
-            : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
-        } backdrop-blur-md`}>
-          <Link 
-            to="/" 
-            className={`flex items-center gap-2 ${
-              theme === 'tet'
+        <div className={`relative -mt-8 sm:-mt-12 mb-8 inline-flex items-center gap-2 px-6 py-3 rounded-full shadow-lg ${theme === 'tet'
+            ? 'bg-gradient-to-r from-red-600 to-red-700 text-white'
+            : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
+          } backdrop-blur-md`}>
+          <Link
+            to="/"
+            className={`flex items-center gap-2 ${theme === 'tet'
                 ? 'text-yellow-300 hover:text-yellow-400'
-                : 'text-blue-200 hover:text-blue-100'
-            } transition-colors duration-300`}
+                : 'text-blue-200 hover:text-blue-300'
+              } transition-colors duration-300`}
           >
             <FaHome className="w-4 h-4" />
             <span className="hidden sm:inline font-medium">
               Trang chủ
             </span>
           </Link>
-          
+
           {breadcrumbs.map((crumb, index) => (
             <React.Fragment key={crumb.path}>
-              <FaChevronRight className={`w-3 h-3 ${
-                theme === 'tet' 
-                  ? 'text-yellow-300/70'
-                  : 'text-blue-200/70'
-              }`} />
+              <FaChevronRight className={`w-3 h-3 ${theme === 'tet'
+                  ? 'text-yellow-200'
+                  : 'text-blue-200'
+                }`} />
               {index === breadcrumbs.length - 1 ? (
-                <span className={`font-medium ${
-                  theme === 'tet'
+                <span className={`font-medium ${theme === 'tet'
                     ? 'text-yellow-300'
-                    : 'text-blue-200'
-                }`}>
+                    : 'text-blue-300'
+                  }`}>
                   {crumb.label}
                 </span>
               ) : (
-                <Link 
+                <Link
                   to={crumb.path}
-                  className={`hover:opacity-90 transition-opacity ${
-                    theme === 'tet'
+                  className={`hover:opacity-90 transition-opacity ${theme === 'tet'
                       ? 'text-yellow-300/90'
-                      : 'text-blue-200/90'
-                  }`}
+                      : 'text-blue-300/90'
+                    }`}
                 >
                   {crumb.label}
                 </Link>
