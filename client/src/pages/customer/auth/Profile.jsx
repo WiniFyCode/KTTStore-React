@@ -1,8 +1,8 @@
 // Profile.jsx - Trang thông tin cá nhân
-import { React,useState, useEffect } from "react";
+import { React, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaUser,FaEnvelope,FaPhone,FaCog,FaGift,FaBell,FaHeadset,FaEdit,FaTrash,FaCheck,FaTimes,FaPlus,FaTicketAlt,FaBox,FaCheckCircle,FaStar,FaVenusMars,FaShoppingBag,FaKey,FaEye,FaEyeSlash,
+  FaUser, FaEnvelope, FaPhone, FaCog, FaGift, FaBell, FaHeadset, FaEdit, FaTrash, FaCheck, FaTimes, FaPlus, FaTicketAlt, FaBox, FaCheckCircle, FaStar, FaVenusMars, FaShoppingBag, FaKey, FaEye, FaEyeSlash,
 } from "react-icons/fa";
 import { useTheme } from "../../../contexts/CustomerThemeContext";
 import PageBanner from "../../../components/PageBanner";
@@ -82,7 +82,7 @@ const Profile = () => {
     {
       status: "confirmed",
       count: 0,
-      label: "Đã xác nhận", 
+      label: "Đã xác nhận",
       icon: FaCheckCircle,
       color: "blue",
     },
@@ -294,29 +294,21 @@ const Profile = () => {
   const fetchRecentActivities = async () => {
     try {
       const [ordersRes, reviewsRes] = await Promise.all([
-        axiosInstance.get("/api/order/my-orders?limit=5"),
-        axiosInstance.get("/api/reviews/user?limit=5"),
+        axiosInstance.get("/api/order/my-orders?limit=6")
       ]);
 
       const recentOrders = (ordersRes.data.orders || []).map((order) => ({
         type: "order",
+        orderID: order.orderID,
         title: `Đơn hàng #${order.orderID}`,
         detail: `Trạng thái: ${getOrderStatus(order.orderStatus)}`,
         time: order.createdAt,
       }));
 
-      const recentReviews = (reviewsRes.data.reviews || []).map((review) => ({
-        type: "review",
-        title: "Đánh giá sản phẩm",
-        detail: review.productName,
-        rating: review.rating,
-        time: review.createdAt,
-      }));
-
       // Kết hợp và sắp xếp theo thời gian
       const activities = [...recentOrders, ...recentReviews]
         .sort((a, b) => new Date(b.time) - new Date(a.time))
-        .slice(0, 5);
+        .slice(0, 6);
 
       setRecentActivities(activities);
     } catch (error) {
@@ -388,15 +380,15 @@ const Profile = () => {
     try {
       setUpdatingAddressId(addressID); // Set ID của địa chỉ đang cập nhật
       const response = await axiosInstance.patch(`/api/address/${addressID}/default`);
-      
+
       if (response.data) {
-        setAddresses(prevAddresses => 
+        setAddresses(prevAddresses =>
           prevAddresses.map(addr => ({
             ...addr,
             isDefault: addr.addressID === addressID
           }))
         );
-        
+
         toast.success('Đã đặt địa chỉ mặc định thành công');
       }
     } catch (error) {
@@ -411,7 +403,7 @@ const Profile = () => {
   const handleUpdateAddress = async () => {
     try {
       setIsUpdatingAddress(true);
-      
+
       // Nếu đang chỉnh sửa địa chỉ
       if (editingAddress) {
         const response = await axiosInstance.put(`/api/address/${editingAddress}`, {
@@ -421,7 +413,7 @@ const Profile = () => {
 
         if (response.data) {
           // Cập nhật state addresses trực tiếp
-          setAddresses(prevAddresses => 
+          setAddresses(prevAddresses =>
             prevAddresses.map(addr => {
               if (addr.addressID === editingAddress) {
                 return {
@@ -490,13 +482,13 @@ const Profile = () => {
     try {
       setIsDeletingAddress(true);
       const response = await axiosInstance.delete(`/api/address/${addressToDelete}`);
-      
+
       if (response.data) {
         // Cập nhật state addresses trực tiếp bằng cách lọc bỏ địa chỉ đã xóa
-        setAddresses(prevAddresses => 
+        setAddresses(prevAddresses =>
           prevAddresses.filter(addr => addr.addressID !== addressToDelete)
         );
-        
+
         toast.success('Xóa địa chỉ thành công');
         setShowDeleteConfirm(false);
         setAddressToDelete(null);
@@ -756,8 +748,8 @@ const Profile = () => {
                   <div
                     key={index}
                     className={`p-4 rounded-xl transition-all duration-300 transform hover:scale-105 ${stat.count > 0
-                        ? `bg-${stat.color}-50 border border-${stat.color}-200`
-                        : "bg-gray-50 opacity-60"
+                      ? `bg-${stat.color}-50 border border-${stat.color}-200`
+                      : "bg-gray-50 opacity-60"
                       }`}
                   >
                     <div
@@ -790,12 +782,15 @@ const Profile = () => {
                     recentActivities.map((activity, index) => (
                       <div
                         key={index}
-                        className="flex items-start p-4 rounded-lg hover:bg-gray-50 transition-colors"
+                        onClick={() => {
+                          navigate(`/order/${activity.orderID}`)
+                        }}
+                        className="flex items-start p-4 cursor-pointer rounded-lg hover:bg-gray-50 transition-colors border-2 border-gray-200"
                       >
                         <div
                           className={`p-3 rounded-lg ${activity.type === "order"
-                              ? "bg-blue-50 text-blue-500"
-                              : "bg-yellow-50 text-yellow-500"
+                            ? "bg-blue-50 text-blue-500"
+                            : "bg-yellow-50 text-yellow-500"
                             }`}
                         >
                           {activity.type === "order" ? (
@@ -833,26 +828,37 @@ const Profile = () => {
                     recentReviews.map((review, index) => (
                       <div
                         key={index}
-                        className="bg-white rounded-lg p-4 shadow hover:shadow-md transition-shadow"
+                        onClick={() => {
+                            navigate(`/product/${review.productInfo.productID}`)
+                        }}
+                        className="bg-white rounded-lg p-4 cursor-pointer shadow hover:shadow-md transition-shadow flex border-2 border-gray-200"
                       >
-                        <h3 className="font-semibold text-gray-800 mb-2">
-                          {review.productName}
-                        </h3>
-                        <div className="flex items-center mb-2">
-                          {[...Array(5)].map((_, i) => (
-                            <FaStar
-                              key={i}
-                              className={`w-4 h-4 ${i < review.rating
+                        {/* Thêm ảnh sản phẩm vào góc trái */}
+                        <img 
+                          src={review.productInfo.image} 
+                          alt={review.productInfo.name} 
+                          className="w-16 h-24 rounded-lg mr-4 mt-2" 
+                        />
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-800 mb-2">
+                            {review.productInfo.name}
+                          </h3>
+                          <div className="flex items-center mb-2">
+                            {[...Array(5)].map((_, i) => (
+                              <FaStar
+                                key={i}
+                                className={`w-4 h-4 ${i < review.rating
                                   ? "text-yellow-400"
                                   : "text-gray-300"
-                                }`}
-                            />
-                          ))}
+                                  }`}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-gray-600 mb-2">{review.comment}</p>
+                          <p className="text-sm text-gray-500">
+                            {formatTime(new Date(review.createdAt))}
+                          </p>
                         </div>
-                        <p className="text-gray-600 mb-2">{review.comment}</p>
-                        <p className="text-sm text-gray-500">
-                          {formatTime(new Date(review.createdAt))}
-                        </p>
                       </div>
                     ))
                   ) : (
@@ -871,10 +877,10 @@ const Profile = () => {
                 <button
                   onClick={() => setIsEditing(!isEditing)}
                   className={`px-4 py-2 rounded-lg flex items-center gap-2 ${isEditing
-                      ? "bg-gray-100 text-gray-600"
-                      : theme === "tet"
-                        ? "bg-red-500 text-white"
-                        : "bg-blue-500 text-white"
+                    ? "bg-gray-100 text-gray-600"
+                    : theme === "tet"
+                      ? "bg-red-500 text-white"
+                      : "bg-blue-500 text-white"
                     }`}
                 >
                   {isEditing ? (
@@ -938,9 +944,8 @@ const Profile = () => {
                         onChange={(e) =>
                           setUserInfo({ ...userInfo, phone: e.target.value })
                         }
-                        className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                          errors.phone ? 'border-red-500' : ''
-                        }`}
+                        className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${errors.phone ? 'border-red-500' : ''
+                          }`}
                       />
                       {errors.phone && (
                         <p className="mt-1 text-sm text-red-500">
@@ -987,11 +992,10 @@ const Profile = () => {
                   <button
                     onClick={handleUpdateProfile}
                     disabled={isUpdatingProfile}
-                    className={`px-6 py-2 rounded-lg text-white ${
-                      theme === "tet"
-                        ? "bg-red-500 hover:bg-red-600"
-                        : "bg-blue-500 hover:bg-blue-600"
-                    } disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
+                    className={`px-6 py-2 rounded-lg text-white ${theme === "tet"
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-blue-500 hover:bg-blue-600"
+                      } disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
                   >
                     {isUpdatingProfile ? (
                       <>
@@ -1029,8 +1033,8 @@ const Profile = () => {
                     setShowAddressModal(true);
                   }}
                   className={`px-4 py-2 rounded-lg flex items-center gap-2 text-white ${theme === "tet"
-                      ? "bg-red-500 hover:bg-red-600"
-                      : "bg-blue-500 hover:bg-blue-600"
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-blue-500 hover:bg-blue-600"
                     }`}
                 >
                   <FaPlus /> Thêm địa chỉ mới
@@ -1043,8 +1047,8 @@ const Profile = () => {
                   <div
                     key={address.addressID}
                     className={`p-4 rounded-lg border ${address.isDefault
-                        ? "border-green-500 bg-green-50"
-                        : "border-gray-200"
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-200"
                       }`}
                   >
                     <div className="flex justify-between items-start">
@@ -1107,8 +1111,8 @@ const Profile = () => {
                 <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
                   {/* Overlay */}
                   <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div 
-                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm" 
+                    <div
+                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm"
                       onClick={() => {
                         setShowAddressModal(false);
                         setEditingAddress(null);
@@ -1125,17 +1129,14 @@ const Profile = () => {
                   <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                       <div className="sm:flex sm:items-start">
-                        <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${
-                          theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                        } sm:mx-0 sm:h-10 sm:w-10`}>
+                        <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
+                          } sm:mx-0 sm:h-10 sm:w-10`}>
                           {editingAddress ? (
-                            <FaEdit className={`h-6 w-6 ${
-                              theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                            }`} />
+                            <FaEdit className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                              }`} />
                           ) : (
-                            <FaPlus className={`h-6 w-6 ${
-                              theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                            }`} />
+                            <FaPlus className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                              }`} />
                           )}
                         </div>
                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
@@ -1185,11 +1186,10 @@ const Profile = () => {
                       <button
                         onClick={handleUpdateAddress}
                         disabled={isUpdatingAddress || !addressForm.address.trim()}
-                        className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${
-                          theme === 'tet'
-                            ? 'bg-red-600 hover:bg-red-700'
-                            : 'bg-blue-600 hover:bg-blue-700'
-                        } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                        className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${theme === 'tet'
+                          ? 'bg-red-600 hover:bg-red-700'
+                          : 'bg-blue-600 hover:bg-blue-700'
+                          } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
                         {isUpdatingAddress ? (
                           <div className="flex items-center gap-2">
@@ -1227,8 +1227,8 @@ const Profile = () => {
                 <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
                   {/* Overlay */}
                   <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div 
-                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm" 
+                    <div
+                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm"
                       onClick={() => {
                         setShowDeleteConfirm(false);
                         setAddressToDelete(null);
@@ -1292,8 +1292,8 @@ const Profile = () => {
                 <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
                   {/* Overlay */}
                   <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div 
-                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm" 
+                    <div
+                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm"
                       onClick={() => {
                         setShowPasswordModal(false);
                         setPasswordForm({
@@ -1314,12 +1314,10 @@ const Profile = () => {
                   <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                       <div className="sm:flex sm:items-start">
-                        <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${
-                          theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                        } sm:mx-0 sm:h-10 sm:w-10`}>
-                          <FaKey className={`h-6 w-6 ${
-                            theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                          }`} />
+                        <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
+                          } sm:mx-0 sm:h-10 sm:w-10`}>
+                          <FaKey className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                            }`} />
                         </div>
                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                           <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -1341,11 +1339,10 @@ const Profile = () => {
                                       currentPassword: e.target.value,
                                     })
                                   }
-                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                                    passwordErrors.currentPassword 
-                                      ? 'border-red-500 focus:ring-red-500' 
-                                      : 'focus:ring-blue-500'
-                                  }`}
+                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${passwordErrors.currentPassword
+                                    ? 'border-red-500 focus:ring-red-500'
+                                    : 'focus:ring-blue-500'
+                                    }`}
                                 />
                                 <button
                                   type="button"
@@ -1375,11 +1372,10 @@ const Profile = () => {
                                       newPassword: e.target.value,
                                     })
                                   }
-                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                                    passwordErrors.newPassword 
-                                      ? 'border-red-500 focus:ring-red-500' 
-                                      : 'focus:ring-blue-500'
-                                  }`}
+                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${passwordErrors.newPassword
+                                    ? 'border-red-500 focus:ring-red-500'
+                                    : 'focus:ring-blue-500'
+                                    }`}
                                 />
                                 <button
                                   type="button"
@@ -1409,11 +1405,10 @@ const Profile = () => {
                                       confirmPassword: e.target.value,
                                     })
                                   }
-                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                                    passwordErrors.confirmPassword 
-                                      ? 'border-red-500 focus:ring-red-500' 
-                                      : 'focus:ring-blue-500'
-                                  }`}
+                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${passwordErrors.confirmPassword
+                                    ? 'border-red-500 focus:ring-red-500'
+                                    : 'focus:ring-blue-500'
+                                    }`}
                                 />
                                 <button
                                   type="button"
@@ -1435,11 +1430,10 @@ const Profile = () => {
                       <button
                         onClick={handleChangePassword}
                         disabled={isChangingPassword || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
-                        className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${
-                          theme === 'tet'
-                            ? 'bg-red-600 hover:bg-red-700'
-                            : 'bg-blue-600 hover:bg-blue-700'
-                        } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                        className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${theme === 'tet'
+                          ? 'bg-red-600 hover:bg-red-700'
+                          : 'bg-blue-600 hover:bg-blue-700'
+                          } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
                         {isChangingPassword ? (
                           <div className="flex items-center gap-2">

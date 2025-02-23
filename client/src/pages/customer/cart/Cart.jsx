@@ -559,11 +559,18 @@ const Cart = () => {
     navigate('/checkout');
   };
 
+  // Sắp xếp sản phẩm còn hàng lên trên
+  const sortedCartItems = cartItems.sort((a, b) => {
+    if (a.product.isActivated && !b.product.isActivated) return -1; // a lên trên
+    if (!a.product.isActivated && b.product.isActivated) return 1; // b lên trên
+    return 0; // Giữ nguyên thứ tự nếu cả hai đều còn hàng hoặc cả hai đều hết hàng
+  });
+
   if (loading) {
     return (
       <div className={`min-h-screen ${theme === 'tet'
-          ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50'
-          : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
+        ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50'
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
         }`}>
         <PageBanner
           theme={theme}
@@ -655,8 +662,8 @@ const Cart = () => {
 
   return (
     <div className={`min-h-screen ${theme === 'tet'
-        ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50'
-        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
+      ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50'
+      : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
       }`}>
       <PageBanner
         theme={theme}
@@ -674,8 +681,8 @@ const Cart = () => {
       <div className="container mx-auto px-4 py-8">
         {cartItems.length === 0 ? (
           <div className={`text-center py-8 ${theme === 'tet'
-              ? 'bg-white shadow-red-100/50'
-              : 'bg-white shadow-blue-100/50'
+            ? 'bg-white shadow-red-100/50'
+            : 'bg-white shadow-blue-100/50'
             } shadow-xl backdrop-blur-sm bg-opacity-60 rounded-3xl`}>
             <div className={`w-24 h-24 mx-auto mb-8 animate-bounce ${theme === 'tet' ? 'text-red-300' : 'text-blue-300'
               }`}>
@@ -685,8 +692,8 @@ const Cart = () => {
             <Link
               to="/products"
               className={`inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-medium text-white transition-all transform hover:scale-105 hover:-translate-y-1 ${theme === 'tet'
-                  ? 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 shadow-red-200'
-                  : 'bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-blue-200'
+                ? 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 shadow-red-200'
+                : 'bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-blue-200'
                 } shadow-lg`}
             >
               <FaArrowRight className="w-5 h-5" />
@@ -705,8 +712,8 @@ const Cart = () => {
                       checked={selectedItems.size === cartItems.filter(item => item.stock > 0).length}
                       onChange={handleToggleSelectAll}
                       className={`w-5 h-5 rounded border-gray-300 ${theme === 'tet'
-                          ? 'text-red-500 focus:ring-red-500'
-                          : 'text-blue-500 focus:ring-blue-500'
+                        ? 'text-red-500 focus:ring-red-500'
+                        : 'text-blue-500 focus:ring-blue-500'
                         }`}
                     />
                     <span className="font-medium">
@@ -717,8 +724,8 @@ const Cart = () => {
                     onClick={() => setShowDeleteConfirmMultiple(true)}
                     disabled={selectedItems.size === 0}
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${theme === 'tet'
-                        ? 'text-red-500 hover:bg-red-50'
-                        : 'text-blue-500 hover:bg-blue-50'
+                      ? 'text-red-500 hover:bg-red-50'
+                      : 'text-blue-500 hover:bg-blue-50'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     <span className="hidden sm:inline">Xóa đã chọn</span>
@@ -728,13 +735,16 @@ const Cart = () => {
 
                 {/* Danh sách sản phẩm */}
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
+                  {sortedCartItems.map((item) => (
                     <div
                       key={item.cartID}
-                      className={`p-4 ${theme === 'tet'
-                          ? 'bg-white border border-red-100'
-                          : 'bg-white border border-blue-100'
-                        } rounded-2xl transition-all hover:shadow-md`}
+                      className={`p-4 ${
+                        !item.product.isActivated 
+                          ? 'bg-gray-50 border border-gray-200 opacity-80'
+                          : theme === 'tet'
+                            ? 'bg-white border border-red-100'
+                            : 'bg-white border border-blue-100'
+                      } rounded-2xl transition-all hover:shadow-md`}
                     >
                       <div className="flex flex-col sm:flex-row gap-4">
                         {/* Checkbox và ảnh */}
@@ -743,17 +753,20 @@ const Cart = () => {
                             type="checkbox"
                             checked={selectedItems.has(item.cartID)}
                             onChange={() => handleSelectItem(item.cartID)}
-                            disabled={item.stock <= 0}
-                            className={`mt-1 w-5 h-5 rounded border-gray-300 ${theme === 'tet'
-                                ? 'text-red-500 focus:ring-red-500'
-                                : 'text-blue-500 focus:ring-blue-500'
-                              } disabled:opacity-50 disabled:cursor-not-allowed`}
+                            disabled={!item.product.isActivated}
+                            className={`mt-1 w-5 h-5 rounded border-gray-300 ${
+                              !item.product.isActivated
+                                ? 'text-gray-400 focus:ring-gray-400'
+                                : theme === 'tet'
+                                  ? 'text-red-500 focus:ring-red-500'
+                                  : 'text-blue-500 focus:ring-blue-500'
+                            } disabled:opacity-50 disabled:cursor-not-allowed`}
                           />
                           <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden">
                             <img
                               src={item.product.imageURL}
                               alt={item.product.name}
-                              className="w-full h-full object-cover rounded-xl"
+                              className={`w-full h-full object-cover rounded-xl ${!item.product.isActivated ? 'grayscale' : ''}`}
                             />
                           </div>
                         </div>
@@ -763,26 +776,42 @@ const Cart = () => {
                           <div className="flex flex-col h-full">
                             <div className="flex items-start justify-between gap-4">
                               <div>
-                                <h3 className="text-lg font-medium hover:text-blue-600 transition-colors">
-                                  <Link to={`/product/${item.product.productID}`}>
-                                    {item.product.name}
-                                  </Link>
+                                <h3 className={`text-lg font-medium transition-colors ${
+                                  !item.product.isActivated 
+                                    ? 'text-gray-500'
+                                    : 'hover:text-blue-600'
+                                }`}>
+                                  {item.product.isActivated ? (
+                                    <Link to={`/product/${item.product.productID}`}>
+                                      {item.product.name}
+                                    </Link>
+                                  ) : (
+                                    <span className="text-gray-500 cursor-not-allowed">
+                                      {item.product.name}
+                                    </span>
+                                  )}
                                 </h3>
-                                {item.stock <= 0 ? (
-                                  <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-red-500 bg-red-50 rounded-lg">
-                                    Hết hàng
+                                {item.product.isActivated ? (
+                                  item.stock <= 0 ? (
+                                    <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-red-500 bg-red-50 rounded-lg">
+                                      Hết hàng
+                                    </span>
+                                  ) : item.stock <= 5 ? (
+                                    <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-yellow-500 bg-yellow-50 rounded-lg">
+                                      Còn {item.stock} sản phẩm
+                                    </span>
+                                  ) : null
+                                ) : (
+                                  <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-gray-500 bg-gray-50 rounded-lg">
+                                    Sản phẩm không khả dụng, vui lòng liên hệ cửa hàng
                                   </span>
-                                ) : item.stock <= 5 ? (
-                                  <span className="inline-block px-2 py-1 mt-1 text-xs font-medium text-yellow-500 bg-yellow-50 rounded-lg">
-                                    Còn {item.stock} sản phẩm
-                                  </span>
-                                ) : null}
+                                )}
                               </div>
                               <button
                                 onClick={() => handleShowDeleteConfirm(item.cartID)}
                                 className={`p-2 rounded-xl ${theme === 'tet'
-                                    ? 'hover:bg-red-50 text-red-500'
-                                    : 'hover:bg-blue-50 text-blue-500'
+                                  ? 'hover:bg-red-50 text-red-500'
+                                  : 'hover:bg-blue-50 text-blue-500'
                                   }`}
                               >
                                 <FaTrash className="w-4 h-4" />
@@ -800,24 +829,30 @@ const Cart = () => {
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => handleQuantityChange(item.cartID, itemQuantities[item.cartID] - 1, item.stock)}
-                                  className={`p-2 rounded-xl ${theme === 'tet'
-                                      ? 'hover:bg-red-50 text-red-500'
-                                      : 'hover:bg-blue-50 text-blue-500'
-                                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                                  disabled={itemQuantities[item.cartID] <= 1}
+                                  className={`p-2 rounded-xl ${
+                                    !item.product.isActivated
+                                      ? 'hover:bg-gray-100 text-gray-400'
+                                      : theme === 'tet'
+                                        ? 'hover:bg-red-50 text-red-500'
+                                        : 'hover:bg-blue-50 text-blue-500'
+                                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                  disabled={itemQuantities[item.cartID] <= 1 || !item.product.isActivated}
                                 >
                                   <FaMinus className="w-4 h-4" />
                                 </button>
-                                <span className="w-12 text-center font-medium">
+                                <span className={`w-12 text-center font-medium ${!item.product.isActivated ? 'text-gray-400' : ''}`}>
                                   {itemQuantities[item.cartID] || item.quantity}
                                 </span>
                                 <button
                                   onClick={() => handleQuantityChange(item.cartID, itemQuantities[item.cartID] + 1, item.stock)}
-                                  className={`p-2 rounded-xl ${theme === 'tet'
-                                      ? 'hover:bg-red-50 text-red-500'
-                                      : 'hover:bg-blue-50 text-blue-500'
-                                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                                  disabled={itemQuantities[item.cartID] >= item.stock}
+                                  className={`p-2 rounded-xl ${
+                                    !item.product.isActivated
+                                      ? 'hover:bg-gray-100 text-gray-400'
+                                      : theme === 'tet'
+                                        ? 'hover:bg-red-50 text-red-500'
+                                        : 'hover:bg-blue-50 text-blue-500'
+                                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                  disabled={itemQuantities[item.cartID] >= item.stock || !item.product.isActivated}
                                 >
                                   <FaPlus className="w-4 h-4" />
                                 </button>
@@ -827,8 +862,13 @@ const Cart = () => {
                               <div className="flex flex-col items-end ml-auto">
                                 <div className="flex items-center gap-4">
                                   <div className="flex flex-col items-end">
-                                    <span className={`text-lg font-bold ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                                      }`}>
+                                    <span className={`text-lg font-bold ${
+                                      !item.product.isActivated
+                                        ? 'text-gray-400'
+                                        : theme === 'tet' 
+                                          ? 'text-red-600' 
+                                          : 'text-blue-600'
+                                    }`}>
                                       {formatPrice(item.price)}đ
                                     </span>
                                     {item.originalPrice && parseInt(item.originalPrice.replace(/\./g, '')) > parseInt(item.price.replace(/\./g, '')) && (
@@ -839,8 +879,13 @@ const Cart = () => {
                                   </div>
                                 </div>
                                 <div className="text-sm text-gray-500 mt-1">
-                                  Thành tiền: <span className={`font-medium ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                                    }`}>
+                                  Thành tiền: <span className={`font-medium ${
+                                    !item.product.isActivated
+                                      ? 'text-gray-400'
+                                      : theme === 'tet' 
+                                        ? 'text-red-600' 
+                                        : 'text-blue-600'
+                                  }`}>
                                     {formatPrice(itemSubtotals[item.cartID] ||
                                       (parseInt(item.price.replace(/\./g, '')) * item.quantity))}đ
                                   </span>
@@ -859,8 +904,8 @@ const Cart = () => {
             {/* Tổng cộng */}
             <div className="lg:w-1/3">
               <div className={`p-6 sticky top-20 ${theme === 'tet'
-                  ? 'bg-white shadow-red-100/50'
-                  : 'bg-white shadow-blue-100/50'
+                ? 'bg-white shadow-red-100/50'
+                : 'bg-white shadow-blue-100/50'
                 } shadow-lg rounded-3xl space-y-6`}>
                 <h3 className="text-xl font-bold">Tổng cộng</h3>
 
@@ -889,27 +934,29 @@ const Cart = () => {
 
                 {/* Mã giảm giá */}
                 <div className="pt-4 border-t">
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-3">
                     <input
                       type="text"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                       placeholder="Nhập mã giảm giá"
                       disabled={loadingCoupon || appliedCoupon}
-                      className={`flex-grow px-4 py-2 rounded-xl border ${theme === 'tet'
+                      className={`flex-1 min-w-0 px-4 py-2.5 rounded-xl border ${
+                        theme === 'tet'
                           ? 'border-red-200 focus:ring-red-500'
                           : 'border-blue-200 focus:ring-blue-500'
-                        } focus:outline-none focus:ring-2 disabled:bg-gray-50`}
+                      } focus:outline-none focus:ring-2 disabled:bg-gray-50`}
                     />
 
                     {/* Xóa mã giảm giá */}
                     {appliedCoupon ? (
                       <button
                         onClick={handleRemoveCoupon}
-                        className={`p-2 rounded-xl text-white ${theme === 'tet'
+                        className={`p-2.5 rounded-xl text-white min-w-[44px] ${
+                          theme === 'tet'
                             ? 'bg-red-500 hover:bg-red-600'
                             : 'bg-blue-500 hover:bg-blue-600'
-                          } transition-colors`}
+                        } transition-colors`}
                         title="Xóa mã giảm giá"
                       >
                         <FaTimes className="w-5 h-5" />
@@ -920,10 +967,11 @@ const Cart = () => {
                         <button
                           onClick={handleApplyCoupon}
                           disabled={loadingCoupon || !couponCode.trim()}
-                          className={`px-6 py-2 rounded-xl font-medium text-white ${theme === 'tet'
+                          className={`px-6 py-2.5 rounded-xl font-medium text-white whitespace-nowrap ${
+                            theme === 'tet'
                               ? 'bg-red-500 hover:bg-red-600'
                               : 'bg-blue-500 hover:bg-blue-600'
-                            } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
+                          } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
                         >
                           {loadingCoupon ? (
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -934,10 +982,11 @@ const Cart = () => {
                         {/* Hiển thị danh sách coupon khả dụng */}
                         <button
                           onClick={() => setShowCoupons(true)}
-                          className={`px-4 py-2 rounded-xl font-medium border ${theme === 'tet'
+                          className={`p-2.5 rounded-xl font-medium border min-w-[44px] ${
+                            theme === 'tet'
                               ? 'border-red-200 text-red-600 hover:bg-red-50'
                               : 'border-blue-200 text-blue-600 hover:bg-blue-50'
-                            }`}
+                          }`}
                         >
                           <FaGift className="w-5 h-5" />
                         </button>
@@ -996,12 +1045,10 @@ const Cart = () => {
             <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
-                  <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${
-                    theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                  } sm:mx-0 sm:h-10 sm:w-10`}>
-                    <FaTrash className={`h-6 w-6 ${
-                      theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                    }`} />
+                  <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
+                    } sm:mx-0 sm:h-10 sm:w-10`}>
+                    <FaTrash className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                      }`} />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -1009,7 +1056,7 @@ const Cart = () => {
                     </h3>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        {cartItems.find(item => item.cartID === deletingItem)?.product?.name 
+                        {cartItems.find(item => item.cartID === deletingItem)?.product?.name
                           ? `Bạn có chắc chắn muốn xóa sản phẩm "${cartItems.find(item => item.cartID === deletingItem).product.name}" khỏi giỏ hàng không?`
                           : 'Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?'
                         }
@@ -1022,11 +1069,10 @@ const Cart = () => {
                 <button
                   type="button"
                   onClick={handleRemove}
-                  className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${
-                    theme === 'tet'
+                  className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${theme === 'tet'
                       ? 'bg-red-600 hover:bg-red-700'
                       : 'bg-blue-600 hover:bg-blue-700'
-                  } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors`}
+                    } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors`}
                 >
                   Xóa
                 </button>
@@ -1059,12 +1105,10 @@ const Cart = () => {
             <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
-                  <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${
-                    theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                  } sm:mx-0 sm:h-10 sm:w-10`}>
-                    <FaTrash className={`h-6 w-6 ${
-                      theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                    }`} />
+                  <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
+                    } sm:mx-0 sm:h-10 sm:w-10`}>
+                    <FaTrash className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                      }`} />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -1095,11 +1139,10 @@ const Cart = () => {
                 <button
                   type="button"
                   onClick={handleRemoveSelected}
-                  className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${
-                    theme === 'tet'
+                  className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${theme === 'tet'
                       ? 'bg-red-600 hover:bg-red-700'
                       : 'bg-blue-600 hover:bg-blue-700'
-                  } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors`}
+                    } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors`}
                 >
                   Xóa tất cả
                 </button>
@@ -1141,8 +1184,8 @@ const Cart = () => {
                   <div
                     key={coupon.id}
                     className={`p-4 bg-white border rounded-xl transition-all ${theme === 'tet'
-                        ? 'hover:border-red-300 hover:bg-red-50/50'
-                        : 'hover:border-blue-300 hover:bg-blue-50/50'
+                      ? 'hover:border-red-300 hover:bg-red-50/50'
+                      : 'hover:border-blue-300 hover:bg-blue-50/50'
                       }`}
                   >
                     <div className="flex justify-between items-start">
@@ -1151,8 +1194,8 @@ const Cart = () => {
                           <h4 className="font-medium text-lg">{coupon.code}</h4>
                           {coupon.couponType === 'special_event' && (
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${theme === 'tet'
-                                ? 'bg-red-100 text-red-600'
-                                : 'bg-blue-100 text-blue-600'
+                              ? 'bg-red-100 text-red-600'
+                              : 'bg-blue-100 text-blue-600'
                               }`}>
                               Special
                             </span>
@@ -1163,8 +1206,8 @@ const Cart = () => {
                         </p>
                         <div className="mt-2">
                           <div className={`inline-flex items-center px-3 py-1.5 rounded-lg ${theme === 'tet'
-                              ? 'bg-red-50 border border-red-200'
-                              : 'bg-blue-50 border border-blue-200'
+                            ? 'bg-red-50 border border-red-200'
+                            : 'bg-blue-50 border border-blue-200'
                             }`}>
                             <span className={`text-base font-bold ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
                               }`}>
@@ -1184,8 +1227,8 @@ const Cart = () => {
                           <div className="mt-2 flex items-center gap-1">
                             <span className="text-sm text-gray-500">Đơn tối thiểu:</span>
                             <span className={`font-medium ${calculateTotal() >= coupon.minimumOrderValue
-                                ? theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                                : 'text-gray-500'
+                              ? theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                              : 'text-gray-500'
                               }`}>
                               {formatPrice(coupon.minimumOrderValue)}đ
                             </span>
@@ -1198,25 +1241,25 @@ const Cart = () => {
                         )}
                         <div className="flex flex-wrap gap-2 mt-3">
                           <span className={`inline-flex items-center px-2 py-1 rounded-lg text-xs ${theme === 'tet'
-                              ? 'bg-red-50 text-red-600'
-                              : 'bg-blue-50 text-blue-600'
+                            ? 'bg-red-50 text-red-600'
+                            : 'bg-blue-50 text-blue-600'
                             }`}>
                             HSD: {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
                           </span>
                           {coupon.usageLeft > 0 && (
                             <span className={`inline-flex items-center px-2 py-1 rounded-lg text-xs ${coupon.usageLeft <= 3
-                                ? 'bg-yellow-50 text-yellow-600'
-                                : theme === 'tet'
-                                  ? 'bg-red-50 text-red-600'
-                                  : 'bg-blue-50 text-blue-600'
+                              ? 'bg-yellow-50 text-yellow-600'
+                              : theme === 'tet'
+                                ? 'bg-red-50 text-red-600'
+                                : 'bg-blue-50 text-blue-600'
                               }`}>
                               {coupon.usageLeft <= 3 ? '⚡' : ''} Còn lại: {coupon.usageLeft} lượt
                             </span>
                           )}
                           {coupon.minimumQuantity > 1 && (
                             <span className={`inline-flex items-center px-2 py-1 rounded-lg text-xs ${Array.from(selectedItems).length >= coupon.minimumQuantity
-                                ? theme === 'tet' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'
-                                : 'bg-gray-100 text-gray-600'
+                              ? theme === 'tet' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'
+                              : 'bg-gray-100 text-gray-600'
                               }`}>
                               Tối thiểu {coupon.minimumQuantity} sản phẩm
                             </span>
@@ -1240,10 +1283,10 @@ const Cart = () => {
                                       className={`inline-flex items-center px-2 py-1 rounded-lg text-xs ${coupon.applicableCategories?.some(appliedCat =>
                                         (typeof cat === 'object' ? cat.categoryID === appliedCat.categoryID : cat === appliedCat)
                                       )
-                                          ? theme === 'tet'
-                                            ? 'bg-red-100 text-red-700 border border-red-200'
-                                            : 'bg-blue-100 text-blue-700 border border-blue-200'
-                                          : 'bg-gray-100 text-gray-600 border border-gray-200'
+                                        ? theme === 'tet'
+                                          ? 'bg-red-100 text-red-700 border border-red-200'
+                                          : 'bg-blue-100 text-blue-700 border border-blue-200'
+                                        : 'bg-gray-100 text-gray-600 border border-gray-200'
                                         }`}
                                     >
                                       {typeof cat === 'object' ? cat.name : `Danh mục ${cat}`}
@@ -1261,8 +1304,8 @@ const Cart = () => {
                           setShowCoupons(false);
                         }}
                         className={`ml-4 px-4 py-2 rounded-xl text-sm font-medium transition-all ${theme === 'tet'
-                            ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                          ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
                           } whitespace-nowrap`}
                       >
                         Sử dụng

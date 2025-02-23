@@ -11,6 +11,7 @@ import { getColorCode, isPatternOrStripe, getBackgroundSize } from '../../../uti
 import Loading from '../../../components/Products/Loading';
 import ColorTooltip from '../../../components/Products/ColorTooltip';
 import SizeTooltip from '../../../components/Products/SizeTooltip';
+import ProductThumbnails from '../../../components/Products/ProductThumbnails';
 
 const WomenProducts = () => {
    // Sử dụng theme context và lấy params từ URL
@@ -503,15 +504,15 @@ const WomenProducts = () => {
 
                                  {/* Overlay gradient khi hover */}
                                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${theme === 'tet'
-                                       ? 'bg-gradient-to-t from-red-900/20 via-transparent to-transparent'
-                                       : 'bg-gradient-to-t from-pink-900/20 via-transparent to-transparent'
+                                    ? 'bg-gradient-to-t from-red-900/20 via-transparent to-transparent'
+                                    : 'bg-gradient-to-t from-pink-900/20 via-transparent to-transparent'
                                     }`} />
 
                                  {/* Overlay khi hết hàng */}
                                  {!isInStock && (
                                     <div className={`absolute inset-0 flex items-center justify-center backdrop-blur-[2px] ${theme === 'tet'
-                                          ? 'bg-gradient-to-br from-red-900/40 via-red-800/40 to-red-900/40'
-                                          : 'bg-gradient-to-br from-pink-900/40 via-pink-800/40 to-pink-900/40'
+                                       ? 'bg-gradient-to-br from-red-900/40 via-red-800/40 to-red-900/40'
+                                       : 'bg-gradient-to-br from-pink-900/40 via-pink-800/40 to-pink-900/40'
                                        }`}>
                                        <span className={`font-medium px-3 py-1.5 rounded-full text-sm text-white ${theme === 'tet' ? 'bg-red-500' : 'bg-pink-500'
                                           }`}>
@@ -542,27 +543,14 @@ const WomenProducts = () => {
 
                                  {/* Thumbnails */}
                                  {product.colors?.[selectedImages[product.productID]?.colorIndex || 0]?.images?.length > 1 && (
-                                    <div
-                                       className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
-                                       onClick={e => e.preventDefault()} // Ngăn chặn sự kiện click lan truyền lên Link
-                                    >
-                                       {product.colors[selectedImages[product.productID]?.colorIndex || 0].images.slice(0, 4).map((image, index) => (
-                                          <div
-                                             key={index}
-                                             onClick={(e) => handleThumbnailClick(e, product.productID, index)}
-                                             className={`w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition-all transform hover:scale-105 ${selectedImages[product.productID]?.imageIndex === index
-                                                   ? 'border-2 border-white ring-2 ring-offset-2 ' + (theme === 'tet' ? 'ring-red-500' : 'ring-pink-500')
-                                                   : 'border-2 border-white hover:border-gray-300'
-                                                }`}
-                                          >
-                                             <img
-                                                src={image}
-                                                alt={`${product.name} - ${index + 1}`}
-                                                className="w-full h-full object-cover"
-                                             />
-                                          </div>
-                                       ))}
-                                    </div>
+                                    <ProductThumbnails
+                                       images={product.colors[selectedImages[product.productID]?.colorIndex || 0].images}
+                                       productID={product.productID}
+                                       productName={product.name}
+                                       selectedImages={selectedImages}
+                                       theme={theme}
+                                       onThumbnailClick={handleThumbnailClick}
+                                    />
                                  )}
                               </div>
 
@@ -618,7 +606,7 @@ const WomenProducts = () => {
                                                       }}
                                                    />
                                                    {/* Tooltip tên màu */}
-                                                   <ColorTooltip 
+                                                   <ColorTooltip
                                                       isVisible={activeTooltip === `${product.productID}-${index}`}
                                                       colorName={color.colorName}
                                                       theme={theme}
@@ -654,13 +642,12 @@ const WomenProducts = () => {
                                                    }}
                                                 >
                                                    <div
-                                                      className={`min-w-[2.5rem] h-8 flex items-center justify-center text-sm rounded cursor-help transition-all ${
-                                                         size.stock > 0
+                                                      className={`min-w-[2.5rem] h-8 flex items-center justify-center text-sm rounded cursor-help transition-all ${size.stock > 0
                                                             ? theme === 'tet'
                                                                ? 'bg-red-50 text-red-700 hover:bg-red-100'
                                                                : 'bg-pink-50 text-pink-700 hover:bg-pink-100'
                                                             : 'bg-gray-50 text-gray-400'
-                                                      }`}
+                                                         }`}
                                                       onClick={(e) => {
                                                          e.preventDefault();
                                                          e.stopPropagation();
@@ -669,7 +656,7 @@ const WomenProducts = () => {
                                                       {size.size}
                                                    </div>
                                                    {/* Tooltip */}
-                                                   <SizeTooltip 
+                                                   <SizeTooltip
                                                       isVisible={activeSizeTooltip === `${product.productID}-${product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}-${size.size}`}
                                                       stock={size.stock}
                                                       colorName={product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}
@@ -724,8 +711,8 @@ const WomenProducts = () => {
                               onClick={() => handlePageChange(pagination.currentPage - 1)}
                               disabled={pagination.currentPage === 1}
                               className={`flex items-center justify-center h-10 px-4 border-r ${pagination.currentPage === 1
-                                    ? 'text-gray-300 cursor-not-allowed'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                 ? 'text-gray-300 cursor-not-allowed'
+                                 : 'text-gray-700 hover:bg-gray-100'
                                  }`}
                            >
                               <FaChevronLeft className="w-5 h-5" />
@@ -749,8 +736,8 @@ const WomenProducts = () => {
                                           key={page}
                                           onClick={() => handlePageChange(page)}
                                           className={`flex items-center justify-center h-10 w-10 border-r ${pagination.currentPage === page
-                                                ? 'bg-pink-500 text-white'
-                                                : 'text-gray-700 hover:bg-gray-100'
+                                             ? 'bg-pink-500 text-white'
+                                             : 'text-gray-700 hover:bg-gray-100'
                                              }`}
                                        >
                                           {page}
@@ -762,8 +749,8 @@ const WomenProducts = () => {
                                        key={page}
                                        onClick={() => handlePageChange(page)}
                                        className={`flex items-center justify-center h-10 w-10 border-r ${pagination.currentPage === page
-                                             ? 'bg-pink-500 text-white'
-                                             : 'text-gray-700 hover:bg-gray-100'
+                                          ? 'bg-pink-500 text-white'
+                                          : 'text-gray-700 hover:bg-gray-100'
                                           }`}
                                     >
                                        {page}
@@ -776,8 +763,8 @@ const WomenProducts = () => {
                               onClick={() => handlePageChange(pagination.currentPage + 1)}
                               disabled={pagination.currentPage === pagination.totalPages}
                               className={`flex items-center justify-center h-10 px-4 ${pagination.currentPage === pagination.totalPages
-                                    ? 'text-gray-300 cursor-not-allowed'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                 ? 'text-gray-300 cursor-not-allowed'
+                                 : 'text-gray-700 hover:bg-gray-100'
                                  }`}
                            >
                               <FaChevronRight className="w-5 h-5" />

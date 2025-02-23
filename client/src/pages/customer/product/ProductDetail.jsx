@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaHeart, FaStar, FaMinus, FaPlus, FaArrowRight, FaHome, FaChevronRight, FaRegHeart, FaTag, FaEye, FaMedal, FaRuler, FaPalette, FaBolt, FaChevronDown, FaInfoCircle, FaPhoneAlt, FaFacebookMessenger, FaEdit, FaTrash, FaTshirt } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaStar, FaMinus, FaPlus, FaArrowRight, FaHome, FaChevronRight, FaRegHeart, FaTag, FaEye, FaMedal, FaRuler, FaPalette, FaBolt, FaChevronDown, FaInfoCircle, FaPhoneAlt, FaFacebookMessenger, FaEdit, FaTrash, FaTshirt, FaTimes } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, Thumbs, EffectFade } from 'swiper/modules';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
@@ -54,12 +54,21 @@ const ProductDetail = () => {
   // Thêm state để theo dõi trạng thái yêu thích
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Fetch thông tin sản phẩm khi component mount hoặc id thay đổi
+  // Thêm state để theo dõi đánh giá đang chỉnh sửa
+  const [editingReview, setEditingReview] = useState({
+    id: null,
+    rating: 5,
+    comment: ''
+  });
+
+  // Fetch thông tin sản phẩm và đánh giá khi component mount hoặc id thay đổi
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndReviews = async () => {
       try {
+        // Lấy thông tin sản phẩm
         const response = await axiosInstance.get(`/api/products/${id}`);
         setProduct(response.data.product);
+        
         // Tự động chọn màu và size đầu tiên nếu có
         if (response.data.product.availableColors.length > 0) {
           setSelectedColor(response.data.product.availableColors[0]);
@@ -67,14 +76,44 @@ const ProductDetail = () => {
         if (response.data.product.availableSizes.length > 0) {
           setSelectedSize(response.data.product.availableSizes[0]);
         }
+
+        // Lấy danh sách đánh giá cho sản phẩm
+        const reviewsResponse = await axiosInstance.get(`/api/reviews/product/${id}`);
+        setReviews(reviewsResponse.data.reviews);
+
+        // Tính toán thống kê đánh giá
+        const stats = {
+          averageRating: 0,
+          totalReviews: reviewsResponse.data.reviews.length,
+          ratingCounts: {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0
+          }
+        };
+
+        // Tính số lượng mỗi loại đánh giá và điểm trung bình
+        reviewsResponse.data.reviews.forEach(review => {
+          stats.averageRating += review.rating;
+          stats.ratingCounts[review.rating]++;
+        });
+
+        // Tính điểm trung bình và làm tròn đến 1 chữ số thập phân
+        stats.averageRating = stats.totalReviews > 0
+          ? Math.round((stats.averageRating / stats.totalReviews) * 10) / 10
+          : 0;
+
+        setReviewStats(stats);
       } catch (error) {
-        toast.error('Không thể tải thông tin sản phẩm');
-        console.error('Lỗi khi tải thông tin sản phẩm(ProductDetail.jsx):', error);
+        toast.error('Không thể tải thông tin sản phẩm và đánh giá');
+        console.error('Lỗi khi tải thông tin sản phẩm và đánh giá(ProductDetail.jsx):', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProduct();
+    fetchProductAndReviews();
   }, [id]);
 
   // Kiểm tra trạng thái yêu thích của sản phẩm khi component mount
@@ -119,34 +158,11 @@ const ProductDetail = () => {
       const response = await axiosInstance.get(`/api/reviews/product/${id}`);
       setReviews(response.data.reviews);
 
-      // Tính toán thống kê đánh giá
-      const stats = {
-        averageRating: 0,
-        totalReviews: response.data.reviews.length,
-        ratingCounts: {
-          1: 0,
-          2: 0,
-          3: 0,
-          4: 0,
-          5: 0
-        }
-      };
-
-      // Tính số lượng mỗi loại đánh giá và điểm trung bình
-      response.data.reviews.forEach(review => {
-        stats.averageRating += review.rating;
-        stats.ratingCounts[review.rating]++;
-      });
-
-      // Tính điểm trung bình và làm tròn đến 1 chữ số thập phân
-      stats.averageRating = stats.totalReviews > 0
-        ? Math.round((stats.averageRating / stats.totalReviews) * 10) / 10
-        : 0;
-
-      setReviewStats(stats);
+      // Tìm userID từ localStorage
+      const userID = localStorage.getItem('customerInfo') ? JSON.parse(localStorage.getItem('customerInfo')).userID : null;
 
       // Tìm đánh giá của user hiện tại nếu có
-      const userReview = response.data.reviews.find(review => review.isCurrentUser);
+      const userReview = response.data.reviews.find(review => review.userInfo.userID === userID);
       setUserReview(userReview);
     } catch (error) {
       console.error('Lỗi khi tải đánh giá(ProductDetail.jsx):', error);
@@ -156,7 +172,7 @@ const ProductDetail = () => {
     }
   };
 
-  // Hàm xử lý gửi đánh giá mới
+  // Hàm xử lý gửi đánh giá mới hoặc cập nhật đánh giá
   const handleSubmitReview = async (e) => {
     e.preventDefault();
 
@@ -169,36 +185,63 @@ const ProductDetail = () => {
     }
 
     try {
+      // Gửi đánh giá mới hoặc cập nhật đánh giá hiện tại
+      const reviewData = {
+        productID: parseInt(id),
+        rating: newReview.rating,
+        comment: newReview.comment
+      };
+
       if (userReview) {
         // Nếu đã có đánh giá thì cập nhật
-        await handleUpdateReview(userReview.reviewID);
+        await axiosInstance.put(`/api/reviews/${userReview.reviewID}`, reviewData, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        toast.success('Đã cập nhật đánh giá thành công');
       } else {
         // Nếu chưa có thì tạo mới
-        await axiosInstance.post('/api/reviews', {
-          productID: parseInt(id),
-          rating: newReview.rating,
-          comment: newReview.comment
-        }, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        await axiosInstance.post('/api/reviews', reviewData, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-
         toast.success('Đã gửi đánh giá thành công');
-        setShowReviewForm(false);
-        setNewReview({ rating: 5, comment: '' });
-        fetchReviews(); // Tải lại danh sách đánh giá
       }
+
+      setShowReviewForm(false);
+      setNewReview({ rating: 5, comment: '' });
+      fetchReviews(); // Tải lại danh sách đánh giá
+
+      // Cập nhật lại điểm đánh giá trung bình
+      const updatedReviews = await axiosInstance.get(`/api/reviews/product/${id}`);
+      const updatedStats = {
+        averageRating: 0,
+        totalReviews: updatedReviews.data.reviews.length,
+        ratingCounts: {
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0
+        }
+      };
+
+      updatedReviews.data.reviews.forEach(review => {
+        updatedStats.averageRating += review.rating;
+        updatedStats.ratingCounts[review.rating]++;
+      });
+
+      updatedStats.averageRating = updatedStats.totalReviews > 0
+        ? Math.round((updatedStats.averageRating / updatedStats.totalReviews) * 10) / 10
+        : 0;
+
+      setReviewStats(updatedStats);
     } catch (error) {
-      console.error('Lỗi khi gửi đánh giá(ProductDetail.jsx):', error);
+      console.error('Lỗi khi gửi hoặc cập nhật đánh giá(ProductDetail.jsx):', error);
       if (error.response?.status === 401) {
         toast.error('Phiên đăng nhập đã hết hạn');
         localStorage.removeItem('customerToken');
         navigate('/login');
-      } else if (error.response?.status === 400) {
-        toast.error(error.response.data.message || 'Bạn chỉ có thể đánh giá sản phẩm đã mua');
       } else {
-        toast.error('Không thể gửi đánh giá');
+        toast.error('Không thể gửi hoặc cập nhật đánh giá');
       }
     }
   };
@@ -206,67 +249,61 @@ const ProductDetail = () => {
   // Hàm xử lý xóa đánh giá
   const handleDeleteReview = async (reviewID) => {
     try {
-      const token = localStorage.getItem('customerToken');
-      if (!token) {
-        toast.error('Vui lòng đăng nhập để xóa đánh giá');
-        navigate('/login');
-        return;
-      }
-
-      await axiosInstance.delete(`/api/reviews/${reviewID}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+        const token = localStorage.getItem('customerToken');
+        if (!token) {
+            toast.error('Vui lòng đăng nhập để xóa đánh giá');
+            navigate('/login');
+            return;
         }
-      });
-      toast.success('Đã xóa đánh giá');
-      setUserReview(null);
-      fetchReviews(); // Tải lại danh sách đánh giá
+
+        await axiosInstance.delete(`/api/reviews/${reviewID}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        toast.success('Đã xóa đánh giá');
+        setUserReview(null);
+
+        // Cập nhật lại danh sách đánh giá
+        const updatedReviews = reviews.filter(review => review.reviewID !== reviewID);
+        setReviews(updatedReviews);
+
+        // Tính toán lại thống kê đánh giá
+        const newStats = {
+            averageRating: 0,
+            totalReviews: updatedReviews.length,
+            ratingCounts: {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0
+            }
+        };
+
+        // Tính lại số lượng mỗi loại đánh giá và điểm trung bình
+        updatedReviews.forEach(review => {
+            newStats.averageRating += review.rating;
+            newStats.ratingCounts[review.rating]++;
+        });
+
+        // Tính lại điểm trung bình và làm tròn đến 1 chữ số thập phân
+        newStats.averageRating = newStats.totalReviews > 0
+            ? Math.round((newStats.averageRating / newStats.totalReviews) * 10) / 10
+            : 0;
+
+        setReviewStats(newStats); // Cập nhật lại thống kê
     } catch (error) {
-      console.error('Lỗi xóa đánh giá(ProductDetail.jsx):', error);
-      if (error.response?.status === 401) {
-        toast.error('Phiên đăng nhập đã hết hạn');
-        localStorage.removeItem('customerToken');
-        navigate('/login');
-      } else {
-        toast.error('Không thể xóa đánh giá');
-      }
-    }
-  };
-
-  // Hàm xử lý cập nhật đánh giá
-  const handleUpdateReview = async (reviewID) => {
-    try {
-      const token = localStorage.getItem('customerToken');
-      if (!token) {
-        toast.error('Vui lòng đăng nhập để cập nhật đánh giá');
-        navigate('/login');
-        return;
-      }
-
-      await axiosInstance.put(`/api/reviews/${reviewID}`, {
-        rating: newReview.rating,
-        comment: newReview.comment
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+        console.error('Lỗi xóa đánh giá(ProductDetail.jsx):', error);
+        if (error.response?.status === 401) {
+            toast.error('Phiên đăng nhập đã hết hạn');
+            localStorage.removeItem('customerToken');
+            navigate('/login');
+        } else {
+            toast.error('Không thể xóa đánh giá');
         }
-      });
-
-      toast.success('Đã cập nhật đánh giá');
-      setShowReviewForm(false);
-      setNewReview({ rating: 5, comment: '' });
-      fetchReviews(); // Tải lại danh sách đánh giá
-    } catch (error) {
-      console.error('Lỗi khi cập nhật đánh giá(ProductDetail.jsx):', error);
-      if (error.response?.status === 401) {
-        toast.error('Phiên đăng nhập đã hết hạn');
-        localStorage.removeItem('customerToken');
-        navigate('/login');
-      } else {
-        toast.error('Không thể cập nhật đánh giá');
-      }
     }
-  };
+};
 
   // Tải đánh giá khi chuyển tab hoặc id thay đổi
   useEffect(() => {
@@ -434,6 +471,76 @@ const ProductDetail = () => {
         navigate('/login');
       } else {
         toast.error(error.response?.data?.message || 'Có lỗi xảy ra');
+      }
+    }
+  };
+
+  // Hàm cập nhật đánh giá
+  const handleUpdateReview = async (reviewID) => {
+    try {
+      const token = localStorage.getItem('customerToken');
+      if (!token) {
+        toast.error('Vui lòng đăng nhập để đánh giá sản phẩm');
+        navigate('/login');
+        return;
+      }
+
+      const response = await axiosInstance.put(`/api/reviews/${reviewID}`, {
+        rating: editingReview.rating,
+        comment: editingReview.comment
+      }, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.status === 200) {
+        // Cập nhật lại danh sách đánh giá
+        const updatedReviews = reviews.map(review =>
+          review.reviewID === reviewID
+            ? {
+                ...review,
+                rating: editingReview.rating,
+                comment: editingReview.comment
+              }
+            : review
+        );
+        setReviews(updatedReviews);
+
+        // Tính toán lại thống kê đánh giá
+        const newStats = {
+          averageRating: 0,
+          totalReviews: updatedReviews.length,
+          ratingCounts: {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0
+          }
+        };
+
+        // Tính lại số lượng mỗi loại đánh giá và điểm trung bình
+        updatedReviews.forEach(review => {
+          newStats.averageRating += review.rating;
+          newStats.ratingCounts[review.rating]++;
+        });
+
+        // Tính lại điểm trung bình và làm tròn đến 1 chữ số thập phân
+        newStats.averageRating = newStats.totalReviews > 0
+          ? Math.round((newStats.averageRating / newStats.totalReviews) * 10) / 10
+          : 0;
+
+        setReviewStats(newStats);
+        setEditingReview({ id: null, rating: 5, comment: '' }); // Reset trạng thái chỉnh sửa
+        toast.success('Cập nhật đánh giá thành công');
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật đánh giá:', error);
+      if (error.response?.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn');
+        localStorage.removeItem('customerToken');
+        navigate('/login');
+      } else {
+        toast.error(error.response?.data?.message || 'Không thể cập nhật đánh giá');
       }
     }
   };
@@ -642,7 +749,7 @@ const ProductDetail = () => {
                         <span className={`px-3 py-1 text-sm font-semibold text-white rounded-full ${
                           theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'
                         }`}>
-                          {formatPrice((product.price - product.promotion.discountedPrice)*1000)}đ
+                          {formatPrice((product.price - product.promotion.discountedPrice))}đ
                         </span>
                       </div>
                     </div>
@@ -818,7 +925,7 @@ const ProductDetail = () => {
                       : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
               >
-                <FaShoppingCart className="mr-2 text-base lg:text-lg" />
+                <FaShoppingCart className="mr-2 text-base sm:text-sm md:text-base lg:text-lg" />
                 Thêm vào giỏ
               </button>
               <button
@@ -909,8 +1016,8 @@ const ProductDetail = () => {
             {/* Quick View Section */}
             <div className="mb-8">
               {/* Thanh trạng thái */}
-              <div className="flex items-center justify-between mb-6 bg-gray-50/70 p-4 rounded-lg">
-                <div className="flex items-center space-x-4">
+              <div className="flex flex-col md:flex-row items-center justify-between mb-6 bg-gray-50/70 p-4 rounded-lg">
+                <div className="flex items-center space-x-4 mb-4 md:mb-0">
                   <div className={`flex items-center px-3 py-1.5 rounded-full text-sm font-medium
                     ${product.totalStock > 0
                       ? 'bg-green-100 text-green-800'
@@ -1274,21 +1381,7 @@ const ProductDetail = () => {
                     // Đánh giá đã có
                     <div className="text-center">
                       <p className="text-gray-500 mb-2">Bạn đã đánh giá sản phẩm này</p>
-                      <button
-                        onClick={() => {
-                          setNewReview({
-                            rating: userReview.rating,
-                            comment: userReview.comment
-                          });
-                          setShowReviewForm(true);
-                        }}
-                        className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${theme === 'tet'
-                            ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                            : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
-                          }`}
-                      >
-                        Chỉnh sửa đánh giá
-                      </button>
+                      
                     </div>
                   )}
                 </div>
@@ -1297,71 +1390,87 @@ const ProductDetail = () => {
 
             {/* Form đánh giá */}
             {showReviewForm && (
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <form onSubmit={handleSubmitReview} className="space-y-4">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <form onSubmit={handleSubmitReview} className="space-y-6">
+                  {/* Tiêu đề */}
+                  <div className="flex items-center justify-between border-b pb-4">
+                    <h3 className="text-lg font-medium text-gray-900">Đánh giá sản phẩm</h3>
+                    <button
+                      type="button"
+                      onClick={() => setShowReviewForm(false)}
+                      className="text-gray-400 hover:text-gray-500"
+                    >
+                      <FaTimes className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Đánh giá sao */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Đánh giá của bạn
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Bạn thấy sản phẩm này như thế nào?
                     </label>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center gap-2">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           type="button"
                           onClick={() => setNewReview({ ...newReview, rating: star })}
-                          className="focus:outline-none"
+                          className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                            star <= newReview.rating 
+                              ? theme === 'tet'
+                                ? 'text-red-400 hover:text-red-500'
+                                : 'text-yellow-400 hover:text-yellow-500'
+                              : 'text-gray-300 hover:text-gray-400'
+                          }`}
                         >
-                          <FaStar
-                            className={`w-8 h-8 ${star <= newReview.rating
-                                ? theme === 'tet'
-                                  ? 'text-red-400'
-                                  : 'text-yellow-400'
-                                : 'text-gray-300'
-                              } transition-colors duration-200`}
-                          />
+                          <FaStar className="w-8 h-8" />
                         </button>
                       ))}
+                      <span className="ml-2 text-sm text-gray-500">
+                        ({newReview.rating} sao)
+                      </span>
                     </div>
                   </div>
 
+                  {/* Nhận xét */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nhận xét của bạn
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Chia sẻ nhận xét của bạn
                     </label>
                     <textarea
                       value={newReview.comment}
                       onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                       rows="4"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      placeholder="Hãy chia sẻ những điều bạn thích về sản phẩm này..."
                       minLength={10}
                       maxLength={1000}
                       required
-                    ></textarea>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {newReview.comment.length}/1000 ký tự
-                    </p>
+                    />
+                    <div className="mt-2 flex justify-between items-center text-sm text-gray-500">
+                      <span>Tối thiểu 10 ký tự</span>
+                      <span>{newReview.comment.length}/1000</span>
+                    </div>
                   </div>
 
-                  <div className="flex justify-end space-x-3">
+                  {/* Nút gửi */}
+                  <div className="flex justify-end gap-3 pt-4 border-t">
                     <button
                       type="button"
-                      onClick={() => {
-                        setShowReviewForm(false);
-                        setNewReview({ rating: 5, comment: '' });
-                      }}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+                      onClick={() => setShowReviewForm(false)}
+                      className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900"
                     >
                       Hủy
                     </button>
                     <button
                       type="submit"
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${theme === 'tet'
-                          ? 'bg-red-600 text-white hover:bg-red-700'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
-                        }`}
+                      className={`px-6 py-2.5 rounded-full text-sm font-medium text-white transition-all duration-300 ${
+                        theme === 'tet'
+                          ? 'bg-red-600 hover:bg-red-700'
+                          : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
                     >
-                      {userReview ? 'Cập nhật' : 'Gửi đánh giá'}
+                      Gửi đánh giá
                     </button>
                   </div>
                 </form>
@@ -1376,92 +1485,189 @@ const ProductDetail = () => {
             ) : reviews.length > 0 ? (
               // Danh sách đánh giá
               <div className="space-y-6">
-                {reviews.map((review) => (
-                  <div key={review.reviewID} className="bg-white p-6 rounded-xl shadow-sm">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-start space-x-4">
-                        {/* Avatar */}
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium ${theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'
+                {reviews.map((review) => {
+                  // Lấy userID từ localStorage
+                  const currentUserID = localStorage.getItem('customerInfo') 
+                    ? JSON.parse(localStorage.getItem('customerInfo')).userID 
+                    : null;
+                  
+                  // Kiểm tra xem đây có phải review của user hiện tại không
+                  const isCurrentUserReview = currentUserID === review.userInfo?.userID;
+
+                  return (
+                    <div key={review.reviewID} className="bg-white p-6 rounded-xl shadow-sm">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-start space-x-4">
+                          {/* Avatar */}
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium ${
+                            theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'
                           }`}>
-                          {review.userInfo?.fullName?.charAt(0).toUpperCase() || 'U'}
-                        </div>
+                            {review.userInfo?.fullName?.charAt(0).toUpperCase() || 'U'}
+                          </div>
 
-                        <div>
-                          {/* User Info */}
-                          <div className="flex items-center space-x-2">
-                            <span className="font-medium">{review.userInfo?.fullName || 'Người dùng ẩn danh'}</span>
-                            {review.isCurrentUser && (
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${theme === 'tet'
-                                  ? 'bg-red-100 text-red-600'
-                                  : 'bg-blue-100 text-blue-600'
+                          <div className="flex-1">
+                            {/* User Info */}
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium">{review.userInfo?.fullName || 'Người dùng ẩn danh'}</span>
+                              {isCurrentUserReview && (
+                                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                  theme === 'tet'
+                                    ? 'bg-red-100 text-red-600'
+                                    : 'bg-blue-100 text-blue-600'
                                 }`}>
-                                Đánh giá của bạn
-                              </span>
-                            )}
-                          </div>
+                                  Đánh giá của bạn
+                                </span>
+                              )}
+                            </div>
 
-                          {/* Đánh giá */}
-                          <div className="flex items-center space-x-1 mt-1">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <FaStar
-                                key={star}
-                                className={`w-4 h-4 ${star <= review.rating
-                                    ? theme === 'tet'
-                                      ? 'text-red-400'
-                                      : 'text-yellow-400'
-                                    : 'text-gray-300'
-                                  }`}
-                              />
-                            ))}
-                            <span className="text-sm text-gray-500 ml-2">
-                              {new Date(review.createdAt).toLocaleDateString('vi-VN')}
-                            </span>
-                          </div>
+                            {/* Đánh giá */}
+                            <div className="flex items-center space-x-1 mt-1">
+                              {editingReview.id === review.reviewID ? (
+                                <div className="mt-4 bg-gray-50/80 rounded-lg p-4 border border-gray-100">
+                                  <div className="space-y-4">
+                                    {/* Rating stars */}
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Đánh giá của bạn
+                                      </label>
+                                      <div className="flex items-center gap-2">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                          <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setEditingReview({
+                                              ...editingReview,
+                                              rating: star
+                                            })}
+                                            className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                                              star <= editingReview.rating
+                                                ? theme === 'tet'
+                                                  ? 'text-red-400 hover:text-red-500'
+                                                  : 'text-yellow-400 hover:text-yellow-500'
+                                                : 'text-gray-300 hover:text-gray-400'
+                                            }`}
+                                          >
+                                            <FaStar className="w-6 h-6" />
+                                          </button>
+                                        ))}
+                                        <span className="ml-2 text-sm text-gray-500">
+                                          ({editingReview.rating} sao)
+                                        </span>
+                                      </div>
+                                    </div>
 
-                          {/* Nhận xét */}
-                          <p className="mt-2 text-gray-600">{review.comment}</p>
+                                    {/* Nhận xét */}
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Nhận xét của bạn
+                                      </label>
+                                      <textarea
+                                        value={editingReview.comment}
+                                        onChange={(e) => setEditingReview({
+                                          ...editingReview,
+                                          comment: e.target.value
+                                        })}
+                                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                        rows="3"
+                                        placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
+                                        minLength={10}
+                                        maxLength={1000}
+                                      />
+                                      <div className="mt-2 flex justify-between items-center text-xs text-gray-500">
+                                        <span>Tối thiểu 10 ký tự</span>
+                                        <span>{editingReview.comment.length}/1000</span>
+                                      </div>
+                                    </div>
+
+                                    {/* Action buttons */}
+                                    <div className="flex justify-end gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditingReview({ id: null, rating: 5, comment: '' })}
+                                        className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-200 ${
+                                          theme === 'tet'
+                                            ? 'border-red-200 text-red-600 hover:bg-red-50'
+                                            : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                                        }`}
+                                      >
+                                        Hủy
+                                      </button>
+                                      <button
+                                        onClick={() => handleUpdateReview(review.reviewID)}
+                                        className={`px-6 py-2 rounded-full text-sm font-medium text-white transition-all duration-300 ${
+                                          theme === 'tet'
+                                            ? 'bg-red-600 hover:bg-red-700'
+                                            : 'bg-blue-600 hover:bg-blue-700'
+                                        }`}
+                                      >
+                                        Lưu thay đổi
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex items-center space-x-1 mt-1">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <FaStar
+                                      key={star}
+                                      className={`w-4 h-4 ${
+                                        star <= review.rating
+                                          ? theme === 'tet'
+                                            ? 'text-red-400'
+                                            : 'text-yellow-400'
+                                          : 'text-gray-300'
+                                      }`}
+                                    />
+                                  ))}
+                                  <span className="text-sm text-gray-500 ml-2">
+                                    {new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Actions */}
-                      {review.isCurrentUser && (
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() => {
-                              setNewReview({
+                        {/* Actions */}
+                        {isCurrentUserReview && editingReview.id !== review.reviewID && (
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => setEditingReview({
+                                id: review.reviewID,
                                 rating: review.rating,
                                 comment: review.comment
-                              });
-                              setShowReviewForm(true);
-                            }}
-                            className={`p-2 rounded-full transition-colors duration-200 ${theme === 'tet'
-                                ? 'hover:bg-red-50 text-red-600'
-                                : 'hover:bg-blue-50 text-blue-600'
+                              })}
+                              className={`p-2 rounded-full transition-colors duration-200 ${
+                                theme === 'tet'
+                                  ? 'hover:bg-red-50 text-red-600'
+                                  : 'hover:bg-blue-50 text-blue600'
                               }`}
-                          >
-                            <FaEdit className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteReview(review.reviewID)}
-                            className="p-2 rounded-full hover:bg-red-50 text-red-600 transition-colors duration-200"
-                          >
-                            <FaTrash className="h-5 w-5" />
-                          </button>
-                        </div>
-                      )}
+                            >
+                              <FaEdit className="h-5 w-5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteReview(review.reviewID)}
+                              className="p-2 rounded-full hover:bg-red-50 text-red-600 transition-colors duration-200"
+                            >
+                              <FaTrash className="h-5 w-5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-8">
                 <div className="text-gray-500 mb-4">Chưa có đánh giá nào cho sản phẩm này</div>
                 <button
                   onClick={() => setShowReviewForm(true)}
-                  className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${theme === 'tet'
+                  className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+                    theme === 'tet'
                       ? 'bg-red-600 text-white hover:bg-red-700'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
-                    }`}
+                  }`}
                 >
                   Hãy là người đầu tiên đánh giá
                 </button>

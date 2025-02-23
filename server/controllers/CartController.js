@@ -97,7 +97,8 @@ class CartController {
                             ...productObj,
                             imageURL: colorImages[0] || thumbnail,
                             thumbnail: thumbnail,
-                            promotion: promotionDetails
+                            promotion: promotionDetails,
+                            description: undefined
                         },
                         size: {
                             name: sizeStock.size

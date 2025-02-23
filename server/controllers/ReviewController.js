@@ -244,7 +244,6 @@ class ReviewController {
                         userID: review.userID,
                         fullName: 'Người dùng ẩn danh'
                     },
-                    isCurrentUser: req.user && parseInt(review.userID) === parseInt(req.user.userID)
                 };
             }));
 
@@ -287,8 +286,9 @@ class ReviewController {
                     comment: review.comment,
                     createdAt: review.createdAt,
                     productInfo: product ? {
+                        productID: product.productID,
                         name: product.name,
-                        image: product.images ? product.images[0] : null,
+                        image: product.thumbnail,
                         price: product.price
                     } : {
                         name: 'Sản phẩm không còn tồn tại',

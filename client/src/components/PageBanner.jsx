@@ -22,7 +22,6 @@ const PageBanner = ({
     // Object map các path segment sang tên hiển thị
     const pathNames = {
       'products': 'Sản phẩm',
-      'product': 'Sản phẩm',
       'cart': 'Giỏ hàng',
       'checkout': 'Thanh toán',
       'order-history': 'Lịch sử đơn hàng',
@@ -58,7 +57,10 @@ const PageBanner = ({
       // Tạo full path cho segment này
       const path = '/' + pathSegments.slice(0, index + 1).join('/');
       // Lấy tên hiển thị từ map hoặc dùng segment gốc nếu không có trong map
-      const label = pathNames[segment] || segment;
+      let label = pathNames[segment] || segment;
+      if (segment === 'product') {
+        return { path: '/products', label: 'Sản phẩm' }; // Đường link cho segment 'product'
+      }
 
       return { path, label };
     });

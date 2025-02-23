@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { getColorCode, isPatternOrStripe, getBackgroundSize } from '../../../utils/colorUtils';
 import ColorTooltip from '../../../components/Products/ColorTooltip';
 import SizeTooltip from '../../../components/Products/SizeTooltip';
+import ProductThumbnails from '../../../components/Products/ProductThumbnails';
 
 const MenProducts = () => {
    const { theme } = useTheme();
@@ -529,27 +530,14 @@ const MenProducts = () => {
 
                                  {/* Thumbnails */}
                                  {product.colors?.[selectedImages[product.productID]?.colorIndex || 0]?.images?.length > 1 && (
-                                    <div
-                                       className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
-                                       onClick={e => e.preventDefault()} // Ngăn chặn sự kiện click lan truyền lên Link
-                                    >
-                                       {product.colors[selectedImages[product.productID]?.colorIndex || 0].images.slice(0, 4).map((image, index) => (
-                                          <div
-                                             key={index}
-                                             onClick={(e) => handleThumbnailClick(e, product.productID, index)}
-                                             className={`w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition-all transform hover:scale-105 ${selectedImages[product.productID]?.imageIndex === index
-                                                ? 'border-2 border-white ring-2 ring-offset-2 ' + (theme === 'tet' ? 'ring-red-500' : 'ring-blue-500')
-                                                : 'border-2 border-white hover:border-gray-300'
-                                                }`}
-                                          >
-                                             <img
-                                                src={image}
-                                                alt={`${product.name} - ${index + 1}`}
-                                                className="w-full h-full object-cover"
-                                             />
-                                          </div>
-                                       ))}
-                                    </div>
+                                    <ProductThumbnails
+                                       images={product.colors[selectedImages[product.productID]?.colorIndex || 0].images}
+                                       productID={product.productID}
+                                       productName={product.name}
+                                       selectedImages={selectedImages}
+                                       theme={theme}
+                                       onThumbnailClick={handleThumbnailClick}
+                                    />
                                  )}
                               </div>
 
@@ -605,7 +593,7 @@ const MenProducts = () => {
                                                       }}
                                                    />
                                                    {/* Tooltip tên màu */}
-                                                   <ColorTooltip 
+                                                   <ColorTooltip
                                                       isVisible={activeTooltip === `${product.productID}-${index}`}
                                                       colorName={color.colorName}
                                                       theme={theme}
@@ -641,13 +629,12 @@ const MenProducts = () => {
                                                    }}
                                                 >
                                                    <div
-                                                      className={`min-w-[2.5rem] h-8 flex items-center justify-center text-sm rounded cursor-help transition-all ${
-                                                         size.stock > 0
+                                                      className={`min-w-[2.5rem] h-8 flex items-center justify-center text-sm rounded cursor-help transition-all ${size.stock > 0
                                                             ? theme === 'tet'
                                                                ? 'bg-red-50 text-red-700 hover:bg-red-100'
                                                                : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
                                                             : 'bg-gray-50 text-gray-400'
-                                                      }`}
+                                                         }`}
                                                       onClick={(e) => {
                                                          e.preventDefault();
                                                          e.stopPropagation();
@@ -656,7 +643,7 @@ const MenProducts = () => {
                                                       {size.size}
                                                    </div>
                                                    {/* Tooltip */}
-                                                   <SizeTooltip 
+                                                   <SizeTooltip
                                                       isVisible={activeSizeTooltip === `${product.productID}-${product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}-${size.size}`}
                                                       stock={size.stock}
                                                       colorName={product.colors[selectedImages[product.productID]?.colorIndex || 0].colorName}

@@ -675,7 +675,7 @@ const ProductManagement = () => {
                 </div>
 
                 {/* Thống kê */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     {/* Tổng sản phẩm */}
                     <div className={`p-6 rounded-xl shadow-sm transform hover:scale-105 transition-all duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
                         <div className="flex items-center justify-between">
@@ -732,23 +732,7 @@ const ProductManagement = () => {
                         </div>
                     </div>
 
-                    {/* Tổng doanh thu */}
-                    <div className={`p-6 rounded-xl shadow-sm transform hover:scale-105 transition-all duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className={`text-base font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                    Tổng doanh thu
-                                </p>
-                                <p className="text-3xl font-bold mt-1">{formatPrice(stats.totalRevenue)}đ</p>
-                            </div>
-                            <div className="p-3 rounded-xl bg-green-100/80">
-                                <FiDollarSign className="text-2xl text-green-600" />
-                            </div>
-                        </div>
-                        <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-green-500 rounded-full" style={{ width: '100%' }}></div>
-                        </div>
-                    </div>
+                    
                 </div>
 
                 {/* Bộ lọc và tìm kiếm */}
@@ -1714,7 +1698,7 @@ const ProductManagement = () => {
 
             {/* Modal thêm sản phẩm mới */}
             {isAddProductModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto ">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto mt-6 ">
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
                     <div className={`relative w-full max-w-4xl p-8 rounded-2xl shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
                         <div className="flex justify-between items-center mb-6">

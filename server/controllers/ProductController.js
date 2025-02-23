@@ -419,6 +419,10 @@ class ProductController {
     // Lấy chi tiết sản phẩm theo ID có cloudinary
     async getProductByIdChoADMIN(req, res) {
         try {
+
+            // Sắp xếp kích thước theo thứ tự mong muốn
+            const sizeOrder = ["S", "M", "L", "XL", "XXL"];
+
             const { id } = req.params;
 
             // Lấy thông tin cơ bản của sản phẩm, sử dụng productID thay vì _id
@@ -441,6 +445,8 @@ class ProductController {
                     const sizes = await ProductSizeStock.find({
                         colorID: color.colorID,
                     }).select("size stock SKU");
+
+                    sizes.sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size));
 
                     // Xử lý hình ảnh cho từng màu sắc
                     const imagesPromises = color.images.map(
@@ -520,7 +526,7 @@ class ProductController {
                             color.sizes.map((size) => size.size)
                         )
                     ),
-                ].sort(),
+                ].sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b)),
                 availableColors: colorsWithSizes.map((color) => color.colorName),
             };
 
@@ -748,6 +754,9 @@ class ProductController {
     // Lấy chi tiết sản phẩm theo ID
     async getProductById(req, res) {
         try {
+            // Sắp xếp kích thước theo thứ tự mong muốn
+            const sizeOrder = ["S", "M", "L", "XL", "XXL"];
+
             const { id } = req.params;
 
             // Lấy thông tin cơ bản của sản phẩm, sử dụng productID thay vì _id
@@ -776,21 +785,23 @@ class ProductController {
                         colorID: color.colorID,
                     }).select("size stock");
 
-                // Xử lý hình ảnh từng màu sắc bằng Cloudinary
+                    sizes.sort((a, b) => sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size));
+
+                    // Xử lý hình ảnh từng màu sắc bằng Cloudinary
                     const imagesPromises = color.images.map(
                         async (img) => await getImageLink(img)
                     );
-                const images = await Promise.all(imagesPromises);
+                    const images = await Promise.all(imagesPromises);
 
-                return {
-                    colorID: color.colorID,
-                    colorName: color.colorName,
-                    images: images || [], // Lưu ảnh đã xử lý từ Cloudinary
+                    return {
+                        colorID: color.colorID,
+                        colorName: color.colorName,
+                        images: images || [], // Lưu ảnh đã xử lý từ Cloudinary
                         sizes: sizes.map((size) => ({
-                        size: size.size,
+                            size: size.size,
                             stock: size.stock,
                         })),
-                };
+                    };
                 })
             );
 
@@ -815,7 +826,6 @@ class ProductController {
                 );
                 discountedPrice = discountedNumber
                     .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }
 
             // Tạo object chứa thông tin sản phẩm
@@ -824,7 +834,7 @@ class ProductController {
                 productID: product.productID,
                 name: product.name,
                 description: product.description,
-                price: product.price,
+                price: Number(product.price.toString().replace(/\./g, "")),
                 category: product.categoryInfo?.name,
                 target: product.targetInfo?.name,
                 thumbnail: thumbnail, // Ảnh từ Cloudinary
@@ -850,7 +860,7 @@ class ProductController {
                             color.sizes.map((size) => size.size)
                         )
                     ),
-                ].sort(),
+                ].sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b)),
                 availableColors: colorsWithSizes.map((color) => color.colorName),
             };
 
@@ -1836,7 +1846,7 @@ class ProductController {
                     description: product.description,
                     thumbnail: await getImageLink(product.thumbnail),
                         category: product.categoryInfo?.name,
-                        target: product.targetInfo?.name,
+                        target: product.targetInfo.name,
                     colors: colorsWithSizes,
                     totalStock,
                     inStock: totalStock > 0,

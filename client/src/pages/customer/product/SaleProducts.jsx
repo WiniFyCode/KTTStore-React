@@ -8,6 +8,7 @@ import axiosInstance from '../../../utils/axios';
 import { toast } from 'react-toastify';
 import Loading from '../../../components/Products/Loading';
 import Pagination from '../../../components/Products/Pagination';
+import ProductThumbnails from '../../../components/Products/ProductThumbnails';
 
 const SaleProducts = () => {
   // Sử dụng theme context
@@ -617,32 +618,19 @@ const SaleProducts = () => {
                     )}
 
                     {/* Thumbnails */}
-                    {product.colors?.[0]?.images?.length > 1 && (
-                      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
-                        {product.colors[0].images.slice(0, 4).map((image, index) => (
-                          <div
-                            key={index}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleThumbnailClick(product.productID, index);
-                            }}
-                            className={`w-12 h-12 rounded-lg overflow-hidden cursor-pointer transition-all transform hover:scale-105 shadow-lg ${selectedImages[product.productID] === index
-                                ? 'border-2 border-white ring-2 ring-offset-2 ' + (theme === 'tet' ? 'ring-red-500' : 'ring-pink-500')
-                                : 'border-2 border-white hover:border-gray-300'
-                              }`}
-                          >
-                            <img
-                              src={image}
-                              alt={`${product.name} - ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {product.colors?.[selectedImages[product.productID]?.colorIndex || 0]?.images?.length > 1 && (
+                          <ProductThumbnails 
+                            images={product.colors[selectedImages[product.productID]?.colorIndex || 0].images}
+                            productID={product.productID}
+                            productName={product.name}
+                            selectedImages={selectedImages}
+                            theme={theme}
+                            onThumbnailClick={handleThumbnailClick}
+                          />
+                        )}
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
 
                   {/* Thông tin sản phẩm */}

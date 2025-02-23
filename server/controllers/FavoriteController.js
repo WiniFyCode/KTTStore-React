@@ -35,11 +35,11 @@ class FavoriteController {
                     // Lấy thông tin sản phẩm
                     const product = await Product.findOne(
                         { productID: parseInt(productID), isActivated: true },
-                        'productID name price thumbnail targetInfo categoryInfo'
+                        'productID name price thumbnail targetInfo categoryInfo isActivated'
                     ).populate('targetInfo').populate('categoryInfo');
 
                     if (!product) {
-                        console.warn(`Không tìm thấy thông tin sản phẩm cho productID: ${productID}`);
+                        console.warn(`FavC - Không tìm thấy thông tin sản phẩm cho productID : ${productID}`);
                         return null;
                     }
 
@@ -50,7 +50,7 @@ class FavoriteController {
                     });
 
                     if (!color) {
-                        console.warn(`Không tìm thấy thông tin màu sắc cho colorID: ${colorID}, productID: ${productID}`);
+                        console.warn(`FavC - Không tìm thấy thông tin màu sắc cho colorID: ${colorID}, productID: ${productID}`);
                         color = {
                             colorName: 'Mặc định',
                             images: []
@@ -73,8 +73,9 @@ class FavoriteController {
                             name: product.name,
                             originalPrice: priceNumber,
                             price: priceNumber,
+                            isActivated: product.isActivated,
                             thumbnail: colorImages[0] || thumbnail,
-                            images: colorImages.length > 0 ? colorImages : [thumbnail],
+                            images: colorImages.length > 0 ? colorImages : [thumbnail]
                         },
                         size: sizeStock.size,
                         colorName: color?.colorName,
