@@ -264,7 +264,7 @@ const Checkout = () => {
 
     if (!shippingInfo.phone) {
       newErrors.phone = 'Vui lòng nhập số điện thoại';
-    } else if (!validatePhone(shippingInfo.phone)) {
+    } else if (!/^(0[3|5|7|8|9])+([0-9]{8})\b/.test(shippingInfo.phone)) {
       newErrors.phone = 'Số điện thoại không hợp lệ';
     }
 
@@ -292,18 +292,19 @@ const Checkout = () => {
   // Xử lý thay đổi thông tin giao hàng
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
-    let formattedValue = value;
-
+    
+    // Nếu là số điện thoại, chỉ cho phép nhập số
     if (name === 'phone') {
-      formattedValue = formatPhoneNumber(value);
+      const phoneRegex = /^[0-9]*$/;
+      if (!phoneRegex.test(value)) return;
     }
 
     setShippingInfo(prev => ({
       ...prev,
-      [name]: formattedValue
+      [name]: value
     }));
 
-    // Xóa lỗi khi người dùng bắt đầu nhập
+    // Clear error khi user bắt đầu nhập
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -842,29 +843,18 @@ const Checkout = () => {
                             name="phone"
                             value={shippingInfo.phone}
                             onChange={handleShippingChange}
-                            className={`w-full px-4 py-3 pl-10 rounded-lg border ${errors.phone ? 'border-red-500' : 'border-gray-300'
-                              } focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${shippingInfo.phone ? 'bg-gray-50' : ''
-                              }`}
+                            className={`w-full px-4 py-3 rounded-lg border ${
+                              errors.phone ? 'border-red-500' : 'border-gray-300'
+                            } focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
                             placeholder="Nhập số điện thoại"
                             maxLength="10"
-                            readOnly
                           />
-                          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                            <span className="text-gray-500">+84</span>
-                          </div>
-                          {shippingInfo.phone && (
-                            <div className={`absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-sm ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                              }`}>
-                              <FaCheck className="w-4 h-4" />
-                              <span className="hidden sm:inline">Đã xác thực</span>
-                            </div>
+                          {errors.phone && (
+                            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
                           )}
                         </div>
-                        {errors.phone && (
-                          <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                        )}
                         <p className="text-sm text-gray-500 mt-1">
-                          Số điện thoại được lấy từ thông tin tài khoản của bạn
+                          Vui lòng nhập số điện thoại để chúng tôi có thể liên hệ khi giao hàng
                         </p>
                       </div>
 

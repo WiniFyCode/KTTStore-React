@@ -24,7 +24,10 @@ const UserSchema = new mongoose.Schema({
             values: ['male', 'female'],
             message: 'Giới tính không hợp lệ'
         },
-        required: [true, 'Vui lòng chọn giới tính']
+        required: function() {
+            return this.loginType === 'local'; // Chỉ bắt buộc khi đăng nhập local
+        },
+        default: 'male' // Giá trị mặc định
     },
     email: {
         type: String,
@@ -41,15 +44,23 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Vui lòng nhập mật khẩu'],
+        required: function() {
+            return this.loginType === 'local'; // Chỉ bắt buộc khi đăng nhập local
+        },
         minlength: [6, 'Mật khẩu phải có ít nhất 6 ký tự'],
     },
     phone: {
         type: String,
-        required: [true, 'Vui lòng nhập số điện thoại'],
-        unique: true,
+        required: function() {
+            return this.loginType === 'local'; // Chỉ bắt buộc khi đăng nhập local
+        },
+        unique: function() {
+            // Chỉ unique khi có giá trị
+            return this.phone ? true : false;
+        },
         validate: {
             validator: function(value) {
+                if (!value) return true; // Bỏ qua validate nếu không có số điện thoại
                 return /^(0[3|5|7|8|9])+([0-9]{8})\b/.test(value);
             },
             message: 'Số điện thoại không hợp lệ'
@@ -79,6 +90,15 @@ const UserSchema = new mongoose.Schema({
     },
     lockUntil: {
         type: Date,
+        default: null
+    },
+    loginType: {
+        type: String,
+        enum: ['local', 'google', 'facebook'],
+        default: 'local'
+    },
+    avatar: {
+        type: String,
         default: null
     }
 }, {

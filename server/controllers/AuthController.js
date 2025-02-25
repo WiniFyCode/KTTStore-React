@@ -2,6 +2,7 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt')
+const axios = require('axios')
 
 // Số lần đăng nhập sai tối đa cho phép
 const MAX_LOGIN_ATTEMPTS = 5
@@ -117,19 +118,19 @@ const login = async (req, res) => {
         if (!isMatch) {
             // Tăng số lần đăng nhập sai
             await user.incLoginAttempts()
-            
+
             // Nếu đã đạt giới hạn thử (5 lần)
             if (user.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
                 // Khóa tài khoản trong 5 phút
                 await User.findOneAndUpdate(
                     { email },
-                    { 
+                    {
                         lockUntil: Date.now() + DEFAULT_LOCK_TIME,
                         loginAttempts: MAX_LOGIN_ATTEMPTS
                     }
                 )
                 return res.status(403).json({
-                    message: `Tài khoản đã bị khóa ${DEFAULT_LOCK_TIME/60000} phút do đăng nhập sai ${MAX_LOGIN_ATTEMPTS} lần`
+                    message: `Tài khoản đã bị khóa ${DEFAULT_LOCK_TIME / 60000} phút do đăng nhập sai ${MAX_LOGIN_ATTEMPTS} lần`
                 })
             }
 
@@ -184,7 +185,7 @@ const forgotPassword = async (req, res) => {
 
         // Tạo OTP ngẫu nhiên 6 số
         const otp = Math.floor(100000 + Math.random() * 900000).toString()
-        
+
         // Lưu OTP với thời gian hết hạn 5 phút
         otpStore.set(email, {
             otp,
@@ -284,26 +285,26 @@ const forgotPassword = async (req, res) => {
 
         await transporter.sendMail(mailOptions)
 
-        res.status(200).json({ 
+        res.status(200).json({
             message: 'Mã OTP đã được gửi đến email của bạn',
             email: email // Trả về email để dùng cho bước tiếp theo
         })
 
     } catch (error) {
         console.error('Lỗi gửi mã OTP:', error)
-        
+
         // Kiểm tra lỗi cụ thể từ nodemailer
         if (error.code === 'EAUTH') {
-            return res.status(500).json({ 
+            return res.status(500).json({
                 message: 'Lỗi xác thực email. Vui lòng kiểm tra lại cấu hình email.',
-                error: error.message 
+                error: error.message
             })
         }
-        
+
         // Các lỗi khác
-        res.status(500).json({ 
+        res.status(500).json({
             message: 'Có lỗi xảy ra khi gửi mã OTP',
-            error: error.message 
+            error: error.message
         })
     }
 }
@@ -332,7 +333,7 @@ const resetPassword = async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10)
         await User.findOneAndUpdate(
             { email },
-            { 
+            {
                 password: hashedPassword,
                 loginAttempts: 0, // Reset số lần đăng nhập sai
                 lockUntil: null   // Mở khóa tài khoản
@@ -342,15 +343,15 @@ const resetPassword = async (req, res) => {
         // Xóa OTP đã sử dụng
         otpStore.delete(email)
 
-        res.status(200).json({ 
+        res.status(200).json({
             message: 'Đặt lại mật khẩu thành công. Tài khoản đã được mở khóa.', newPassword
         })
 
     } catch (error) {
         console.error('Lỗi đặt lại mật khẩu:', error)
-        res.status(500).json({ 
+        res.status(500).json({
             message: 'Có lỗi xảy ra khi đặt lại mật khẩu',
-            error: error.message 
+            error: error.message
         })
     }
 }
@@ -360,9 +361,9 @@ const verifyToken = async (req, res) => {
         // Lấy token từ Authorization header
         const authHeader = req.headers.authorization
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
-                message: 'Token không được cung cấp hoặc không đúng định dạng' 
+                message: 'Token không được cung cấp hoặc không đúng định dạng'
             })
         }
 
@@ -376,17 +377,17 @@ const verifyToken = async (req, res) => {
         // Tìm user theo userID
         const user = await User.findOne({ userID })
         if (!user) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                message: 'Không tìm thấy người dùng' 
+                message: 'Không tìm thấy người dùng'
             })
         }
 
         // Kiểm tra tài khoản có bị vô hiệu hóa không
         if (user.isDisabled) {
-            return res.status(403).json({ 
+            return res.status(403).json({
                 success: false,
-                message: 'Tài khoản đã bị vô hiệu hóa' 
+                message: 'Tài khoản đã bị vô hiệu hóa'
             })
         }
 
@@ -423,26 +424,128 @@ const verifyToken = async (req, res) => {
 
         // Xử lý các loại lỗi JWT cụ thể
         if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
                 message: 'Token không hợp lệ',
-                error: error.message 
+                error: error.message
             })
         }
 
         if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
                 message: 'Token đã hết hạn',
-                error: error.message 
+                error: error.message
             })
         }
 
         // Các lỗi khác
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'Có lỗi xảy ra khi xác thực token',
-            error: error.message 
+            error: error.message
+        })
+    }
+}
+
+// Thêm hàm xử lý đăng nhập Google
+const googleLogin = async (req, res) => {
+    try {
+        const { access_token } = req.body
+        
+        if (!access_token) {
+            return res.status(400).json({ 
+                message: 'Access token không được cung cấp'
+            })
+        }
+
+        // Lấy thông tin người dùng từ Google
+        let googleUserInfo
+        try {
+            googleUserInfo = await axios.get(
+                'https://www.googleapis.com/oauth2/v3/userinfo',
+                {
+                    headers: { Authorization: `Bearer ${access_token}` }
+                }
+            )
+        } catch (error) {
+            console.error('Lỗi lấy thông tin từ Google:', error)
+            return res.status(401).json({
+                message: 'Token Google không hợp lệ hoặc đã hết hạn',
+                error: error.message
+            })
+        }
+
+        const { email, name, picture } = googleUserInfo.data
+
+        try {
+            // Kiểm tra xem email đã tồn tại trong hệ thống chưa
+            let user = await User.findOne({ email })
+
+            if (!user) {
+                // Nếu chưa có user, tạo mới
+                const newUser = {
+                    userID: Date.now(),
+                    fullname: name,
+                    email,
+                    avatar: picture,
+                    gender: 'male',
+                    role: 'customer',
+                    loginType: 'google',
+                    password: Math.random().toString(36).slice(-8),
+                    phone: null // Đặt là null
+                }
+
+                user = await User.create(newUser)
+            } else {
+                // Nếu user đã tồn tại nhưng đăng ký bằng local
+                if (user.loginType === 'local') {
+                    // Cập nhật thông tin từ Google
+                    user.avatar = picture
+                    user.loginType = 'google'
+                    await user.save()
+                }
+            }
+
+            // Kiểm tra tài khoản có bị vô hiệu hóa không
+            if (user.isDisabled) {
+                return res.status(403).json({ message: 'Tài khoản đã bị vô hiệu hóa' })
+            }
+
+            // Tạo token
+            const token = generateToken(user.userID)
+
+            // Reset số lần đăng nhập sai và cập nhật thời gian đăng nhập
+            await user.resetLoginAttempts()
+
+            res.status(200).json({
+                success: true,
+                message: 'Đăng nhập Google thành công',
+                token,
+                user: {
+                    userID: user.userID,
+                    fullname: user.fullname,
+                    email: user.email,
+                    avatar: user.avatar,
+                    role: user.role,
+                    gender: user.gender,
+                    phone: user.phone
+                }
+            })
+
+        } catch (error) {
+            console.error('Lỗi xử lý dữ liệu user:', error)
+            return res.status(500).json({
+                message: 'Có lỗi xảy ra khi xử lý thông tin người dùng',
+                error: error.message
+            })
+        }
+
+    } catch (error) {
+        console.error('Lỗi đăng nhập Google:', error)
+        res.status(500).json({
+            message: 'Có lỗi xảy ra khi đăng nhập với Google',
+            error: error.message
         })
     }
 }
@@ -452,5 +555,6 @@ module.exports = {
     login,
     forgotPassword,
     resetPassword,
-    verifyToken
+    verifyToken,
+    googleLogin
 }
