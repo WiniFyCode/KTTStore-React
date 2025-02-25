@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FiUsers, FiDollarSign, FiShoppingBag, FiActivity, FiStar, FiPackage } from 'react-icons/fi';
+import  { useState, useEffect } from 'react';
+import { FiUsers, FiDollarSign, FiShoppingBag, FiStar, FiPackage } from 'react-icons/fi';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -521,26 +521,29 @@ const Dashboard = () => {
                 {/* Khuyến mãi & Mã giảm giá */}
                 <div className={`${isDarkMode ? 'dark:bg-gray-800' : 'bg-white'} rounded-xl shadow-sm p-6`}>
                     <h3 className={`font-heading text-heading-3 font-semibold mb-4 ${isDarkMode ? 'dark:text-white' : ''}`}>
-                        Khuyến mãi & Mã giảm giá
+                        🎫 Khuyến mãi & Mã giảm giá
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                             <div>
-                                <p className="font-body text-body-normal text-gray-500">Tổng số mã giảm giá</p>
+                                <p className="font-body text-body-normal text-gray-500">📊 Tổng số mã giảm giá</p>
                                 <p className="font-heading text-heading-3 font-semibold">
                                     {extendedStats.coupons.total}
                                 </p>
                                 <div className="flex items-center space-x-4 mt-2">
                                     <span className="font-body text-body-small text-green-600">
-                                        {extendedStats.coupons.active} đang hoạt động
+                                        ✅ {extendedStats.coupons.active} đang hoạt động
                                     </span>
+                                    
+                                </div>
+                                <div className="flex items-center space-x-4 mt-2">
                                     <span className="font-body text-body-small text-red-600">
-                                        {extendedStats.coupons.expired} đã hết hạn
+                                        ❌ {extendedStats.coupons.expired} đã hết hạn
                                     </span>
                                 </div>
                             </div>
                             <div>
-                                <p className="font-body text-body-normal text-gray-500">Lượt sử dụng</p>
+                                <p className="font-body text-body-normal text-gray-500">📈 Lượt sử dụng</p>
                                 <p className="font-heading text-heading-3 font-semibold">
                                     {extendedStats.coupons.usageCount}
                                 </p>
@@ -549,13 +552,13 @@ const Dashboard = () => {
 
                         <div className="space-y-4">
                             <div>
-                                <p className="font-body text-body-normal text-gray-500">Loại giảm giá</p>
+                                <p className="font-body text-body-normal text-gray-500">💰 Loại giảm giá</p>
                                 <div className="mt-2 space-y-2">
                                     {Object.entries(extendedStats.coupons.analytics?.discountTypes || {}).map(([type, count]) => (
                                         <div key={type} className="flex justify-between items-center">
                                             <span>
-                                                {type === 'percentage' ? 'Giảm theo %' : 
-                                                 type === 'fixed' ? 'Giảm số tiền cố định' : type}
+                                                {type === 'percentage' ? '💯 Giảm theo %' : 
+                                                 type === 'fixed' ? '💵 Giảm số tiền cố định' : type}
                                             </span>
                                             <span className="font-semibold">
                                                 {count} ({((count / extendedStats.coupons.total) * 100).toFixed(1)}%)
@@ -565,13 +568,22 @@ const Dashboard = () => {
                                 </div>
                             </div>
                             <div>
-                                <p className="font-body text-body-normal text-gray-500">Loại mã</p>
+                                <p className="font-body text-body-normal text-gray-500">🏷️ Loại mã</p>
                                 <div className="mt-2 space-y-2">
                                     {Object.entries(extendedStats.coupons.analytics?.couponTypes || {}).map(([type, count]) => (
                                         <div key={type} className="flex justify-between items-center">
                                             <span>
-                                                {type === 'new_user' ? 'Khách hàng mới' :
-                                                 type === 'all' ? 'Tất cả khách hàng' : type}
+                                                {type === 'new_user' ? '🌟 Khách hàng mới' :
+                                                 type === 'all' ? '🎯 Tất cả loại coupon' :
+                                                 type === 'weekend' ? '🌅 Cuối tuần' :
+                                                 type === 'member' ? '👑 Thành viên' :
+                                                 type === 'holiday' ? '🎉 Ngày lễ' :
+                                                 type === 'seasonal' ? '🌸 Theo mùa' :
+                                                 type === 'bundle' ? '🎁 Combo' :
+                                                 type === 'flash_sale' ? '⚡ Flash Sale' :
+                                                 type === 'special_event' ? '🎊 Sự kiện đặc biệt' :
+                                                 type === 'category' ? '📑 Theo danh mục' :
+                                                 type === 'clearance' ? '🏷️ Thanh lý' : type}
                                             </span>
                                             <span className="font-semibold">
                                                 {count} ({((count / extendedStats.coupons.total) * 100).toFixed(1)}%)
@@ -585,7 +597,7 @@ const Dashboard = () => {
 
                     {/* Progress bar hiển thị tỷ lệ sử dụng */}
                     <div className="mt-6">
-                        <p className="font-body text-body-normal text-gray-500">Tỷ lệ sử dụng</p>
+                        <p className="font-body text-body-normal text-gray-500">📊 Tỷ lệ sử dụng</p>
                         <div className="mt-2">
                             <div className="w-full bg-gray-200 rounded-full h-2.5">
                                 <div 
@@ -596,8 +608,8 @@ const Dashboard = () => {
                                 ></div>
                             </div>
                             <div className="flex justify-between mt-2 text-sm">
-                                <span>Đã sử dụng: {extendedStats.coupons.usageCount}</span>
-                                <span>Giới hạn: {totalUsageLimit}</span>
+                                <span>✅ Đã sử dụng: {extendedStats.coupons.usageCount}</span>
+                                <span>🎯 Giới hạn: {totalUsageLimit}</span>
                             </div>
                         </div>
                     </div>
@@ -606,11 +618,11 @@ const Dashboard = () => {
                 {/* Đánh giá */}
                 <div className={`${isDarkMode ? 'dark:bg-gray-800' : 'bg-white'} rounded-xl shadow-sm p-6`}>
                     <h3 className={`font-heading text-heading-3 font-semibold mb-4 ${isDarkMode ? 'dark:text-white' : ''}`}>
-                        Đánh giá sản phẩm
+                        ⭐ Đánh giá sản phẩm
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <p className="font-body text-body-normal text-gray-500">Tổng quan đánh giá</p>
+                            <p className="font-body text-body-normal text-gray-500">📊 Tổng quan đánh giá</p>
                             <div className="mt-4">
                                 <div className="flex items-center space-x-4">
                                     <div className="font-heading text-heading-4 font-bold text-gray-900">
@@ -630,7 +642,7 @@ const Dashboard = () => {
                                             ))}
                                         </div>
                                         <p className="font-body text-body-small text-gray-500 mt-1">
-                                            {extendedStats.reviews.total} đánh giá
+                                            📝 {extendedStats.reviews.total} đánh giá
                                         </p>
                                     </div>
                                 </div>
@@ -638,7 +650,7 @@ const Dashboard = () => {
                         </div>
 
                         <div>
-                            <p className="font-body text-body-normal text-gray-500">Phân bố đánh giá</p>
+                            <p className="font-body text-body-normal text-gray-500">📈 Phân bố đánh giá</p>
                             <div className="mt-4 space-y-2">
                                 {[5, 4, 3, 2, 1].map(rating => {
                                     const count = extendedStats.reviews.distribution[rating] || 0;
@@ -650,7 +662,7 @@ const Dashboard = () => {
                                         <div key={rating} className="flex items-center">
                                             <div className="flex items-center w-24">
                                                 <span className="font-body text-body-medium text-gray-600">
-                                                    {rating} sao
+                                                    ⭐ {rating} sao
                                                 </span>
                                                 <FiStar className="h-4 w-4 text-yellow-400 ml-1" />
                                             </div>
@@ -662,7 +674,7 @@ const Dashboard = () => {
                                                     ></div>
                                                 </div>
                                             </div>
-                                            <div className="w-16 text-right">
+                                            <div className="w-16 text-right whitespace-nowrap">
                                                 <span className="font-body text-body-small text-gray-600">
                                                     {count} ({percentage.toFixed(1)}%)
                                                 </span>
@@ -678,19 +690,19 @@ const Dashboard = () => {
                     <div className="mt-6 pt-6 border-t">
                         <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <p className="font-body text-body-small text-gray-500">Đánh giá cao nhất</p>
+                                <p className="font-body text-body-small text-gray-500">🌟 Đánh giá cao nhất</p>
                                 <p className="font-heading text-heading-3 font-semibold mt-1">
                                     {Math.max(...Object.keys(extendedStats.reviews.distribution).map(Number))} sao
                                 </p>
                             </div>
                             <div>
-                                <p className="font-body text-body-small text-gray-500">Đánh giá thấp nhất</p>
+                                <p className="font-body text-body-small text-gray-500">⚠️ Đánh giá thấp nhất</p>
                                 <p className="font-heading text-heading-3 font-semibold mt-1">
                                     {Math.min(...Object.keys(extendedStats.reviews.distribution).map(Number))} sao
                                 </p>
                             </div>
                             <div>
-                                <p className="font-body text-body-small text-gray-500">Tỷ lệ hài lòng</p>
+                                <p className="font-body text-body-small text-gray-500">😊 Tỷ lệ hài lòng</p>
                                 <p className="font-heading text-heading-3 font-semibold mt-1">
                                     {satisfactionRate}%
                                 </p>
@@ -702,32 +714,32 @@ const Dashboard = () => {
                 {/* Thông báo */}
                 <div className={`${isDarkMode ? 'dark:bg-gray-800' : 'bg-white'} rounded-xl shadow-sm p-6`}>
                     <h3 className={`font-heading text-heading-3 font-semibold mb-4 ${isDarkMode ? 'dark:text-white' : ''}`}>
-                        Thống kê thông báo
+                        🔔 Thống kê thông báo
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <p className="font-body text-body-normal text-gray-500">Tổng quan thông báo</p>
+                            <p className="font-body text-body-normal text-gray-500">📊 Tổng quan thông báo</p>
                             <div className="mt-2 space-y-2">
                                 <div className="flex justify-between items-center">
-                                    <span>Tổng số thông báo</span>
+                                    <span>📬 Tổng số thông báo</span>
                                     <span className="font-semibold">
                                         {extendedStats.notifications.total}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span>Đang hoạt động</span>
+                                    <span>✅ Đang hoạt động</span>
                                     <span className="font-semibold text-green-600">
                                         {extendedStats.notifications.active}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span>Chờ gửi</span>
+                                    <span>⏳ Chờ gửi</span>
                                     <span className="font-semibold text-blue-600">
                                         {extendedStats.notifications.pending}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span>Đã hết hạn</span>
+                                    <span>❌ Đã hết hạn</span>
                                     <span className="font-semibold text-gray-600">
                                         {extendedStats.notifications.expired}
                                     </span>
@@ -736,20 +748,20 @@ const Dashboard = () => {
                         </div>
 
                         <div>
-                            <p className="font-body text-body-normal text-gray-500">Phân loại thông báo</p>
+                            <p className="font-body text-body-normal text-gray-500">📑 Phân loại thông báo</p>
                             <div className="mt-2 space-y-2">
                                 {Object.entries(extendedStats.notifications.analytics?.types || {}).map(([type, count]) => (
                                     <div key={type} className="flex justify-between items-center">
                                         <span>
-                                            {type === 'welcome' ? 'Chào mừng' :
-                                             type === 'promotion' ? 'Khuyến mãi' :
-                                             type === 'system' ? 'Hệ thống' :
-                                             type === 'new_collection' ? 'Bộ sưu tập mới' :
-                                             type === 'membership' ? 'Thành viên' :
-                                             type === 'policy' ? 'Chính sách' :
-                                             type === 'survey' ? 'Khảo sát' :
-                                             type === 'security' ? 'Bảo mật' :
-                                             type === 'holiday' ? 'Ngày lễ' : type}
+                                            {type === 'welcome' ? '🎉 Chào mừng' :
+                                             type === 'promotion' ? '🏷️ Khuyến mãi' :
+                                             type === 'system' ? '⚙️ Hệ thống' :
+                                             type === 'new_collection' ? '👕 BST mới' :
+                                             type === 'membership' ? '👑 Thành viên' :
+                                             type === 'policy' ? '📜 Chính sách' :
+                                             type === 'survey' ? '📝 Khảo sát' :
+                                             type === 'security' ? '🔒 Bảo mật' :
+                                             type === 'holiday' ? '🎊 Ngày lễ' : type}
                                         </span>
                                         <span className="font-semibold">
                                             {count} ({((count / extendedStats.notifications.total) * 100).toFixed(1)}%)
@@ -764,13 +776,13 @@ const Dashboard = () => {
                     <div className="mt-4 pt-4 border-t">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="font-body text-body-small text-gray-500">Tổng lượt đọc</p>
+                                <p className="font-body text-body-small text-gray-500">👁️ Tổng lượt đọc</p>
                                 <p className="font-heading text-heading-3 font-semibold mt-1">
                                     {extendedStats.notifications.analytics?.totalReads || 0}
                                 </p>
                             </div>
                             <div>
-                                <p className="font-body text-body-small text-gray-500">Trung bình lượt đọc</p>
+                                <p className="font-body text-body-small text-gray-500">📈 Trung bình lượt đọc</p>
                                 <p className="font-heading text-heading-3 font-semibold mt-1">
                                     {extendedStats.notifications.analytics?.avgReads || 0}
                                     <span className="font-body text-body-small text-gray-500 ml-1">lượt/thông báo</span>
@@ -784,20 +796,20 @@ const Dashboard = () => {
             {/* Thống kê người dùng */}
             <div className={`${isDarkMode ? 'dark:bg-gray-800' : 'bg-white'} rounded-xl shadow-sm p-6 mt-6`}>
                 <h3 className={`font-heading text-heading-3 font-semibold mb-4 ${isDarkMode ? 'dark:text-white' : ''}`}>
-                    Thống kê người dùng
+                    👥 Thống kê người dùng
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <p className="font-body text-body-small text-gray-500">Trạng thái tài khoản</p>
+                        <p className="font-body text-body-small text-gray-500">🔄 Trạng thái tài khoản</p>
                         <div className="mt-2 space-y-2">
                             <div className="flex justify-between items-center">
-                                <span>Đang hoạt động</span>
+                                <span>✅ Đang hoạt động</span>
                                 <span className="font-semibold text-green-600">
                                     {userStats.active}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span>Bị khóa</span>
+                                <span>🔒 Bị khóa</span>
                                 <span className="font-semibold text-red-600">
                                     {userStats.disabled}
                                 </span>
@@ -806,16 +818,16 @@ const Dashboard = () => {
                     </div>
 
                     <div>
-                        <p className="font-body text-body-small text-gray-500">Phân loại người dùng</p>
+                        <p className="font-body text-body-small text-gray-500">👤 Phân loại người dùng</p>
                         <div className="mt-2 space-y-2">
                             <div className="flex justify-between items-center">
-                                <span>Khách hàng</span>
+                                <span>🛍️ Khách hàng</span>
                                 <span className="font-semibold  text-green-600">
                                     {userStats.customerCount}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span>Quản trị viên</span>
+                                <span>👨‍💼 Quản trị viên</span>
                                 <span className="font-semibold  text-red-600">
                                     {userStats.adminCount}
                                 </span>
@@ -824,11 +836,11 @@ const Dashboard = () => {
                     </div>
 
                     <div>
-                        <p className="font-body text-body-small text-gray-500">Giới tính</p>
+                        <p className="font-body text-body-small text-gray-500">⚧️ Giới tính</p>
                         <div className="mt-2 space-y-2">
                             {Object.entries(userStats.genderDistribution).map(([gender, count]) => (
                                 <div key={gender} className="flex justify-between items-center">
-                                    <span>{gender === 'male' ? 'Nam' : gender === 'female' ? 'Nữ' : 'Khác'}</span>
+                                    <span>{gender === 'male' ? '👨 Nam' : gender === 'female' ? '👩 Nữ' : '⚪ Khác'}</span>
                                     <span className={`font-semibold ${
                                         gender === 'male' ? 'text-blue-600' : 
                                         gender === 'female' ? 'text-pink-600' : 
@@ -897,19 +909,22 @@ const Dashboard = () => {
             {/* Thống kê đơn hàng */}
             <div className={`${isDarkMode ? 'dark:bg-gray-800' : 'bg-white'} rounded-xl shadow-sm p-6 mt-6`}>
                 <h3 className={`font-heading text-heading-3 font-semibold mb-4 ${isDarkMode ? 'dark:text-white' : ''}`}>
-                    Thống kê đơn hàng
+                    📊 Thống kê đơn hàng
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <p className="font-body text-body-small text-gray-500">Trạng thái đơn hàng</p>
+                        <p className="font-body text-body-small text-gray-500">📋 Trạng thái đơn hàng</p>
                         <div className="mt-2 space-y-2">
                             {Object.entries(orderStats.orderStatusDistribution).map(([status, count]) => (
                                 <div key={status} className="flex justify-between items-center">
                                     <span>
-                                        {status === 'pending' ? 'Chờ xử lý' :
-                                         status === 'processing' ? 'Đang xử lý' :
-                                         status === 'completed' ? 'Hoàn thành' :
-                                         status === 'cancelled' ? 'Đã hủy' : status}
+                                        {status === 'pending' ? '⏳ Chờ xác nhận đơn' :
+                                         status === 'confirmed' ? '✅ Đã xác nhận đơn' :
+                                         status === 'processing' ? '🔄 Đang xử lý đơn' :
+                                         status === 'shipping' ? '🚚 Đang vận chuyển' :
+                                         status === 'completed' ? '🎉 Đã hoàn thành' :
+                                         status === 'cancelled' ? '❌ Đã hủy đơn' :
+                                         status === 'refunded' ? '💸 Đã hoàn tiền' : '❓ Trạng thái không xác định'}
                                     </span>
                                     <span className={`font-semibold ${
                                         status === 'completed' ? 'text-green-600' :
@@ -924,15 +939,17 @@ const Dashboard = () => {
                     </div>
 
                     <div>
-                        <p className="font-body text-body-small text-gray-500">Trạng thái vận chuyển</p>
+                        <p className="font-body text-body-small text-gray-500">🚚 Trạng thái vận chuyển</p>
                         <div className="mt-2 space-y-2">
                             {Object.entries(orderStats.shippingStatusDistribution).map(([status, count]) => (
                                 <div key={status} className="flex justify-between items-center">
                                     <span>
-                                        {status === 'pending' ? 'Chờ lấy hàng' :
-                                         status === 'shipping' ? 'Đang giao' :
-                                         status === 'delivered' ? 'Đã giao' :
-                                         status === 'returned' ? 'Hoàn trả' : status}
+                                        {status === 'pending' ? '📦 Chờ lấy hàng' :
+                                         status === 'preparing' ? '📦 Đang chuẩn bị' :
+                                         status === 'shipping' ? '🚚 Đang giao hàng' :
+                                         status === 'delivered' ? '✅ Đã giao hàng' :
+                                         status === 'returned' ? '↩️ Đã hoàn trả' :
+                                         status === 'cancelled' ? '❌ Đã hủy vận chuyển' : status}
                                     </span>
                                     <span className={`font-semibold ${
                                         status === 'delivered' ? 'text-green-600' :
@@ -949,7 +966,7 @@ const Dashboard = () => {
 
                 {/* Thống kê thanh toán */}
                 <div className="mt-6">
-                    <p className="font-body text-body-small text-gray-500">Tình trạng thanh toán</p>
+                    <p className="font-body text-body-small text-gray-500">💳 Tình trạng thanh toán</p>
                     <div className="mt-2">
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
                             <div 
@@ -958,8 +975,8 @@ const Dashboard = () => {
                             ></div>
                         </div>
                         <div className="flex justify-between mt-2 text-sm">
-                            <span>Đã thanh toán: {orderStats.paidOrders}</span>
-                            <span>Chưa thanh toán: {orderStats.unpaidOrders}</span>
+                            <span>✅ Đã thanh toán: {orderStats.paidOrders}</span>
+                            <span>⏳ Chưa thanh toán: {orderStats.unpaidOrders}</span>
                         </div>
                     </div>
                 </div>
@@ -968,32 +985,32 @@ const Dashboard = () => {
             {/* Thống kê khuyến mãi */}
             <div className={`${isDarkMode ? 'dark:bg-gray-800' : 'bg-white'} rounded-xl shadow-sm p-6 mt-6`}>
                 <h3 className={`font-heading text-heading-3 font-semibold mb-4 ${isDarkMode ? 'dark:text-white' : ''}`}>
-                    Thống kê khuyến mãi
+                    🏷️ Thống kê khuyến mãi
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <p className="font-body text-body-normal text-gray-500">Tổng quan khuyến mãi</p>
+                        <p className="font-body text-body-normal text-gray-500">📊 Tổng quan khuyến mãi</p>
                         <div className="mt-2 space-y-2">
                             <div className="flex justify-between items-center">
-                                <span>Tổng số khuyến mãi</span>
+                                <span>📈 Tổng số khuyến mãi</span>
                                 <span className="font-semibold">
                                     {console.log(extendedStats.promotions.total) || extendedStats.promotions.total}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span>Đang hoạt động</span>
+                                <span>✅ Đang hoạt động</span>
                                 <span className="font-semibold text-green-600">
                                     {extendedStats.promotions.active}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span>Sắp diễn ra</span>
+                                <span>⏳ Sắp diễn ra</span>
                                 <span className="font-semibold text-blue-600">
                                     {extendedStats.promotions.upcoming}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span>Đã kết thúc</span>
+                                <span>❌ Đã kết thúc</span>
                                 <span className="font-semibold text-gray-600">
                                     {extendedStats.promotions.ended}
                                 </span>
@@ -1002,13 +1019,13 @@ const Dashboard = () => {
                     </div>
 
                     <div>
-                        <p className="font-body text-body-normal text-gray-500">Phân loại khuyến mãi</p>
+                        <p className="font-body text-body-normal text-gray-500">🏷️ Phân loại khuyến mãi</p>
                         <div className="mt-2 space-y-2">
                             {Object.entries(extendedStats.promotions.analytics?.types || {}).map(([type, count]) => (
                                 <div key={type} className="flex justify-between items-center">
                                     <span>
-                                        {type === 'normal' ? 'Khuyến mãi thường' :
-                                         type === 'flash-sale' ? 'Flash Sale' : type}
+                                        {type === 'normal' ? '🏷️ Khuyến mãi thường' :
+                                         type === 'flash-sale' ? '⚡ Flash Sale' : type}
                                     </span>
                                     <span className="font-semibold">
                                         {count} ({((count / extendedStats.promotions.total) * 100).toFixed(1)}%)
@@ -1023,13 +1040,13 @@ const Dashboard = () => {
                 <div className="mt-4 pt-4 border-t">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <p className="font-body text-body-small text-gray-500">Mức giảm giá trung bình</p>
+                            <p className="font-body text-body-small text-gray-500">💰 Mức giảm giá trung bình</p>
                             <p className="font-heading text-heading-3 font-semibold mt-1">
                                 {extendedStats.promotions.avgDiscount}%
                             </p>
                         </div>
                         <div>
-                            <p className="font-body text-body-small text-gray-500">Số danh mục được áp dụng</p>
+                            <p className="font-body text-body-small text-gray-500">📑 Số danh mục được áp dụng</p>
                             <p className="font-heading text-heading-3 font-semibold mt-1">
                                 {extendedStats.promotions.analytics?.totalCategories || 0}
                             </p>

@@ -16,27 +16,9 @@ const storage = multer.diskStorage({
         cb(null, randomString);
     }
 });
-
 const upload = multer({ storage: storage });
 
-// Routes cho người dùng
-router.get('/all-by-categories', ProductController.getAllProductsByCategories);
-router.get('/', ProductController.getProducts);
-router.get('/basic', ProductController.getAllProductsBasicInfo);
-router.get('/gender', ProductController.getProductsByGender);
-router.get('/category/:categoryID', ProductController.getProductsByCategory);
-router.get('/:id', ProductController.getProductById);
-
-// Routes cho admin (yêu cầu đăng nhập và quyền admin)
-router.patch('/:id/restore', authenticateToken, isAdmin, ProductController.restoreProduct); // Khôi phục sản phẩm
-router.get('/admin/products', authenticateToken, isAdmin, ProductController.getProductsChoADMIN); // Lấy danh sách sản phẩm cho admin
-router.get('/admin/products/:id', authenticateToken, isAdmin, ProductController.getProductByIdChoADMIN); // Lấy chi tiết sản phẩm theo ID cho admin
-router.post('/admin/products/create', authenticateToken, isAdmin, ProductController.createProduct); // Tạo sản phẩm mới
-router.put('/admin/products/update/:id', authenticateToken, isAdmin, ProductController.updateProduct); // Cập nhật sản phẩm
-router.delete('/admin/products/delete/:id', authenticateToken, isAdmin, ProductController.deleteProduct); // Xóa sản phẩm ( xoá hoàn toàn)
-router.patch('/admin/products/toggle/:id', authenticateToken, isAdmin, ProductController.toggleProductStatus); // Khôi phục sản phẩm
-
-// Route xử lý upload ảnh (thêm mới)
+//!ADMIN - UPLOAD ẢNH
 router.post('/admin/products/upload-images', 
     authenticateToken, 
     isAdmin, 
@@ -67,10 +49,22 @@ router.post('/admin/products/upload-images',
     }
 );
 
-// Routes cho AI
-router.post('/ai/chat', ProductController.getAIProductRecommendation);
-router.get('/ai/outfit/:productID', ProductController.getAIOutfitSuggestion);
-router.post('/ai/train', authenticateToken, isAdmin, ProductController.trainAI);
-router.post('/ai/update-training', authenticateToken, isAdmin, ProductController.updateTrainingData);
+//!ADMIN - DASHBOARD
+router.get('/all-by-categories', ProductController.getAllProductsByCategories);
+//?CUSTOMER - HOMEPAGE
+router.get('/', ProductController.getProducts);
+router.get('/basic', ProductController.getAllProductsBasicInfo);
+router.get('/gender', ProductController.getProductsByGender);
+router.get('/category/:categoryID', ProductController.getProductsByCategory);
+router.get('/:id', ProductController.getProductById);
+
+//!ADMIN - PRODUCT MANAGEMENT
+router.get('/admin/products', authenticateToken, isAdmin, ProductController.getProductsChoADMIN); // Lấy 
+router.get('/admin/products/:id', authenticateToken, isAdmin, ProductController.getProductByIdChoADMIN); // Lấy chi tiết
+router.put('/admin/products/update/:id', authenticateToken, isAdmin, ProductController.updateProduct); // Cập nhật
+//!ADMIN CALL THÊM /api/product-size-stock ĐỂ CHỈNH TỒN KHO
+router.post('/admin/products/create', authenticateToken, isAdmin, ProductController.createProduct); // Tạo
+router.delete('/admin/products/delete/:id', authenticateToken, isAdmin, ProductController.deleteProduct); // Xóa
+router.patch('/admin/products/toggle/:id', authenticateToken, isAdmin, ProductController.toggleProductStatus); // Bật tắt vô hiệu hoá
 
 module.exports = router;

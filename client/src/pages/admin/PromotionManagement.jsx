@@ -8,73 +8,72 @@ import { formatDate } from '../../utils/dateUtils';
 const PromotionManagement = () => {
     const { isDarkMode } = useTheme();
 
-    // ===== STATES =====
-    const [promotions, setPromotions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingPromotion, setEditingPromotion] = useState(null);
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [productSearch, setProductSearch] = useState('');
-    const [categorySearch, setCategorySearch] = useState('');
+    // ===== STATES - QUẢN LÝ TRẠNG THÁI =====
+    const [promotions, setPromotions] = useState([]); // Danh sách khuyến mãi
+    const [loading, setLoading] = useState(true); // Trạng thái loading
+    const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái hiển thị modal
+    const [editingPromotion, setEditingPromotion] = useState(null); // Khuyến mãi đang chỉnh sửa
+    const [products, setProducts] = useState([]); // Danh sách sản phẩm
+    const [categories, setCategories] = useState([]); // Danh sách danh mục
+    const [productSearch, setProductSearch] = useState(''); // Từ khóa tìm kiếm sản phẩm
+    const [categorySearch, setCategorySearch] = useState(''); // Từ khóa tìm kiếm danh mục
 
     // ===== STATE CHO TÌM KIẾM VÀ LỌC =====
     const [filters, setFilters] = useState({
-        status: 'all',      // all/active/inactive/expired
-        type: 'all',        // all/normal/flash-sale
-        sort: 'none',       // none/createAt/endDate/discountPercent
-        order: 'desc'       // asc/desc
+        status: 'all',      // Tất cả/Đang hoạt động/Không hoạt động/Hết hạn
+        type: 'all',        // Tất cả/Khuyến mãi thường/Flash sale
+        sort: 'none',       // Không/Ngày tạo/Ngày kết thúc/Phần trăm giảm
+        order: 'desc'       // Giảm dần/Tăng dần
     });
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(''); // Từ khóa tìm kiếm chung
 
     // ===== STATE CHO PHÂN TRANG =====
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+    const [itemsPerPage] = useState(10); // Số item trên mỗi trang
 
-    // ===== FORM STATE =====
+    // ===== STATE CHO FORM =====
     const [formData, setFormData] = useState({
-        name: '',
-        description: '',
-        discountPercent: 0,
-        startDate: '',
-        endDate: '',
-        status: 'active',
-        type: 'normal',
-        products: [],
-        categories: []
+        name: '',              // Tên khuyến mãi
+        description: '',       // Mô tả
+        discountPercent: 0,    // Phần trăm giảm giá
+        startDate: '',         // Ngày bắt đầu
+        endDate: '',           // Ngày kết thúc
+        status: 'active',      // Trạng thái
+        type: 'normal',        // Loại khuyến mãi
+        products: [],          // Danh sách sản phẩm áp dụng
+        categories: []         // Danh sách danh mục áp dụng
     });
 
-    // Thêm state thống kê
+    // ===== STATE CHO THỐNG KÊ =====
     const [promotionStats, setPromotionStats] = useState({
-        totalPromotions: 0,
-        activePromotions: 0,
-        upcomingPromotions: 0,
-        expiredPromotions: 0,
-        totalDiscount: 0,
-        totalProducts: 0
+        totalPromotions: 0,      // Tổng số khuyến mãi
+        activePromotions: 0,     // Số khuyến mãi đang hoạt động
+        upcomingPromotions: 0,   // Số khuyến mãi sắp diễn ra
+        expiredPromotions: 0,    // Số khuyến mãi đã hết hạn
+        totalDiscount: 0,        // Tổng giảm giá
+        totalProducts: 0         // Tổng sản phẩm được áp dụng
     });
 
-    // ===== EFFECTS =====
+    // ===== EFFECTS - QUẢN LÝ SIDE EFFECTS =====
     useEffect(() => {
-        fetchPromotions();
-        fetchProducts();
-        fetchCategories();
+        fetchPromotions(); // Lấy danh sách khuyến mãi
+        fetchProducts();   // Lấy danh sách sản phẩm
+        fetchCategories(); // Lấy danh sách danh mục
     }, []);
 
-    // ===== API CALLS =====
+    // ===== API CALLS - GỌI API =====
     const fetchPromotions = async () => {
         try {
             setLoading(true);
             const response = await axios.get('/api/admin/promotions/all');
             if (response.data) {
                 setPromotions(response.data.promotions || []);
-                // Cập nhật stats trực tiếp từ response
+                // Cập nhật thống kê từ response
                 setPromotionStats({
                     totalPromotions: response.data.stats.totalPromotions,
                     activePromotions: response.data.stats.activePromotions,
                     upcomingPromotions: response.data.stats.upcomingPromotions,
                     expiredPromotions: response.data.stats.endedPromotions,
-                    // Giữ lại các trường khác nếu cần
                     totalDiscount: 0,
                     totalProducts: 0
                 });
@@ -163,7 +162,7 @@ const PromotionManagement = () => {
         }
     };
 
-    // ===== HANDLERS =====
+    // ===== HANDLERS - XỬ LÝ SỰ KIỆN =====
     const handleEditClick = (promotion) => {
         setEditingPromotion(promotion);
         setFormData({
@@ -212,7 +211,8 @@ const PromotionManagement = () => {
 
             const response = await axios.patch(`/api/admin/promotions/toggle-status/${promotion.promotionID}`);
             
-            if (response.data && response.data.success) {
+            // Kiểm tra message từ response
+            if (response.data && response.data.message) {
                 // Cập nhật UI ngay lập tức
                 setPromotions(promotions.map(p => 
                     p.promotionID === promotionId 
@@ -223,8 +223,6 @@ const PromotionManagement = () => {
                 // Cập nhật lại stats
                 setPromotionStats(prevStats => ({
                     ...prevStats,
-                    // Nếu đang active -> inactive: giảm active đi 1
-                    // Nếu đang inactive -> active: tăng active lên 1
                     activePromotions: prevStats.activePromotions + (promotion.status === 'active' ? -1 : 1)
                 }));
 
@@ -238,7 +236,7 @@ const PromotionManagement = () => {
         }
     };
 
-    // ===== FILTER & SORT =====
+    // ===== FILTER & SORT - LỌC VÀ SẮP XẾP =====
     const getFilteredAndSortedPromotions = () => {
         const now = new Date();
 
@@ -296,7 +294,7 @@ const PromotionManagement = () => {
         return filteredPromotions;
     };
 
-    // ===== PAGINATION =====
+    // ===== PAGINATION - PHÂN TRANG =====
     const filteredPromotions = getFilteredAndSortedPromotions();
     const totalPages = Math.ceil(filteredPromotions.length / itemsPerPage);
     const currentPromotions = filteredPromotions.slice(
@@ -411,17 +409,6 @@ const PromotionManagement = () => {
             </div>
         );
     };
-
-    // Lọc sản phẩm theo từ khóa tìm kiếm
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-        product.productID.toString().includes(productSearch)
-    );
-
-    // Lọc danh mục theo từ khóa tìm kiếm
-    const filteredCategories = categories.filter(category =>
-        category.name.toLowerCase().includes(categorySearch.toLowerCase())
-    );
 
     // Thêm hàm tính giá sau khi giảm
     const calculateDiscountedPrice = (originalPrice, discountPercent) => {
@@ -996,7 +983,7 @@ const PromotionManagement = () => {
         const isActive = promotion.status === 'active' && !isExpired;
         const currentDate = new Date();
         const startDate = new Date(promotion.startDate);
-        const endDate = new Date(promotion.endDate);
+        // const endDate = new Date(promotion.endDate);
         const isUpcoming = startDate > currentDate;
 
         return (
@@ -1163,7 +1150,7 @@ const PromotionManagement = () => {
                             <FiEdit2 className="w-6 h-6" />
                         </button>
                         <button
-                            onClick={() => handleDeletePromotion(promotion._id)}
+                            onClick={() => handleDeletePromotion(promotion.promotionID)}
                             className={`p-2.5 rounded-lg transition-colors ${
                                 isDarkMode
                                     ? 'bg-red-400/10 hover:bg-red-400/20 text-red-400'

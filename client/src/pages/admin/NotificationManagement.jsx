@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FiPlus, FiClock, FiEdit2, FiTrash2, FiX, FiCheck, FiEye, FiMessageCircle, FiFilter, FiBell, FiShoppingBag, FiTag, FiCalendar, FiCheckCircle, FiXCircle, FiSearch, FiPower } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiPlus, FiClock, FiEdit2, FiTrash2, FiX, FiBell, FiCheckCircle, FiXCircle, FiSearch,} from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { useTheme } from '../../contexts/AdminThemeContext';
 import axios from '../../utils/axios';
@@ -109,19 +109,6 @@ const NotificationManagement = () => {
             sortOrder: prev.sortBy === sortBy ? (prev.sortOrder === 'asc' ? 'desc' : 'asc') : 'desc'
         }));
         filterNotifications(allNotifications);
-    };
-
-    // ===== XỬ LÝ THÊM THÔNG BÁO =====
-    const handleAddNotification = () => {
-        setSelectedNotification({
-            title: '',
-            message: '',
-            type: 'welcome',
-            scheduledFor: new Date(),
-            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            //! thông báo hết hạn sau 7 ngày
-        });
-        setIsModalOpen(true);
     };
 
     // Thêm hàm fetch users
@@ -582,104 +569,6 @@ const NotificationManagement = () => {
         }
     };
 
-    // ===== RENDER THANH CÔNG CỤ =====
-    const renderToolbar = () => {
-        return (
-            <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                <div className="flex flex-wrap gap-3 items-center">
-                    {/* Tìm kiếm */}
-                    <div className="relative min-w-[240px]">
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm thông báo..."
-                            value={filters.searchTerm}
-                            onChange={(e) => setFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
-                            className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${
-                                isDarkMode
-                                    ? 'bg-gray-800 border-gray-700 text-gray-200 focus:border-blue-500'
-                                    : 'bg-white border-gray-200 focus:border-blue-500'
-                            } transition-colors duration-200`}
-                        />
-                        <FiSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                    </div>
-
-                    {/* Lọc theo loại */}
-                    <select
-                        value={filters.type}
-                        onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-                        className={`px-4 py-2.5 rounded-xl border ${
-                            isDarkMode
-                                ? 'bg-gray-800 border-gray-700 text-gray-200'
-                                : 'bg-white border-gray-200'
-                        } transition-colors duration-200`}
-                    >
-                        <option value="all">🔍 Tất cả loại</option>
-                        <option value="welcome">🎉 Chào mừng</option>
-                        <option value="promotion">🏷️ Khuyến mãi</option>
-                        <option value="system">⚙️ Hệ thống</option>
-                        <option value="new_collection">👕 BST mới</option>
-                        <option value="membership">👑 Thành viên</option>
-                        <option value="policy">📜 Chính sách</option>
-                        <option value="survey">📝 Khảo sát</option>
-                        <option value="security">🔒 Bảo mật</option>
-                        <option value="holiday">🎊 Ngày lễ</option>
-                    </select>
-
-                    {/* Sắp xếp */}
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => handleSortChange('readCount')}
-                            className={`px-4 py-2.5 rounded-xl border transition-all duration-200 ${
-                                filters.sortBy === 'readCount'
-                                    ? 'bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/30'
-                                    : isDarkMode
-                                        ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                                        : 'bg-white border-gray-200 hover:bg-gray-50'
-                            }`}
-                        >
-                            <span className="flex items-center gap-2">
-                                <FiEye className="w-4 h-4" />
-                                Lượt đọc {filters.sortBy === 'readCount' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
-                            </span>
-                        </button>
-                        <button
-                            onClick={() => handleSortChange('createdAt')}
-                            className={`px-4 py-2.5 rounded-xl border transition-all duration-200 ${
-                                filters.sortBy === 'createdAt'
-                                    ? 'bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/30'
-                                    : isDarkMode
-                                        ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                                        : 'bg-white border-gray-200 hover:bg-gray-50'
-                            }`}
-                        >
-                            <span className="flex items-center gap-2">
-                                <FiCalendar className="w-4 h-4" />
-                                Mới nhất {filters.sortBy === 'createdAt' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
-                            </span>
-                        </button>
-                    </div>
-                </div>
-
-                <button
-                    onClick={() => {
-                        setSelectedNotification({
-                            title: '',
-                            message: '',
-                            type: 'welcome',
-                            scheduledFor: new Date().toISOString().slice(0, 16),
-                            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-                            status: 'pending'
-                        });
-                        setIsModalOpen(true);
-                    }}
-                    className={`flex items-center justify-center px-6 py-3 text-lg rounded-lg transition-colors duration-300 bg-green-500 hover:bg-green-600 text-white`}
-                >
-                    <FiPlus className="mr-2 w-6 h-6" /> Thêm thông báo
-                </button>
-            </div>
-        );
-    };
-
     // ===== RENDER MODAL THÊM/SỬA THÔNG BÁO =====
     const renderNotificationModal = () => {
         if (!isModalOpen) return null;
@@ -771,7 +660,7 @@ const NotificationManagement = () => {
                                         type="datetime-local"
                                         value={selectedNotification.scheduledFor || ''}
                                         onChange={(e) => {
-                                            const localDate = new Date(e.target.value);
+                                            // const localDate = new Date(e.target.value);
                                             setSelectedNotification(prev => ({
                                                 ...prev,
                                                 scheduledFor: e.target.value
@@ -791,7 +680,7 @@ const NotificationManagement = () => {
                                         type="datetime-local"
                                         value={selectedNotification.expiresAt || ''}
                                         onChange={(e) => {
-                                            const localDate = new Date(e.target.value);
+                                            // const localDate = new Date(e.target.value);
                                             setSelectedNotification(prev => ({
                                                 ...prev,
                                                 expiresAt: e.target.value

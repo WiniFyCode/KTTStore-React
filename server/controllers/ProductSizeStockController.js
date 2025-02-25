@@ -187,17 +187,10 @@ class ProductSizeStockController {
             const color = await ProductColor.findOne({ colorID: stockItem.colorID });
             const product = await Product.findOne({ productID: color.productID });
 
-            const result = {
-                ...stockItem.toObject(),
-                colorInfo: {
-                    ...color.toObject(),
-                    productID: product
-                }
-            };
+            
 
             res.json({
-                message: 'Cập nhật số lượng tồn kho thành công',
-                stockItem: result
+                message: 'Cập nhật số lượng tồn kho thành công'
             });
         } catch (error) {
             console.error('Error in updateStock:', error);

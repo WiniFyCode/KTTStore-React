@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 class UserController {
 
-    //! ADMIN
+    //!ADMIN - Lấy danh sách người dùng và thống kê
     // "user" + "stats : tổng người dùng , người dùng đang hoạt động , người dùng bị khóa"
     async getUsersChoADMIN(req, res) {
         try {
@@ -32,66 +32,7 @@ class UserController {
         }
     }
 
-    //! ADMIN
-    // ADMIN: Tạo tài khoản mới
-    async createUser(req, res) {
-        try {
-            const { fullname, gender, email, password, phone, role = 'admin' } = req.body;
-
-            // Kiểm tra email và số điện thoại đã tồn tại
-            const existingUser = await User.findOne({
-                $or: [
-                    { email: email.toLowerCase() },
-                    { phone }
-                ]
-            });
-            if (existingUser) {
-                return res.status(400).json({
-                    message: existingUser.email === email.toLowerCase() ?
-                        'Email đã được sử dụng' : 'Số điện thoại đã được sử dụng'
-                });
-            }
-
-            // Tạo ID mới cho user
-            const lastUser = await User.findOne().sort({ userID: -1 });
-            const userID = lastUser ? lastUser.userID + 1 : 1;
-
-            // Hash mật khẩu
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-
-            const user = new User({
-                userID,
-                fullname,
-                gender,
-                email: email.toLowerCase(),
-                password: hashedPassword,
-                phone,
-                role
-            });
-
-            await user.save();
-
-            // Loại bỏ thông tin nhạy cảm trước khi trả về
-            const userResponse = user.toJSON();
-            delete userResponse.password;
-            delete userResponse.resetPasswordToken;
-            delete userResponse.resetPasswordExpires;
-
-            res.status(201).json({
-                message: 'Tạo tài khoản thành công',
-                user: userResponse
-            });
-        } catch (error) {
-            res.status(500).json({
-                message: 'Có lỗi xảy ra khi tạo tài khoản',
-                error: error.message
-            });
-        }
-    }
-
-    //! ADMIN
-    // Cập nhật thông tin người dùng
+    //!ADMIN - Cập nhật thông tin người dùng
     async updateUser(req, res) {
         try {
             // Lấy userID từ params thay vì token
@@ -152,8 +93,7 @@ class UserController {
         }
     }
 
-    //!Toàn thêm
-    // ADMIN: Vô hiệu hóa/Kích hoạt tài khoản
+    //!ADMIN: Vô hiệu hóa/Kích hoạt tài khoản
     async toggleUserStatus(req, res) {
         try {
             const { id } = req.params;
@@ -176,10 +116,6 @@ class UserController {
 
             res.json({
                 message: isDisabled ? 'Đã vô hiệu hóa tài khoản' : 'Đã kích hoạt tài khoản',
-                user: {
-                    userID: user.userID,
-                    isDisabled: user.isDisabled
-                }
             });
         } catch (error) {
             res.status(500).json({

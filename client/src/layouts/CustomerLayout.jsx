@@ -1,11 +1,12 @@
 // CustomerLayout.jsx - Layout chung cho phần customer của website
 import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaHeart, FaUser, FaBars, FaTimes, FaSearch, FaFacebook, FaInstagram, FaTiktok, FaYoutube, FaClipboardList, FaMapMarker, FaArrowUp, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaUser, FaBars, FaTimes, FaSearch, FaFacebook, FaInstagram, FaTiktok, FaYoutube, FaClipboardList, FaMapMarker, FaArrowUp, FaUserPlus, FaSignOutAlt, FaTrash } from 'react-icons/fa';
 import { useTheme } from '../contexts/CustomerThemeContext';
 import { toast } from 'react-toastify';
 import axiosInstance from '../utils/axios';
 import { shopInfo } from '../data/ShopInfo';
+import AIChat from '../components/AI/AIChat';
 
 const CustomerLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -24,6 +25,12 @@ const CustomerLayout = () => {
   const [wishlistCount, setWishlistCount] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Thêm state cho modal đăng xuất
+  // Thêm state để lưu danh sách sản phẩm trong giỏ hàng
+  const [cartItems, setCartItems] = useState([]);
+  const [isLoadingCart, setIsLoadingCart] = useState(false);
+  // Thêm state để lưu danh sách yêu thích
+  const [favoriteItems, setFavoriteItems] = useState([]);
+  const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
 
   // Menu items dựa theo theme - Các mục menu sẽ thay đổi dựa vào theme hiện tại (Tết hoặc bình thường)
   const menuItems = theme === 'tet' ? [
@@ -121,18 +128,20 @@ const CustomerLayout = () => {
     };
   }, []);
 
-  // Thêm useEffect để fetch số lượng
+  // Xóa các useEffect riêng lẻ và gộp vào một useEffect chung
   useEffect(() => {
-    const fetchCounts = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('customerToken');
         if (!token) {
           setCartCount(0);
           setWishlistCount(0);
+          setCartItems([]);
+          setFavoriteItems([]);
           return;
         }
 
-        // Fetch số lượng giỏ hàng và yêu thích cùng lúc
+        // Fetch tất cả dữ liệu cùng lúc
         const [cartResponse, wishlistResponse] = await Promise.all([
           axiosInstance.get('/api/cart', {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -142,11 +151,16 @@ const CustomerLayout = () => {
           })
         ]);
 
+        // Cập nhật state cho cart
+        setCartItems(cartResponse.data.items || []);
         setCartCount(cartResponse.data.items?.length || 0);
+
+        // Cập nhật state cho wishlist
+        setFavoriteItems(wishlistResponse.data.items?.slice(0, 4) || []); // Chỉ lấy 4 sản phẩm mới nhất
         setWishlistCount(wishlistResponse.data.items?.length || 0);
 
       } catch (error) {
-        console.error('Error fetching counts:', error);
+        console.error('Error fetching data:', error);
         if (error.response?.status === 401) {
           localStorage.removeItem('customerToken');
           localStorage.removeItem('customerInfo');
@@ -157,17 +171,17 @@ const CustomerLayout = () => {
 
     // Fetch ngay lập tức khi component mount hoặc đăng nhập thay đổi
     if (isLoggedIn) {
-      fetchCounts();
+      fetchData();
     }
 
     // Lắng nghe sự kiện thay đổi
-    window.addEventListener('cartChange', fetchCounts);
-    window.addEventListener('wishlistChange', fetchCounts);
+    window.addEventListener('cartChange', fetchData);
+    window.addEventListener('wishlistChange', fetchData);
 
     // Cleanup
     return () => {
-      window.removeEventListener('cartChange', fetchCounts);
-      window.removeEventListener('wishlistChange', fetchCounts);
+      window.removeEventListener('cartChange', fetchData);
+      window.removeEventListener('wishlistChange', fetchData);
     };
   }, [isLoggedIn]); // Chỉ chạy lại khi trạng thái đăng nhập thay đổi
 
@@ -212,8 +226,7 @@ const CustomerLayout = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header - Phần đầu trang cố định ở trên cùng */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        theme === 'tet' 
+      <header className={`sticky top-0 z-50 transition-all duration-300 ${theme === 'tet'
           ? 'bg-red-900' 
           : 'bg-gray-900'
       }`}>
@@ -225,15 +238,13 @@ const CustomerLayout = () => {
                 <div className="flex items-center">
                   {/* Logo Text */}
                   <div className="relative">
-                    <span className={`text-2xl font-bold ${
-                      theme === 'tet'
+                    <span className={`text-2xl font-bold ${theme === 'tet'
                         ? 'text-yellow-300/90'
                         : 'text-white'
                     } transition-all duration-300 animate-pulse-slow`}>
                       KTT
                     </span>
-                    <span className={`ml-2 text-2xl font-light ${
-                      theme === 'tet'
+                    <span className={`ml-2 text-2xl font-light ${theme === 'tet'
                         ? 'text-yellow-200/90'
                         : 'text-gray-300'
                     } transition-all duration-300`}>
@@ -306,8 +317,7 @@ const CustomerLayout = () => {
                   <Link
                     key={item.name}
                     to={item.path}
-                    className={`whitespace-nowrap hover:text-white/80 transition-colors ${
-                      location.pathname === item.path
+                    className={`whitespace-nowrap hover:text-white/80 transition-colors ${location.pathname === item.path
                         ? theme === 'tet'
                           ? 'text-yellow-400 font-semibold'
                           : 'text-blue-400 font-semibold'
@@ -326,18 +336,20 @@ const CustomerLayout = () => {
             <div className="hidden lg:flex items-center justify-end space-x-4 ml-8">
               {/* Search with dropdown */}
               <div className="relative group">
-                <button className={`p-2 rounded-full transition-all duration-300 ${
-                  theme === 'tet'
-                    ? 'hover:bg-red-800/50'
-                    : 'hover:bg-gray-800/50'
-                }`}>
-                  <FaSearch size={20} className={`${
-                    theme === 'tet'
-                      ? 'text-yellow-300/90'
-                      : 'text-white'
-                  }`} />
+                <button
+                  onClick={() => toggleDropdown('search')}
+                  className="p-2 text-white hover:opacity-80 transition-opacity"
+                >
+                  <FaSearch size={20} />
                 </button>
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
+
+                {/* Search dropdown */}
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                  {/* Arrow */}
+                  <div className="absolute right-2 -top-2 w-6 h-6 bg-white transform rotate-45"></div>
+
+                  {/* Search content */}
+                  <div className="relative z-10 bg-white rounded-xl">
                   <form onSubmit={handleSearch} className="p-4">
                     <div className="relative">
                       <input
@@ -345,24 +357,21 @@ const CustomerLayout = () => {
                         placeholder="Tìm kiếm sản phẩm..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className={`w-full px-4 py-3 pl-12 rounded-xl border-2 focus:outline-none transition-all duration-300 ${
-                          theme === 'tet'
+                          className={`w-full px-4 py-3 pl-12 rounded-xl border-2 focus:outline-none transition-all duration-300 ${theme === 'tet'
                             ? 'border-red-200 focus:border-red-500 placeholder-red-300'
                             : 'border-gray-200 focus:border-blue-500 placeholder-gray-400'
                         }`}
                       />
                       <FaSearch 
                         size={16} 
-                        className={`absolute left-4 top-1/2 -translate-y-1/2 ${
-                          theme === 'tet'
+                          className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'tet'
                             ? 'text-red-400'
                             : 'text-gray-400'
                         }`}
                       />
                       <button
                         type="submit"
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                          theme === 'tet'
+                          className={`absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${theme === 'tet'
                             ? 'bg-red-500 hover:bg-red-600 text-white'
                             : 'bg-blue-500 hover:bg-blue-600 text-white'
                         }`}
@@ -375,14 +384,13 @@ const CustomerLayout = () => {
                   <div className="px-4 pb-4">
                     <div className="text-xs font-medium text-gray-500 mb-2">Gợi ý tìm kiếm:</div>
                     <div className="flex flex-wrap gap-2">
-                      {['Áo thun', 'Quần jean', 'Váy', 'Áo khoác' ,'Quần dài', 'Áo dài'].map((tag) => (
+                        {['Áo thun', 'Quần jean', 'Váy', 'Áo khoác', 'Quần dài', 'Áo dài'].map((tag) => (
                         <button
                           key={tag}
                           onClick={() => {
                             setSearchQuery(tag);
                           }}
-                          className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
-                            theme === 'tet'
+                            className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${theme === 'tet'
                               ? 'bg-red-500/90 text-white hover:bg-red-800/100'
                               : 'bg-blue-500/90 text-white hover:bg-blue-800/100'
                           }`}
@@ -390,17 +398,22 @@ const CustomerLayout = () => {
                           {tag}
                         </button>
                       ))}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Wishlist with counter */}
+              {/* Wishlist with dropdown */}
+              <div className="relative group">
               <Link
                 to="/wishlist"
-                className="relative group p-2"
+                  className="relative p-2 block"
               >
-                <FaHeart size={20} className={`${theme === 'tet' ? 'text-yellow-400' : 'text-white'} hover:opacity-80 transition-opacity`} />
+                  <FaHeart size={20} className={`${theme === 'tet'
+                      ? 'text-yellow-300/90 hover:text-yellow-400'
+                      : 'text-white hover:opacity-80'
+                    } transition-opacity`} />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
                     {wishlistCount}
@@ -408,13 +421,108 @@ const CustomerLayout = () => {
                 )}
               </Link>
 
-              {/* Cart with counter */}
+                {/* Dropdown menu */}
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                  {/* Arrow */}
+                  <div className="absolute right-2 -top-2 w-6 h-6 bg-white transform rotate-45"></div>
+
+                  {/* Header */}
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-medium text-gray-900">Danh sách yêu thích</h3>
+                      <span className={`text-sm ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`}>
+                        {wishlistCount} sản phẩm
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Favorite items */}
+                  <div className="max-h-96 overflow-y-auto">
+                    {isLoadingFavorite ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="w-6 h-6 border-2 border-gray-200 rounded-full animate-spin"
+                          style={{ borderTopColor: theme === 'tet' ? '#ef4444' : '#3b82f6' }}>
+                        </div>
+                      </div>
+                    ) : favoriteItems.length > 0 ? (
+                      <div className="py-2">
+                        {favoriteItems.map((item) => (
+                          <div key={item.favoriteID} className="px-4 py-3 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              {/* Product image */}
+                              <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                                <img
+                                  src={item.product.thumbnail}
+                                  alt={item.product.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+
+                              {/* Product info */}
+                              <div className="flex-1 min-w-0">
+                                <Link
+                                  to={`/product/${item.product.productID}`}
+                                  className="text-sm font-medium text-gray-900 hover:text-blue-600 truncate block"
+                                >
+                                  {item.product.name}
+                                </Link>
+                                {/* Thêm size và màu sắc */}
+                                {(item.size || item.colorName) && (
+                                  <p className="text-sm text-gray-500 mt-1">
+                                    {item.colorName && `${item.colorName}`}
+                                    {item.colorName && item.size && ' / '}
+                                    {item.size && `${item.size}`}
+                                  </p>
+                                )}
+                                <div className="flex items-center mt-2">
+                                  <span className={`text-sm mt-1 font-medium ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                                    }`}>
+                                    {item.product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ
+                                  </span>
+                                  <span className="mx-2">|</span>
+                                  {/* Thêm note nếu có */}
+                                  {item.note && (
+                                    <p className="text-xs text-gray-500 mt-1 italic truncate">
+                                      {item.note}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-8 text-center">
+                        <p className="text-gray-500">Chưa có sản phẩm yêu thích</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  {favoriteItems.length > 0 && (
+                    <div className="p-4 border-t border-gray-100">
+                      <Link
+                        to="/wishlist"
+                        className={`block w-full py-2 px-4 rounded-lg text-center text-sm font-medium text-white transition-colors ${theme === 'tet'
+                            ? 'bg-red-600 hover:bg-white hover:text-red-500 hover:border-red-500 hover:border-2'
+                            : 'bg-blue-600 hover:bg-white hover:text-blue-500 hover:border-blue-500 hover:border-2'
+                          }`}
+                      >
+                        Xem tất cả
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Cart with dropdown */}
+              <div className="relative group">
               <Link
                 to="/cart"
-                className="relative group p-2"
+                  className="relative p-2 block"
               >
-                <FaShoppingCart size={20} className={`${
-                  theme === 'tet' 
+                  <FaShoppingCart size={20} className={`${theme === 'tet'
                     ? 'text-yellow-300/90 hover:text-yellow-400' 
                     : 'text-white hover:opacity-80'
                 } transition-opacity`} />
@@ -425,15 +533,109 @@ const CustomerLayout = () => {
                 )}
               </Link>
 
+                {/* Dropdown menu */}
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                  {/* Arrow */}
+                  <div className="absolute right-2 -top-2 w-6 h-6 bg-white transform rotate-45"></div>
+
+                  {/* Header */}
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-medium text-gray-900">Giỏ hàng</h3>
+                      <span className={`text-sm ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`}>
+                        {cartCount} sản phẩm
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Cart items */}
+                  <div className="max-h-96 overflow-y-auto">
+                    {isLoadingCart ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="w-6 h-6 border-2 border-gray-200 rounded-full animate-spin"
+                          style={{ borderTopColor: theme === 'tet' ? '#ef4444' : '#3b82f6' }}>
+                        </div>
+                      </div>
+                    ) : cartItems.length > 0 ? (
+                      <div className="py-2">
+                        {cartItems.map((item) => (
+                          <div key={item.cartID} className="px-4 py-3 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              {/* Product image */}
+                              <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                                <img
+                                  src={item.product.imageURL}
+                                  alt={item.product.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+
+                              {/* Product info */}
+                              <div className="flex-1 min-w-0">
+                                <Link
+                                  to={`/product/${item.product.productID}`}
+                                  className="text-sm font-medium text-gray-900 hover:text-blue-600 truncate block"
+                                >
+                                  {item.product.name}
+                                </Link>
+                                <p className="text-sm text-gray-500 mt-1">
+                                  {item.color.colorName} / {item.size.name}
+                                </p>
+                                <div className="flex items-center justify-between mt-1">
+                                  <span className={`text-sm font-medium ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`}>
+                                    {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ {item.originalPrice !== item.price ? <span className="text-sm text-gray-400 line-through ml-1">{item.originalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</span> : null}
+                                  </span>
+                                  <span className="text-sm text-gray-500">
+                                    x{item.quantity}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-8 text-center">
+                        <p className="text-gray-500">Giỏ hàng trống</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  {cartItems.length > 0 && (
+                    <div className="p-4 border-t border-gray-100">
+                      <Link
+                        to="/cart"
+                        className={`block w-full py-2 px-4 rounded-lg text-center text-sm font-medium text-white transition-colors ${theme === 'tet'
+                            ? 'bg-red-600 hover:bg-white hover:text-red-500 hover:border-red-500 hover:border-2'
+                            : 'bg-blue-600 hover:bg-white hover:text-blue-500 hover:border-blue-500 hover:border-2'
+                          }`}
+                      >
+                        Xem giỏ hàng
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Profile with dropdown */}
               <div className="relative group">
-                <button className={`p-2 hover:opacity-80 transition-opacity ${theme === 'tet' ? 'text-yellow-400' : 'text-white'}`}>
+                <button
+                  onClick={() => toggleDropdown('account')}
+                  className="p-2 text-white hover:opacity-80 transition-opacity"
+                >
                   <FaUser size={20} />
                 </button>
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                  <div className="py-2">
+
+                {/* Profile dropdown */}
+                <div className="absolute right-0 top-full mt-2 w-60 bg-white rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                  {/* Arrow */}
+                  <div className="absolute right-2 -top-2 w-6 h-6 bg-white transform rotate-45"></div>
+
+                  {/* Profile content */}
+                  <div className="relative z-10 bg-white rounded-xl">
                     {isLoggedIn ? (
-                      <>
+                      <div className="py-2">
                         <Link to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Tài khoản của tôi</Link>
                         <Link to="/orders" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Đơn hàng</Link>
                         <div className="border-t border-gray-200"></div>
@@ -443,12 +645,12 @@ const CustomerLayout = () => {
                         >
                           Đăng xuất
                         </button>
-                      </>
+                      </div>
                     ) : (
-                      <>
+                      <div className="py-2">
                         <Link to="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Đăng nhập</Link>
                         <Link to="/register" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Đăng ký</Link>
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -457,8 +659,7 @@ const CustomerLayout = () => {
               {/* Theme toggle */}
               <button
                 onClick={handleThemeToggle}
-                className={`px-4 py-2 rounded-full transition-all duration-300 whitespace-nowrap ${
-                  theme === 'tet'
+                className={`px-4 py-2 rounded-full transition-all duration-300 whitespace-nowrap ${theme === 'tet'
                     ? 'bg-yellow-400/90 text-red-800 hover:bg-yellow-400'
                     : 'bg-blue-500 text-white hover:bg-blue-600'
                 }`}
@@ -470,8 +671,7 @@ const CustomerLayout = () => {
 
           {/* Mobile Navigation Menu */}
           <div
-            className={`lg:hidden fixed inset-0 bg-gray-900/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${
-              isMenuOpen
+            className={`lg:hidden fixed inset-0 bg-gray-900/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${isMenuOpen
                 ? 'opacity-100 visible'
                 : 'opacity-0 invisible pointer-events-none'
             }`}
@@ -509,8 +709,7 @@ const CustomerLayout = () => {
                       placeholder="Tìm kiếm sản phẩm..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`w-full px-4 py-3 pl-12 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 border-2 transition-all duration-300 ${
-                        theme === 'tet'
+                      className={`w-full px-4 py-3 pl-12 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 border-2 transition-all duration-300 ${theme === 'tet'
                           ? 'border-red-500/30 focus:border-red-500/50'
                           : 'border-blue-500/30 focus:border-blue-500/50'
                       } focus:outline-none`}
@@ -521,8 +720,7 @@ const CustomerLayout = () => {
                     />
                     <button
                       type="submit"
-                      className={`absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                        theme === 'tet'
+                      className={`absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${theme === 'tet'
                           ? 'bg-red-500 hover:bg-red-600 text-white'
                           : 'bg-blue-500 hover:bg-blue-600 text-white'
                       }`}
@@ -541,8 +739,7 @@ const CustomerLayout = () => {
                         onClick={() => {
                           setSearchQuery(tag);
                         }}
-                        className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
-                          theme === 'tet'
+                        className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${theme === 'tet'
                             ? 'bg-red-500/20 text-white hover:bg-red-500/30'
                             : 'bg-blue-500/20 text-white hover:bg-blue-500/30'
                         }`}
@@ -781,15 +978,13 @@ const CustomerLayout = () => {
                 />
                 {/* Logo Text với hiệu ứng giống như ở nav */}
                 <div className="ml-4 relative">
-                  <span className={`text-2xl font-bold ${
-                    theme === 'tet'
+                  <span className={`text-2xl font-bold ${theme === 'tet'
                       ? 'text-yellow-300/90'
                       : 'text-white'
                   } transition-all duration-300 animate-pulse-slow`}>
                     KTT
                   </span>
-                  <span className={`ml-2 text-2xl font-light ${
-                    theme === 'tet'
+                  <span className={`ml-2 text-2xl font-light ${theme === 'tet'
                       ? 'text-yellow-200/90'
                       : 'text-gray-300'
                   } transition-all duration-300`}>
@@ -845,16 +1040,14 @@ const CustomerLayout = () => {
                     href={`https://maps.google.com/?q=${shopInfo.address}`} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className={`relative group inline-flex items-center ${
-                      theme === 'tet' 
+                    className={`relative group inline-flex items-center ${theme === 'tet'
                         ? 'text-yellow-300 hover:text-yellow-500' 
                         : 'text-blue-300 hover:text-blue-500'
                     } transition-colors duration-300`}
                   >
                     <span>{shopInfo.address}</span>
                     <FaMapMarker size={16} className="ml-1" />
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-400' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -865,15 +1058,13 @@ const CustomerLayout = () => {
                   Điện thoại: &nbsp;
                   <a 
                     href={`tel:${shopInfo.phone}`} 
-                    className={`relative group inline-block ${
-                      theme === 'tet' 
+                    className={`relative group inline-block ${theme === 'tet'
                         ? 'text-yellow-300 hover:text-yellow-500' 
                         : 'text-blue-300 hover:text-blue-500'
                     } transition-colors duration-300`}
                   >
                     <span>{shopInfo.phone}</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-400' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -884,15 +1075,13 @@ const CustomerLayout = () => {
                   Email: &nbsp;
                   <a 
                     href={`mailto:${shopInfo.email}`} 
-                    className={`relative group inline-block ${
-                      theme === 'tet' 
+                    className={`relative group inline-block ${theme === 'tet'
                         ? 'text-yellow-300 hover:text-yellow-500' 
                         : 'text-blue-300 hover:text-blue-500'
                     } transition-colors duration-300`}
                   >
                     <span>{shopInfo.email}</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-400' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -908,15 +1097,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/policy" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Tất cả chính sách</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -925,15 +1112,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/policy/shipping" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Chính sách vận chuyển</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -942,15 +1127,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/policy/return" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Chính sách đổi trả</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -959,15 +1142,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/policy/payment" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Chính sách thanh toán</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -983,15 +1164,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/support" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Trung tâm hỗ trợ</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -1000,15 +1179,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/support/faq" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Câu hỏi thường gặp</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -1017,15 +1194,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/support/size-guide" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Hướng dẫn chọn size</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -1034,15 +1209,13 @@ const CustomerLayout = () => {
                 <li>
                   <Link 
                     to="/support/contact" 
-                    className={`text-gray-300 relative group block w-fit ${
-                      theme === 'tet' 
+                    className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                         ? 'hover:text-yellow-300' 
                         : 'hover:text-blue-300'
                     } transition-colors duration-300`}
                   >
                     <span>Liên hệ - Báo cáo lỗi</span>
-                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                      theme === 'tet' 
+                    <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                         ? 'bg-yellow-300' 
                         : 'bg-blue-300'
                     } transition-all duration-300 group-hover:w-full`}></span>
@@ -1057,15 +1230,13 @@ const CustomerLayout = () => {
               <div className="flex flex-col space-y-2">
                 <Link 
                   to="/connect" 
-                  className={`text-gray-300 relative group block w-fit ${
-                    theme === 'tet' 
+                  className={`text-gray-300 relative group block w-fit ${theme === 'tet'
                       ? 'hover:text-yellow-300' 
                       : 'hover:text-blue-300'
                   } transition-colors duration-300`}
                 >
                   <span>Tất cả kênh kết nối</span>
-                  <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${
-                    theme === 'tet' 
+                  <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${theme === 'tet'
                       ? 'bg-yellow-300' 
                       : 'bg-blue-300'
                   } transition-all duration-300 group-hover:w-full`}></span>
@@ -1121,12 +1292,10 @@ const CustomerLayout = () => {
       {/* Nút cuộn lên đầu trang */}
       <button
         onClick={scrollToTop}
-        className={`fixed right-6 bottom-6 p-3 rounded-full shadow-lg transition-all duration-300 transform ${
-          showScrollTop 
+        className={`fixed right-6 bottom-28 p-3 rounded-full shadow-lg transition-all duration-300 transform ${showScrollTop
             ? 'translate-y-0 opacity-100 visible'
             : 'translate-y-10 opacity-0 invisible'
-        } ${
-          theme === 'tet'
+          } ${theme === 'tet'
             ? 'bg-red-600 hover:bg-red-700 text-white'
             : 'bg-blue-600 hover:bg-blue-700 text-white'
         }`}
@@ -1166,8 +1335,7 @@ const CustomerLayout = () => {
                 <button
                   type="button"
                   onClick={confirmLogout}
-                  className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${
-                    theme === 'tet'
+                  className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${theme === 'tet'
                       ? 'bg-red-600 hover:bg-red-700'
                       : 'bg-blue-600 hover:bg-blue-700'
                   } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors`}
@@ -1186,6 +1354,7 @@ const CustomerLayout = () => {
           </div>
         </div>
       )}
+      <AIChat />
     </div>
   );
 };

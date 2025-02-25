@@ -49,6 +49,7 @@ const userRoutes = require('./routes/user.route');
 const promotionRoutes = require('./routes/promotion.route');
 const productSizeStockRoutes = require('./routes/product-size-stock.route');
 const productColorRoutes = require('./routes/product-color.route');
+const aiRoutes = require('./routes/AI.route');
 
 // Mail
 const subscriptionRoutes = require('./mail/subscription.route');
@@ -65,6 +66,7 @@ app.use('/api/promotions', promotionRoutes);// Quản lý khuyến mãi
 app.use('/api/reviews', reviewRoutes);// Đánh giá sản phẩm
 app.use('/api/product-size-stock', productSizeStockRoutes);// Quản lý size và số lượng tồn
 app.use('/api/targets', targetRoutes);// Quản lý target
+app.use('/api/ai', aiRoutes);
 
 // Customer routes (cần xác thực customer)
 app.use('/api/address', authenticateCustomer, addressRoutes);// Quản lý địa chỉ
@@ -84,7 +86,7 @@ app.use('/api/admin', authenticateAdmin, (req, res, next) => {
 });
 
 //! VÍ DỤ 1 API CỦA ADMIN : /api/admin/products/admin/products - đây là API admin đang sử dụng
-//?Trang Dashboard
+//? Trang Dashboard
 //* GET /api/products/all-by-categories - Lấy thống kê sản phẩm theo danh mục
 // * GET /api/admin/users - Lấy thống kê về người dùng
 // * GET /api/admin/orders/admin/orders - Lấy thống kê về đơn hàng và doanh thu
@@ -93,32 +95,32 @@ app.use('/api/admin', authenticateAdmin, (req, res, next) => {
 // * GET /api/admin/notifications/admin/notifications - Lấy thống kê về thông báo
 // * GET /api/reviews/admin/all - Lấy thống kê về đánh giá sản phẩm
 
-//?Trang Customer Management
+//? Trang Customer Management
 app.use('/api/admin/users', authenticateAdmin, userRoutes);// Quản lý người dùng
 
-//?Trang Product Management
+//? Trang Product Management
 app.use('/api/admin/products', authenticateAdmin, productRoutes);// Quản lý sản phẩm
 app.use('/api/admin/product-size-stock', authenticateAdmin, productSizeStockRoutes);// Quản lý size và số lượng tồn
 app.use('/api/admin/product-colors', authenticateAdmin, productColorRoutes);// Quản lý màu sắc
-//!ADMIN CALL THÊM /api/categories
-//!ADMIN CALL THÊM /api/targets
+//!ADMIN CALL THÊM /api/categories cho bộ lọc sản phẩm
+//!ADMIN CALL THÊM /api/targets cho bộ lọc sản phẩm
 
-//?Trang Order Management
+//? Trang Order Management
 app.use('/api/admin/orders', authenticateAdmin, orderRoutes);// Quản lý đơn hàng
 app.use('/api/admin/order-details', authenticateAdmin, orderDetailRoutes);// Quản lý chi tiết đơn hàng
 
-//?Trang Promotion Management
+//? Trang Promotion Management
 app.use('/api/admin/promotions', authenticateAdmin, promotionRoutes);// Quản lý khuyến mãi
-//!ADMIN CALL THÊM /api/categories
-//!ADMIN CALL THÊM /api/products
+//!ADMIN CALL THÊM /api/categories cho danh mục sản phẩm được áp dụng
+//!ADMIN CALL THÊM /api/products cho danh sách sản phẩm được áp dụng
 
-//?Trang Coupon Management
+//? Trang Coupon Management
 app.use('/api/admin/coupons', authenticateAdmin, couponRoutes);// Quản lý mã giảm giá
 //!ADMIN CALL THÊM /api/categories
 
-//?Trang Notification Management
+//? Trang Notification Management
 app.use('/api/admin/notifications', authenticateAdmin, notificationRoutes);// Quản lý thông báo
-//!ADMIN CALL THÊM /api/users/admin/users
+//!ADMIN CALL THÊM /api/users/admin/users cho danh sách người dùng được thông báo
 
 app.use('/api/admin/categories', authenticateAdmin, categoryRoutes);// Quản lý danh mục
 

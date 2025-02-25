@@ -1,64 +1,63 @@
 // Import các thư viện cần thiết
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from '../../utils/axios';  // Import axios đã được cấu hình sẵn
 import { FiSearch, FiEdit2, FiUserX, FiUserCheck, FiUser, FiPower } from 'react-icons/fi'; // Import các icon
 import { toast } from 'react-toastify'; // Import thư viện để hiển thị thông báo
 import { useTheme } from '../../contexts/AdminThemeContext'; // Import context để sử dụng theme sáng/tối
 
-// Component chính để quản lý khách hàng
+// Component quản lý khách hàng
 const Customers = () => {
-    // Lấy theme hiện tại (sáng/tối) từ context
+    // Sử dụng theme tối/sáng
     const { isDarkMode } = useTheme();
 
-    // Khai báo các state để lưu trữ dữ liệu
-    // ===== STATE CHO DỮ LIỆU =====
-    const [allCustomers, setAllCustomers] = useState([]); // Lưu toàn bộ danh sách khách hàng
-    const [filteredCustomers, setFilteredCustomers] = useState([]); // Lưu danh sách khách hàng sau khi lọc
-    const [loading, setLoading] = useState(true); // Trạng thái đang tải dữ liệu
+    // ===== STATES =====
+    // ===== DỮ LIỆU KHÁCH HÀNG =====
+    const [allCustomers, setAllCustomers] = useState([]); // Danh sách tất cả khách hàng
+    const [filteredCustomers, setFilteredCustomers] = useState([]); // Danh sách sau khi lọc
+    const [loading, setLoading] = useState(true); // Trạng thái đang tải
 
-    // ===== STATE CHO TÌM KIẾM VÀ LỌC =====
+    // ===== TÌM KIẾM & LỌC =====
     const [searchTerm, setSearchTerm] = useState(''); // Từ khóa tìm kiếm
     const [filters, setFilters] = useState({
-        status: 'all',      // Lọc theo trạng thái (tất cả/hoạt động/vô hiệu hóa)
+        status: 'all',      // Lọc theo trạng thái
         gender: '',         // Lọc theo giới tính
-        sort: 'createAt',   // Sắp xếp theo trường nào
-        order: 'desc'       // Thứ tự sắp xếp (tăng/giảm)
+        sort: 'createAt',   // Sắp xếp theo trường
+        order: 'desc'       // Thứ tự sắp xếp
     });
 
-    // ===== STATE CHO PHÂN TRANG =====
+    // ===== PHÂN TRANG =====
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const [itemsPerPage, setItemsPerPage] = useState(10); // Số item trên mỗi trang
+    const [itemsPerPage] = useState(10); // Số khách hàng mỗi trang
     const [totalPages, setTotalPages] = useState(0); // Tổng số trang
 
-    // ===== STATE CHO THỐNG KÊ =====
+    // ===== THỐNG KÊ =====
     const [stats, setStats] = useState({
         total: 0,      // Tổng số khách hàng
-        active: 0,     // Số khách hàng đang hoạt động
-        disabled: 0    // Số khách hàng bị vô hiệu hóa
+        active: 0,     // Số khách hàng hoạt động
+        disabled: 0    // Số khách hàng bị khóa
     });
 
-    // ===== STATE CHO CHỈNH SỬA =====
-    const [editingCustomer, setEditingCustomer] = useState(null); // Khách hàng đang được chỉnh sửa
-    const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái hiển thị modal chỉnh sửa
+    // ===== CHỈNH SỬA KHÁCH HÀNG =====
+    const [editingCustomer, setEditingCustomer] = useState(null); // Khách hàng đang sửa
+    const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái modal
 
-    // Hàm chuyển đổi giới tính từ tiếng Anh sang tiếng Việt
+    // ===== CÁC HÀM TIỆN ÍCH =====
+    // Chuyển đổi giới tính sang tiếng Việt
     const getGenderText = (gender) => {
         return gender === 'male' ? 'Nam' : gender === 'female' ? 'Nữ' : '';
     };
 
-    // Hàm chuyển đổi giới tính từ tiếng Việt sang tiếng Anh
+    // Chuyển đổi giới tính sang tiếng Anh
     const getGenderValue = (genderText) => {
         return genderText === 'Nam' ? 'male' : genderText === 'Nữ' ? 'female' : '';
     };
 
     // ===== CÁC HÀM XỬ LÝ =====
-
-    // 1. Hàm lấy dữ liệu từ server khi component được tạo
+    // Lấy dữ liệu khách hàng từ server
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-
                 const response = await axios.get('/api/admin/users/admin/users');
 
                 if (response.data?.users) {
@@ -67,6 +66,7 @@ const Customers = () => {
                     setTotalPages(Math.ceil(response.data.users.length / itemsPerPage));
                 }
 
+                // Cập nhật thống kê
                 if (response.data?.stats) {
                     setStats({
                         total: response.data.stats.totalUser || 0,
@@ -85,12 +85,11 @@ const Customers = () => {
         fetchData();
     }, [itemsPerPage]);
 
-    // 2. Hàm xử lý tìm kiếm và lọc
+    // Xử lý tìm kiếm và lọc
     useEffect(() => {
-        // Tạo một bản sao của danh sách khách hàng
         let result = [...allCustomers];
 
-        // Xử lý tìm kiếm
+        // Lọc theo từ khóa
         if (searchTerm) {
             const searchLower = searchTerm.toLowerCase();
             result = result.filter(customer =>
@@ -101,20 +100,20 @@ const Customers = () => {
             );
         }
 
-        // Xử lý lọc theo trạng thái
+        // Lọc theo trạng thái
         if (filters.status !== 'all') {
             result = result.filter(customer =>
                 filters.status === 'active' ? !customer.isDisabled : customer.isDisabled
             );
         }
 
-        // Xử lý lọc theo giới tính
+        // Lọc theo giới tính
         if (filters.gender) {
             const genderValue = getGenderValue(filters.gender);
             result = result.filter(customer => customer.gender === genderValue);
         }
 
-        // Xử lý sắp xếp
+        // Sắp xếp kết quả
         if (filters.sort) {
             result.sort((a, b) => {
                 let compareResult = 0;
@@ -135,10 +134,10 @@ const Customers = () => {
             });
         }
 
-        // Cập nhật danh sách đã lọc
+        // Cập nhật kết quả và reset trang
         setFilteredCustomers(result);
         setTotalPages(Math.ceil(result.length / itemsPerPage));
-        setCurrentPage(1); // Reset về trang đầu tiên khi lọc
+        setCurrentPage(1);
     }, [allCustomers, searchTerm, filters, itemsPerPage]);
 
     // 3. Hàm xử lý thay đổi bộ lọc
@@ -219,11 +218,6 @@ const Customers = () => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return filteredCustomers.slice(startIndex, endIndex);
-    };
-
-    // Tính tổng số trang
-    const calculateTotalPages = () => {
-        return Math.ceil(filteredCustomers.length / itemsPerPage);
     };
 
     // Xử lý chuyển trang

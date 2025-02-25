@@ -1112,7 +1112,7 @@ const Profile = () => {
                   {/* Overlay */}
                   <div className="fixed inset-0 transition-opacity" aria-hidden="true">
                     <div
-                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm"
+                      className="absolute inset-0 bg-gray-500/75 backdrop-blur-sm"
                       onClick={() => {
                         setShowAddressModal(false);
                         setEditingAddress(null);
@@ -1127,79 +1127,84 @@ const Profile = () => {
 
                   {/* Modal */}
                   <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                      <div className="sm:flex sm:items-start">
-                        <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                          } sm:mx-0 sm:h-10 sm:w-10`}>
-                          {editingAddress ? (
-                            <FaEdit className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                              }`} />
-                          ) : (
-                            <FaPlus className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                              }`} />
-                          )}
-                        </div>
-                        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                          <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    {/* Header */}
+                    <div className="px-6 py-4 border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-xl ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'}`}>
+                            {editingAddress ? (
+                              <FaEdit className={`h-5 w-5 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`} />
+                            ) : (
+                              <FaPlus className={`h-5 w-5 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`} />
+                            )}
+                          </div>
+                          <h3 className="text-xl font-semibold text-gray-900">
                             {editingAddress ? "Chỉnh sửa địa chỉ" : "Thêm địa chỉ mới"}
                           </h3>
-                          <div className="mt-4 space-y-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Địa chỉ
-                              </label>
-                              <textarea
-                                value={addressForm.address}
-                                onChange={(e) =>
-                                  setAddressForm({
-                                    ...addressForm,
-                                    address: e.target.value,
-                                  })
-                                }
-                                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                                rows="3"
-                                placeholder="Nhập địa chỉ chi tiết..."
-                              />
-                            </div>
-                            <div className="flex items-center">
-                              <input
-                                type="checkbox"
-                                id="isDefault"
-                                checked={addressForm.isDefault}
-                                onChange={(e) =>
-                                  setAddressForm({
-                                    ...addressForm,
-                                    isDefault: e.target.checked,
-                                  })
-                                }
-                                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                              />
-                              <label htmlFor="isDefault" className="ml-2 block text-sm text-gray-900">
-                                Đặt làm địa chỉ mặc định
-                              </label>
-                            </div>
-                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setShowAddressModal(false);
+                            setEditingAddress(null);
+                            setAddressForm({
+                              addressID: null,
+                              address: "",
+                              isDefault: false,
+                            });
+                          }}
+                          className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                        >
+                          <FaTimes className="w-5 h-5 text-gray-500" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Body */}
+                    <div className="px-6 py-4">
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Địa chỉ của bạn
+                          </label>
+                          <textarea
+                            value={addressForm.address}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                address: e.target.value,
+                              })
+                            }
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                            rows="3"
+                            placeholder="Ví dụ: 123 Đường ABC, Phường XYZ, Quận 1, TP.HCM"
+                          />
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id="isDefault"
+                            checked={addressForm.isDefault}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                isDefault: e.target.checked,
+                              })
+                            }
+                            className={`w-5 h-5 rounded border-gray-300 ${
+                              theme === 'tet' 
+                                ? 'text-red-500 focus:ring-red-500' 
+                                : 'text-blue-500 focus:ring-blue-500'
+                            }`}
+                          />
+                          <label htmlFor="isDefault" className="ml-3 text-sm text-gray-700">
+                            Đặt làm địa chỉ mặc định
+                          </label>
                         </div>
                       </div>
                     </div>
-                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-                      <button
-                        onClick={handleUpdateAddress}
-                        disabled={isUpdatingAddress || !addressForm.address.trim()}
-                        className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${theme === 'tet'
-                          ? 'bg-red-600 hover:bg-red-700'
-                          : 'bg-blue-600 hover:bg-blue-700'
-                          } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
-                      >
-                        {isUpdatingAddress ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            {editingAddress ? "Đang cập nhật..." : "Đang thêm..."}
-                          </div>
-                        ) : (
-                          editingAddress ? "Cập nhật" : "Thêm"
-                        )}
-                      </button>
+
+                    {/* Footer */}
+                    <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3">
                       <button
                         onClick={() => {
                           setShowAddressModal(false);
@@ -1210,10 +1215,31 @@ const Profile = () => {
                             isDefault: false,
                           });
                         }}
-                        className="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
                         disabled={isUpdatingAddress}
                       >
                         Hủy
+                      </button>
+                      <button
+                        onClick={handleUpdateAddress}
+                        disabled={isUpdatingAddress || !addressForm.address.trim()}
+                        className={`px-6 py-2 rounded-xl text-white text-sm font-medium transition-colors ${
+                          theme === 'tet'
+                            ? 'bg-red-500 hover:bg-red-600'
+                            : 'bg-blue-500 hover:bg-blue-600'
+                        } disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
+                      >
+                        {isUpdatingAddress ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            Đang lưu...
+                          </>
+                        ) : (
+                          <>
+                            <FaCheck className="w-4 h-4" />
+                            {editingAddress ? "Cập nhật" : "Thêm địa chỉ"}
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -1293,7 +1319,7 @@ const Profile = () => {
                   {/* Overlay */}
                   <div className="fixed inset-0 transition-opacity" aria-hidden="true">
                     <div
-                      className="absolute inset-0 bg-gray-500 opacity-75 backdrop-blur-sm"
+                      className="absolute inset-0 bg-gray-500/75 backdrop-blur-sm"
                       onClick={() => {
                         setShowPasswordModal(false);
                         setPasswordForm({
@@ -1312,138 +1338,150 @@ const Profile = () => {
 
                   {/* Modal */}
                   <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                      <div className="sm:flex sm:items-start">
-                        <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
-                          } sm:mx-0 sm:h-10 sm:w-10`}>
-                          <FaKey className={`h-6 w-6 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                            }`} />
-                        </div>
-                        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                          <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    {/* Header */}
+                    <div className="px-6 py-4 border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-xl ${theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'}`}>
+                            <FaKey className={`h-5 w-5 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'}`} />
+                          </div>
+                          <h3 className="text-xl font-semibold text-gray-900">
                             Đổi mật khẩu
                           </h3>
-                          <div className="mt-4 space-y-4">
-                            {/* Mật khẩu hiện tại */}
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Mật khẩu hiện tại
-                              </label>
-                              <div className="relative">
-                                <input
-                                  type={showPasswords.current ? "text" : "password"}
-                                  value={passwordForm.currentPassword}
-                                  onChange={(e) =>
-                                    setPasswordForm({
-                                      ...passwordForm,
-                                      currentPassword: e.target.value,
-                                    })
-                                  }
-                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${passwordErrors.currentPassword
-                                    ? 'border-red-500 focus:ring-red-500'
-                                    : 'focus:ring-blue-500'
-                                    }`}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowPasswords(prev => ({ ...prev, current: !prev.current }))}
-                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                                >
-                                  {showPasswords.current ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                              </div>
-                              {passwordErrors.currentPassword && (
-                                <p className="mt-1 text-sm text-red-500">{passwordErrors.currentPassword}</p>
-                              )}
-                            </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setShowPasswordModal(false);
+                            setPasswordForm({
+                              currentPassword: "",
+                              newPassword: "",
+                              confirmPassword: "",
+                            });
+                            setShowPasswords({
+                              current: false,
+                              new: false,
+                              confirm: false
+                            });
+                          }}
+                          className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                        >
+                          <FaTimes className="w-5 h-5 text-gray-500" />
+                        </button>
+                      </div>
+                    </div>
 
-                            {/* Mật khẩu mới */}
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Mật khẩu mới
-                              </label>
-                              <div className="relative">
-                                <input
-                                  type={showPasswords.new ? "text" : "password"}
-                                  value={passwordForm.newPassword}
-                                  onChange={(e) =>
-                                    setPasswordForm({
-                                      ...passwordForm,
-                                      newPassword: e.target.value,
-                                    })
-                                  }
-                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${passwordErrors.newPassword
-                                    ? 'border-red-500 focus:ring-red-500'
-                                    : 'focus:ring-blue-500'
-                                    }`}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowPasswords(prev => ({ ...prev, new: !prev.new }))}
-                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                                >
-                                  {showPasswords.new ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                              </div>
-                              {passwordErrors.newPassword && (
-                                <p className="mt-1 text-sm text-red-500">{passwordErrors.newPassword}</p>
-                              )}
-                            </div>
-
-                            {/* Xác nhận mật khẩu mới */}
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Xác nhận mật khẩu mới
-                              </label>
-                              <div className="relative">
-                                <input
-                                  type={showPasswords.confirm ? "text" : "password"}
-                                  value={passwordForm.confirmPassword}
-                                  onChange={(e) =>
-                                    setPasswordForm({
-                                      ...passwordForm,
-                                      confirmPassword: e.target.value,
-                                    })
-                                  }
-                                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${passwordErrors.confirmPassword
-                                    ? 'border-red-500 focus:ring-red-500'
-                                    : 'focus:ring-blue-500'
-                                    }`}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowPasswords(prev => ({ ...prev, confirm: !prev.confirm }))}
-                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                                >
-                                  {showPasswords.confirm ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                              </div>
-                              {passwordErrors.confirmPassword && (
-                                <p className="mt-1 text-sm text-red-500">{passwordErrors.confirmPassword}</p>
-                              )}
-                            </div>
+                    {/* Body */}
+                    <div className="px-6 py-4">
+                      <div className="space-y-4">
+                        {/* Mật khẩu hiện tại */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Mật khẩu hiện tại
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showPasswords.current ? "text" : "password"}
+                              value={passwordForm.currentPassword}
+                              onChange={(e) =>
+                                setPasswordForm({
+                                  ...passwordForm,
+                                  currentPassword: e.target.value,
+                                })
+                              }
+                              className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                                passwordErrors.currentPassword
+                                  ? 'border-red-500 focus:ring-red-500'
+                                  : 'border-gray-300 focus:ring-blue-500'
+                              }`}
+                              placeholder="Nhập mật khẩu hiện tại"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPasswords(prev => ({ ...prev, current: !prev.current }))}
+                              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                              {showPasswords.current ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
+                            </button>
                           </div>
+                          {passwordErrors.currentPassword && (
+                            <p className="mt-1.5 text-sm text-red-500">{passwordErrors.currentPassword}</p>
+                          )}
+                        </div>
+
+                        {/* Mật khẩu mới */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Mật khẩu mới
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showPasswords.new ? "text" : "password"}
+                              value={passwordForm.newPassword}
+                              onChange={(e) =>
+                                setPasswordForm({
+                                  ...passwordForm,
+                                  newPassword: e.target.value,
+                                })
+                              }
+                              className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                                passwordErrors.newPassword
+                                  ? 'border-red-500 focus:ring-red-500'
+                                  : 'border-gray-300 focus:ring-blue-500'
+                              }`}
+                              placeholder="Nhập mật khẩu mới"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPasswords(prev => ({ ...prev, new: !prev.new }))}
+                              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                              {showPasswords.new ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
+                            </button>
+                          </div>
+                          {passwordErrors.newPassword && (
+                            <p className="mt-1.5 text-sm text-red-500">{passwordErrors.newPassword}</p>
+                          )}
+                        </div>
+
+                        {/* Xác nhận mật khẩu mới */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Xác nhận mật khẩu mới
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showPasswords.confirm ? "text" : "password"}
+                              value={passwordForm.confirmPassword}
+                              onChange={(e) =>
+                                setPasswordForm({
+                                  ...passwordForm,
+                                  confirmPassword: e.target.value,
+                                })
+                              }
+                              className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                                passwordErrors.confirmPassword
+                                  ? 'border-red-500 focus:ring-red-500'
+                                  : 'border-gray-300 focus:ring-blue-500'
+                              }`}
+                              placeholder="Xác nhận mật khẩu mới"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPasswords(prev => ({ ...prev, confirm: !prev.confirm }))}
+                              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                              {showPasswords.confirm ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
+                            </button>
+                          </div>
+                          {passwordErrors.confirmPassword && (
+                            <p className="mt-1.5 text-sm text-red-500">{passwordErrors.confirmPassword}</p>
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-                      <button
-                        onClick={handleChangePassword}
-                        disabled={isChangingPassword || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
-                        className={`w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 ${theme === 'tet'
-                          ? 'bg-red-600 hover:bg-red-700'
-                          : 'bg-blue-600 hover:bg-blue-700'
-                          } text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
-                      >
-                        {isChangingPassword ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            Đang cập nhật...
-                          </div>
-                        ) : (
-                          'Xác nhận'
-                        )}
-                      </button>
+
+                    {/* Footer */}
+                    <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3">
                       <button
                         onClick={() => {
                           setShowPasswordModal(false);
@@ -1458,10 +1496,31 @@ const Profile = () => {
                             confirm: false
                           });
                         }}
-                        className="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
                         disabled={isChangingPassword}
                       >
                         Hủy
+                      </button>
+                      <button
+                        onClick={handleChangePassword}
+                        disabled={isChangingPassword || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                        className={`px-6 py-2 rounded-xl text-white text-sm font-medium transition-colors ${
+                          theme === 'tet'
+                            ? 'bg-red-500 hover:bg-red-600'
+                            : 'bg-blue-500 hover:bg-blue-600'
+                        } disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
+                      >
+                        {isChangingPassword ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            Đang cập nhật...
+                          </>
+                        ) : (
+                          <>
+                            <FaCheck className="w-4 h-4" />
+                            Xác nhận
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>

@@ -142,46 +142,101 @@ const Promotion = () => {
           <div className="flex flex-wrap gap-4 mb-8">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-full transition-all ${
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 filter === 'all'
                   ? theme === 'tet'
-                    ? 'bg-red-500 text-white'
-                    : 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/50'
+                    : 'bg-blue-500 text-white shadow-lg shadow-blue-500/50'
+                  : 'bg-white/50 hover:bg-white/80'
               }`}
             >
               Tất cả
             </button>
             <button
               onClick={() => setFilter('active')}
-              className={`px-4 py-2 rounded-full transition-all ${
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 filter === 'active'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                  ? 'bg-green-500 text-white shadow-lg shadow-green-500/50'
+                  : 'bg-white/50 hover:bg-white/80'
               }`}
             >
               Đang diễn ra
             </button>
             <button
               onClick={() => setFilter('upcoming')}
-              className={`px-4 py-2 rounded-full transition-all ${
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 filter === 'upcoming'
-                  ? 'bg-yellow-500 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                  ? 'bg-yellow-500 text-white shadow-lg shadow-yellow-500/50'
+                  : 'bg-white/50 hover:bg-white/80'
               }`}
             >
               Sắp diễn ra
             </button>
             <button
               onClick={() => setFilter('expired')}
-              className={`px-4 py-2 rounded-full transition-all ${
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 filter === 'expired'
-                  ? 'bg-red-500 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
+                  ? 'bg-gray-500 text-white shadow-lg shadow-gray-500/50'
+                  : 'bg-white/50 hover:bg-white/80'
               }`}
             >
               Đã kết thúc
             </button>
+          </div>
+
+          {/* Stats Cards - Glassmorphism Design */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Card tổng khuyến mãi */}
+            <div className={`p-6 rounded-2xl backdrop-blur-md bg-white/30 border border-white/50 shadow-xl transform hover:scale-105 transition-all duration-300`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-lg font-medium text-gray-800">Tổng khuyến mãi</p>
+                  <h3 className="text-3xl font-bold mt-2">{promotions.length}</h3>
+                </div>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  theme === 'tet' ? 'bg-red-500/20' : 'bg-blue-500/20'
+                }`}>
+                  <FaGift className={`w-6 h-6 ${
+                    theme === 'tet' ? 'text-red-500' : 'text-blue-500'
+                  }`} />
+                </div>
+              </div>
+            </div>
+
+            {/* Card đang diễn ra */}
+            <div className={`p-6 rounded-2xl backdrop-blur-md bg-white/30 border border-white/50 shadow-xl transform hover:scale-105 transition-all duration-300`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-lg font-medium text-gray-800">Đang diễn ra</p>
+                  <h3 className="text-3xl font-bold mt-2">
+                    {promotions.filter(promo => {
+                      const now = new Date();
+                      const start = new Date(promo.startDate);
+                      const end = new Date(promo.endDate);
+                      return now >= start && now <= end;
+                    }).length}
+                  </h3>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                  <FaCalendarAlt className="w-6 h-6 text-green-500" />
+                </div>
+              </div>
+            </div>
+
+            {/* Card sắp diễn ra */}
+            <div className={`p-6 rounded-2xl backdrop-blur-md bg-white/30 border border-white/50 shadow-xl transform hover:scale-105 transition-all duration-300`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-lg font-medium text-gray-800">Sắp diễn ra</p>
+                  <h3 className="text-3xl font-bold mt-2">
+                    {promotions.filter(promo => new Date() < new Date(promo.startDate)).length}
+                  </h3>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                  <FaClock className="w-6 h-6 text-yellow-500" />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Hiển thị trạng thái loading */}
@@ -215,43 +270,40 @@ const Promotion = () => {
                 {filteredPromotions.map((promo) => (
                   <div
                     key={promo.promotionID}
-                    className={`rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl backdrop-blur-sm ${
-                      theme === 'tet'
-                        ? 'bg-white/90 hover:bg-red-50/90'
-                        : 'bg-white/90 hover:bg-blue-50/90'
-                    }`}
+                    className={`group relative bg-white/70 backdrop-blur-md rounded-2xl p-6 transition-all duration-500 border border-white/50 shadow-lg hover:shadow-xl transform hover:-translate-y-1`}
                   >
-                    {/* Thanh màu trên cùng */}
-                    <div className={`w-full h-2 ${
-                      theme === 'tet' ? 'bg-red-500' : 'bg-blue-500'
-                    }`} />
-
-                    {/* Nội dung khuyến mãi */}
-                    <div className="p-6">
-                      {/* Phần header */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <FaPercent className={
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-12 h-12 rounded-xl ${
+                          theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
+                        } flex items-center justify-center transform rotate-3 transition-transform group-hover:rotate-0`}>
+                          <FaPercent className={`w-6 h-6 ${
                             theme === 'tet' ? 'text-red-500' : 'text-blue-500'
-                          } />
-                          <span className={`text-lg font-bold ${
-                            theme === 'tet' ? 'text-red-500' : 'text-blue-500'
-                          }`}>
-                            Giảm {promo.discountPercent}%
-                          </span>
+                          }`} />
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          getStatusColor(promo.startDate, promo.endDate)
+                        <span className={`text-lg font-bold ${
+                          theme === 'tet' ? 'text-red-500' : 'text-blue-500'
                         }`}>
-                          {getStatusText(promo.startDate, promo.endDate)}
+                          Giảm {promo.discountPercent}%
                         </span>
                       </div>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        getStatusColor(promo.startDate, promo.endDate)
+                      }`}>
+                        {getStatusText(promo.startDate, promo.endDate)}
+                      </span>
+                    </div>
 
-                      {/* Tiêu đề và mô tả */}
+                    {/* Content */}
+                    <div className={`relative p-6 rounded-xl mb-4 backdrop-blur-sm ${
+                      theme === 'tet'
+                        ? 'bg-gradient-to-r from-red-50/50 via-orange-50/50 to-yellow-50/50'
+                        : 'bg-gradient-to-r from-blue-50/50 via-indigo-50/50 to-purple-50/50'
+                    } group-hover:shadow-md transition-all duration-300`}>
                       <h3 className="text-xl font-bold mb-2 line-clamp-2">{promo.name}</h3>
                       <p className="text-gray-600 mb-4 line-clamp-2">{promo.description}</p>
 
-                      {/* Thời gian */}
                       <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
                         <FaCalendarAlt />
                         <span>
@@ -260,21 +312,17 @@ const Promotion = () => {
                       </div>
 
                       {/* Thông tin áp dụng */}
-                      <div className="space-y-2 bg-gray-50 rounded-lg p-4">
+                      <div className="space-y-2">
                         <h4 className="font-medium flex items-center gap-2">
                           <FaShoppingBag className={theme === 'tet' ? 'text-red-500' : 'text-blue-500'} />
                           Áp dụng cho:
                         </h4>
                         <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
                           {promo.products && promo.products.length > 0 && (
-                            <li>
-                              {promo.products.length} sản phẩm được chọn
-                            </li>
+                            <li>{promo.products.length} sản phẩm được chọn</li>
                           )}
                           {promo.categories && promo.categories.length > 0 && (
-                            <li>
-                              Danh mục: {promo.categories.join(', ')}
-                            </li>
+                            <li>Danh mục: {promo.categories.join(', ')}</li>
                           )}
                         </ul>
                       </div>

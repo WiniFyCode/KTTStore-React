@@ -702,20 +702,11 @@ class OrderController {
             const { id } = req.params;
             const { orderStatus, shippingStatus, isPayed } = req.body;
 
-            console.log('Request params:', { id });
-            console.log('Request body:', { orderStatus, shippingStatus, isPayed });
-
             // Kiểm tra đơn hàng tồn tại
             let order = await Order.findOne({ orderID: id });
             if (!order) {
                 return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
             }
-
-            console.log('Trạng thái hiện tại:', {
-                orderStatus: order.orderStatus,
-                shippingStatus: order.shippingStatus,
-                isPayed: order.isPayed
-            });
 
             // Danh sách trạng thái hợp lệ
             const validOrderStatuses = ['pending', 'confirmed', 'processing', 'completed', 'cancelled', 'refunded'];
@@ -741,15 +732,16 @@ class OrderController {
                 { new: true }
             );
 
-            console.log('Trạng thái sau khi cập nhật:', {
-                orderStatus: updatedOrder.orderStatus,
+            console.log('Cập nhật đơn hàng:', {
+                orderID: id,
+                orderStatus: updatedOrder.orderStatus, 
                 shippingStatus: updatedOrder.shippingStatus,
-                isPayed: updatedOrder.isPayed
+                isPayed: updatedOrder.isPayed,
             });
 
             res.json({
                 message: 'Cập nhật trạng thái đơn hàng thành công',
-                order: updatedOrder
+                order: updatedOrder // Trả về order đã cập nhật
             });
         } catch (error) {
             console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);

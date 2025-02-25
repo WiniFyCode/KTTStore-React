@@ -20,10 +20,9 @@ async function uploadFile(file) {
     const uploadResult = await cloudinary.uploader.upload(file, options);
     console.log(`Đã tải lên thành công: ${uploadResult.public_id}`);
     
-    // Di chuyển file từ thư mục uploadPendingImages sang thư mục 'products'
-    const destinationPath = './public/uploads/products/' + fileName;
-    fs.renameSync(file, destinationPath);
-    console.log(`Đã dời file thành công đến thư mục 'products'`);
+    // Xóa file tạm sau khi đã upload lên Cloudinary
+    fs.unlinkSync(file);
+    console.log(`Đã xóa file tạm thành công`);
 
     return uploadResult.public_id;
   } catch (error) {
@@ -63,8 +62,38 @@ async function getImageLink(publicId) {
   }
 }
 
+/**
+ * Hàm xóa ảnh trên Cloudinary
+ * @param {string} imageUrl - URL đầy đủ của ảnh trên Cloudinary
+ * @returns {Promise<boolean>} - true nếu xóa thành công, false nếu thất bại
+ */
+async function deleteImage(imageUrl) {
+  try {
+    // Xử lý URL để lấy public_id
+    const urlParts = imageUrl.split('/');
+    const fileNameWithParams = urlParts[urlParts.length - 1];
+    const publicId = fileNameWithParams.split('?')[0].split('.')[0]; // Lấy phần trước dấu ? và .
+
+    // Thực hiện xóa ảnh trên Cloudinary
+    const result = await cloudinary.uploader.destroy(publicId);
+    
+    // Kiểm tra kết quả xóa
+    if (result.result === 'ok') {
+      console.log(`Đã xóa thành công ảnh: ${publicId}`);
+      return true;
+    } else {
+      console.error(`Không thể xóa ảnh: ${publicId}`);
+      return false;
+    }
+  } catch (error) {
+    console.error('Lỗi khi xóa ảnh:', error);
+    throw error;
+  }
+}
+
 module.exports = { 
   uploadImagesInUploadPendingImages,
   getImageLink,
-  uploadFile
+  uploadFile,
+  deleteImage
 }

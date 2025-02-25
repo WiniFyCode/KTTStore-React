@@ -114,17 +114,19 @@ class ProductColorController {
     // ADMIN: Thêm màu mới cho sản phẩm
     async addColor(req, res) {
         try {
-            const { productID, colorName, images, sizes } = req.body;
+            // Lấy id từ params
+            const { id } = req.params;
+            const { colorName, images, sizes } = req.body;
 
             // Kiểm tra sản phẩm tồn tại
-            const product = await Product.findOne({ productID });
+            const product = await Product.findOne({ productID: id });
             if (!product) {
                 return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
             }
 
             // Kiểm tra màu đã tồn tại
             const existingColor = await ProductColor.findOne({
-                productID,
+                productID: id,
                 colorName: { $regex: new RegExp(`^${colorName.trim()}$`, 'i') }
             });
             if (existingColor) {
@@ -137,7 +139,7 @@ class ProductColorController {
 
             const color = new ProductColor({
                 colorID,
-                productID,
+                productID: id,
                 colorName,
                 images: images || ['default.png']
             });
@@ -156,38 +158,56 @@ class ProductColorController {
                         colorID: color.colorID,
                         size: sizeData.size,
                         stock: sizeData.stock || 0,
-                        SKU: `${productID}_${colorID}_${sizeData.size}_${Date.now()}`
+                        SKU: `${id}_${colorID}_${sizeData.size}_${nextSizeStockID}`
                     });
                 }
             }
 
-            // Lấy thông tin stock vừa tạo
-            const stocks = await ProductSizeStock.find({ colorID });
+            // Log thông tin màu đã tạo với chi tiết về sizes và stock
+            const colorInfo = {
+                colorID: color.colorID,
+                productID: color.productID,
+                colorName: color.colorName,
+                totalSizes: sizes ? sizes.length : 0,
+                sizeDetails: sizes ? sizes.map(size => ({
+                    size: size.size,
+                    stock: size.stock || 0
+                })) : []
+            };
+            console.log('Đã tạo màu mới:', colorInfo);
 
-            res.status(201).json({
-                message: 'Thêm màu sắc và size thành công',
-                color: {
-                    ...color.toObject(),
-                    sizes: stocks
-                }
-            });
+            res.status(201).json({ message: 'Thêm màu sắc và size thành công' });
         } catch (error) {
-            res.status(500).json({
-                message: 'Có lỗi xảy ra khi thêm màu sắc',
-                error: error.message
-            });
+            res.status(500).json({ message: 'Có lỗi xảy ra khi thêm màu sắc' });
         }
     }
 
     //!ADMIN
-    // ADMIN: Xóa màu
+    // ADMIN: Xóa màu và tất cả hình ảnh liên quan
     async deleteColor(req, res) {
         try {
             const { id } = req.params;
 
             const color = await ProductColor.findOne({ colorID: id });
             if (!color) {
-                return res.status(404).json({ message: 'Không tìm thấy màu sắc' });
+                return res.status(404).json({ 
+                    success: false,
+                    message: 'Không tìm thấy màu sắc' 
+                });
+            }
+
+            // Import hàm xóa ảnh từ Cloudinary
+            const { deleteImage: deleteCloudinaryImage } = require('../middlewares/ImagesCloudinary_Controller');
+
+            // Xóa tất cả hình ảnh trên Cloudinary
+            for (const imageUrl of color.images) {
+                const isDeleted = await deleteCloudinaryImage(imageUrl);
+                if (!isDeleted) {
+                    return res.status(500).json({
+                        success: false,
+                        message: `Không thể xóa hình ảnh: ${imageUrl}`
+                    });
+                }
             }
 
             // Xóa tất cả size và stock của màu này
@@ -196,9 +216,14 @@ class ProductColorController {
             // Sau đó xóa màu
             await color.deleteOne();
 
-            res.json({ message: 'Xóa màu sắc và các size/stock thành công' });
+            res.json({ 
+                success: true,
+                message: 'Xóa màu sắc, hình ảnh và các size/stock thành công' 
+            });
         } catch (error) {
+            console.error('Chi tiết lỗi:', error);
             res.status(500).json({
+                success: false,
                 message: 'Có lỗi xảy ra khi xóa màu sắc',
                 error: error.message
             });
@@ -222,8 +247,7 @@ class ProductColorController {
             await color.save();
 
             res.json({
-                message: 'Upload hình ảnh thành công',
-                color
+                message: 'Upload hình ảnh thành công'
             });
         } catch (error) {
             res.status(500).json({
@@ -242,26 +266,42 @@ class ProductColorController {
 
             const color = await ProductColor.findOne({ colorID: id });
             if (!color) {
-                return res.status(404).json({ message: 'Không tìm thấy màu sắc' });
+                return res.status(404).json({ 
+                    success: false,
+                    message: 'Không tìm thấy màu sắc' 
+                });
             }
 
-            // Không cho phép xóa nếu chỉ còn 1 hình
             if (color.images.length <= 1) {
                 return res.status(400).json({
+                    success: false,
                     message: 'Không thể xóa hình ảnh cuối cùng của màu sắc'
                 });
             }
 
-            // Xóa hình ảnh khỏi mảng
+            // Gọi hàm xóa ảnh trực tiếp với URL
+            const { deleteImage: deleteCloudinaryImage } = require('../middlewares/ImagesCloudinary_Controller');
+            const isDeleted = await deleteCloudinaryImage(imageUrl);
+            
+            if (!isDeleted) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Không thể xóa hình ảnh trên Cloudinary'
+                });
+            }
+
+            // Xóa hình ảnh khỏi mảng trong database
             color.images = color.images.filter(img => img !== imageUrl);
             await color.save();
 
             res.json({
-                message: 'Xóa hình ảnh thành công',
-                color
+                success: true,
+                message: 'Xóa hình ảnh thành công'
             });
         } catch (error) {
+            console.error('Chi tiết lỗi:', error);
             res.status(500).json({
+                success: false,
                 message: 'Có lỗi xảy ra khi xóa hình ảnh',
                 error: error.message
             });

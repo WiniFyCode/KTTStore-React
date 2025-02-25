@@ -159,8 +159,7 @@ class CouponController {
             await coupon.save();
 
             res.json({
-                message: 'Cập nhật mã giảm giá thành công',
-                coupon
+                message: 'Cập nhật mã giảm giá thành công'
             });
         } catch (error) {
             res.status(500).json({
@@ -206,23 +205,18 @@ class CouponController {
     async toggleCouponStatus(req, res) {
         try {
             const { id } = req.params;
-            const { isActive } = req.body;
-
+            // Lấy trạng thái hiện tại của coupon
             const coupon = await Coupon.findOne({ couponID: id });
             if (!coupon) {
                 return res.status(404).json({ message: 'Không tìm thấy mã giảm giá' });
             }
 
-            coupon.isActive = isActive;
+            // Đảo ngược trạng thái isActive
+            coupon.isActive = !coupon.isActive;
             await coupon.save();
 
             res.json({
-                message: isActive ? 'Đã kích hoạt mã giảm giá' : 'Đã vô hiệu hóa mã giảm giá',
-                coupon: {
-                    couponID: coupon.couponID,
-                    code: coupon.code,
-                    isActive: coupon.isActive
-                }
+                message: coupon.isActive ? 'Đã kích hoạt mã giảm giá' : 'Đã vô hiệu hóa mã giảm giá',
             });
         } catch (error) {
             res.status(500).json({

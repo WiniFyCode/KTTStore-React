@@ -4,8 +4,7 @@ const User = require('../models/User');
 
 class NotificationController {
 
-    //!ADMIN
-    // ADMIN: Lấy tất cả thông báo cho admin
+    //!ADMIN - Lấy tất cả thông báo cho admin
     async getNotficationChoADMIN(req, res) {
         try {
             // Lấy tất cả thông báo không cần lọc
@@ -34,8 +33,7 @@ class NotificationController {
         }
     }
 
-    //!ADMIN
-    // ADMIN: Tạo thông báo mới
+    //!ADMIN - Tạo thông báo
     async createNotification(req, res) {
         try {
             const adminID = req.user.userID;
@@ -107,8 +105,7 @@ class NotificationController {
         }
     }
 
-    //!ADMIN
-    // ADMIN: Cập nhật thông báo
+    //!ADMIN - Cập nhật thông báo
     async updateNotification(req, res) {
         try {
             const { id } = req.params;
@@ -134,8 +131,7 @@ class NotificationController {
             await notification.save();
 
             res.json({
-                message: 'Cập nhật thông báo thành công',
-                notification
+                message: 'Cập nhật thông báo thành công'
             });
         } catch (error) {
             res.status(500).json({
@@ -145,8 +141,7 @@ class NotificationController {
         }
     }
 
-    //!ADMIN
-    // ADMIN: Xóa thông báo
+    //!ADMIN - Xóa thông báo
     async deleteNotification(req, res) {
         try {
             const { id } = req.params;

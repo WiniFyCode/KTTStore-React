@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import PageBanner from '../../../components/PageBanner';
-import { FaBell, FaCheckCircle, FaRegBell, FaCalendarAlt, FaClock, FaExclamationCircle, FaGift, FaShieldAlt, FaStore, FaUserPlus, FaClipboardList, FaPoll, FaFileAlt, FaStar } from 'react-icons/fa';
+import { FaBell, FaCheckCircle, FaRegBell, FaCalendarAlt, FaClock, FaExclamationCircle, FaGift, FaShieldAlt, FaStore, FaUserPlus, FaClipboardList, FaPoll, FaFileAlt, FaStar, FaInfoCircle } from 'react-icons/fa';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import axiosInstance from '../../../utils/axios';
@@ -11,52 +11,130 @@ import Pagination from '../../../components/Products/Pagination';
 
 const Notification = () => {
   const { theme } = useTheme();
-  const [notifications, setNotifications] = useState([]);
+  const [allNotifications, setAllNotifications] = useState([]);
+  const [filteredNotifications, setFilteredNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     total: 0,
     unread: 0
   });
-  const [filter, setFilter] = useState('all'); // 'all', 'unread', 'read'
+  const [filter, setFilter] = useState('all');
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
     limit: 5
   });
 
-  // Lấy thông báo từ server
-  useEffect(() => {
-    fetchNotifications(1);
-  }, [filter]);
-
-  // Hàm lấy thông báo
-  const fetchNotifications = async (page = 1) => {
+  const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`/api/user-notification?page=${page}&limit=${pagination.limit}&filter=${filter}`);
+      const response = await axiosInstance.get('/api/user-notification');
       if (response.data) {
-        setNotifications(response.data.data.notifications);
+        const notifications = response.data.data.notifications;
+        setAllNotifications(notifications);
         setStats({
-          total: response.data.data.total,
-          unread: response.data.data.unread
+          total: notifications.length,
+          unread: notifications.filter(notif => !notif.isRead).length
         });
-        setPagination({
-          ...pagination,
-          currentPage: response.data.data.currentPage,
-          totalPages: response.data.data.totalPages
-        });
+        applyFiltersAndPagination(notifications, 'all', 1);
       }
     } catch (error) {
-      console.error('Lỗi lấy thông báo(Notification.jsx):', error);
+      console.error('Lỗi lấy thông báo:', error);
       toast.error('Không thể tải thông báo');
     } finally {
       setLoading(false);
     }
   };
 
-  // Xử lý chuyển trang
+  const applyFiltersAndPagination = (notifications, currentFilter, page) => {
+    let filtered = notifications.filter(notif => {
+      const now = new Date();
+      const scheduledTime = new Date(notif.notification.scheduledFor);
+
+      if (now < scheduledTime) return false;
+
+      switch (currentFilter) {
+        case 'unread':
+          return !notif.isRead;
+        case 'read':
+          return notif.isRead;
+        default:
+          return true;
+      }
+    });
+
+    const totalPages = Math.ceil(filtered.length / pagination.limit);
+    const start = (page - 1) * pagination.limit;
+    const end = start + pagination.limit;
+    
+    setFilteredNotifications(filtered.slice(start, end));
+    setPagination(prev => ({
+      ...prev,
+      currentPage: page,
+      totalPages
+    }));
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    if (allNotifications.length > 0) {
+      applyFiltersAndPagination(allNotifications, filter, pagination.currentPage);
+    }
+  }, [filter, pagination.currentPage]);
+
+  const handleMarkAsRead = async (userNotificationID) => {
+    try {
+      await axiosInstance.put(`/api/user-notification/${userNotificationID}/read`);
+      
+      const updatedNotifications = allNotifications.map(notif =>
+        notif.userNotificationID === userNotificationID
+          ? { ...notif, isRead: true, readAt: new Date() }
+          : notif
+      );
+      
+      setAllNotifications(updatedNotifications);
+      setStats(prev => ({
+        ...prev,
+        unread: Math.max(0, prev.unread - 1)
+      }));
+      applyFiltersAndPagination(updatedNotifications, filter, pagination.currentPage);
+      
+      toast.success('Đã đánh dấu đã đọc');
+    } catch (error) {
+      console.error('Lỗi đánh dấu thông báo đã đọc:', error);
+      toast.error('Không thể đánh dấu đã đọc');
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await axiosInstance.put('/api/user-notification/mark-all-read');
+      
+      const updatedNotifications = allNotifications.map(notif => ({
+        ...notif,
+        isRead: true,
+        readAt: new Date()
+      }));
+      
+      setAllNotifications(updatedNotifications);
+      setStats(prev => ({
+        ...prev,
+        unread: 0
+      }));
+      applyFiltersAndPagination(updatedNotifications, filter, pagination.currentPage);
+      
+      toast.success('Đã đánh dấu tất cả là đã đọc');
+    } catch (error) {
+      console.error('Lỗi đánh dấu tất cả thông báo là đã đọc:', error);
+      toast.error('Không thể đánh dấu tất cả là đã đọc');
+    }
+  };
+
   const handlePageChange = (page) => {
-    fetchNotifications(page);
+    applyFiltersAndPagination(allNotifications, filter, page);
   };
 
   // Kiểm tra ngày hợp lệ
@@ -159,73 +237,6 @@ const Notification = () => {
     }
   };
 
-  // Đánh dấu thông báo đã đọc
-  const handleMarkAsRead = async (userNotificationID) => {
-    try {
-      await axiosInstance.put(`/api/user-notification/${userNotificationID}/read`);
-      // Update local state
-      setNotifications(prev =>
-        prev.map(notif =>
-          notif.userNotificationID === userNotificationID
-            ? { ...notif, isRead: true, readAt: new Date() }
-            : notif
-        )
-      );
-      setStats(prev => ({
-        ...prev,
-        unread: Math.max(0, prev.unread - 1)
-      }));
-      toast.success('Đã đánh dấu đã đọc');
-    } catch (error) {
-      console.error('Lỗi đánh dấu thông báo đã đọc(Notification.jsx):', error);
-      toast.error('Không thể đánh dấu đã đọc');
-    }
-  };
-
-  // Đánh dấu tất cả thông báo là đã đọc
-  const handleMarkAllAsRead = async () => {
-    try {
-      await axiosInstance.put('/api/user-notification/mark-all-read');
-      // Update local state
-      setNotifications(prev =>
-        prev.map(notif => ({
-          ...notif,
-          isRead: true,
-          readAt: new Date()
-        }))
-      );
-      setStats(prev => ({
-        ...prev,
-        unread: 0
-      }));
-      toast.success('Đã đánh dấu tất cả là đã đọc');
-    } catch (error) {
-      console.error('Lỗi đánh dấu tất cả thông báo là đã đọc(Notification.jsx):', error);
-      toast.error('Không thể đánh dấu tất cả là đã đọc');
-    }
-  };
-
-  // Lọc thông báo
-  const filteredNotifications = notifications.filter(notif => {
-    const now = new Date();
-    const scheduledTime = new Date(notif.notification.scheduledFor);
-
-    // Bỏ qua thông báo chưa đến giờ
-    if (now < scheduledTime) {
-      return false;
-    }
-
-    // Kiểm tra filter
-    switch (filter) {
-      case 'unread':
-        return !notif.isRead;
-      case 'read':
-        return notif.isRead;
-      default:
-        return true;
-    }
-  });
-
   // Sửa lại text hiển thị khi không có thông báo
   const getEmptyMessage = () => {
     if (filter === 'unread') {
@@ -310,6 +321,42 @@ const Notification = () => {
 
       {/* Nội dung chính */}
       <div className="max-w-6xl mx-auto px-4 py-8 relative z-10">
+        {/* Filters - Modern Pill Design */}
+        <div className="flex flex-wrap gap-4 mb-8">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              filter === 'all'
+                ? theme === 'tet'
+                  ? 'bg-red-500 text-white shadow-lg shadow-red-500/50'
+                  : 'bg-blue-500 text-white shadow-lg shadow-blue-500/50'
+                : 'bg-white/50 hover:bg-white/80'
+            }`}
+          >
+            Tất cả
+          </button>
+          <button
+            onClick={() => setFilter('unread')}
+            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              filter === 'unread'
+                ? 'bg-green-500 text-white shadow-lg shadow-green-500/50'
+                : 'bg-white/50 hover:bg-white/80'
+            }`}
+          >
+            Chưa đọc
+          </button>
+          <button
+            onClick={() => setFilter('read')}
+            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              filter === 'read'
+                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/50'
+                : 'bg-white/50 hover:bg-white/80'
+            }`}
+          >
+            Đã đọc
+          </button>
+        </div>
+
         {/* Stats Cards - Glassmorphism Design */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className={`p-6 rounded-2xl backdrop-blur-md bg-white/30 border border-white/50 shadow-xl transform hover:scale-105 transition-all duration-300`}>
@@ -318,8 +365,12 @@ const Notification = () => {
                 <p className="text-lg font-medium text-gray-800">Tổng thông báo</p>
                 <h3 className="text-3xl font-bold mt-2">{stats.total}</h3>
               </div>
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme === 'tet' ? 'bg-red-500/20' : 'bg-blue-500/20'}`}>
-                <FaBell className={`w-6 h-6 ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`} />
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                theme === 'tet' ? 'bg-red-500/20' : 'bg-blue-500/20'
+              }`}>
+                <FaBell className={`w-6 h-6 ${
+                  theme === 'tet' ? 'text-red-500' : 'text-blue-500'
+                }`} />
               </div>
             </div>
           </div>
@@ -351,66 +402,14 @@ const Notification = () => {
           </div>
         </div>
 
-        {/* Filters - Modern Pill Design */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-          <div className="flex flex-wrap gap-2 p-1 bg-white/50 backdrop-blur-md rounded-full border border-white/50">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                filter === 'all'
-                  ? theme === 'tet'
-                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/50'
-                    : 'bg-blue-500 text-white shadow-lg shadow-blue-500/50'
-                  : 'hover:bg-white/50'
-              }`}
-            >
-              Tất cả
-            </button>
-            <button
-              onClick={() => setFilter('unread')}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                filter === 'unread'
-                  ? 'bg-yellow-500 text-white shadow-lg shadow-yellow-500/50'
-                  : 'hover:bg-white/50'
-              }`}
-            >
-              Chưa đọc
-            </button>
-            <button
-              onClick={() => setFilter('read')}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                filter === 'read'
-                  ? 'bg-green-500 text-white shadow-lg shadow-green-500/50'
-                  : 'hover:bg-white/50'
-              }`}
-            >
-              Đã đọc
-            </button>
-          </div>
-
-          {stats.unread > 0 && (
-            <button
-              onClick={handleMarkAllAsRead}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                theme === 'tet'
-                  ? 'bg-gradient-to-r from-red-500 to-orange-500'
-                  : 'bg-gradient-to-r from-blue-500 to-purple-500'
-              } text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2`}
-            >
-              <FaCheckCircle className="w-4 h-4" />
-              Đánh dấu tất cả đã đọc
-            </button>
-          )}
-        </div>
-
         {/* Nội dung chính */}
         <div className="space-y-6">
           {filteredNotifications.length === 0 ? (
-            <div className="text-center py-12 bg-white/50 backdrop-blur-md rounded-2xl border border-white/50 shadow-xl">
+            <div className="text-center py-12 bg-white/50 backdrop-blur-md rounded-2xl">
               <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center ${
                 theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
               }`}>
-                <FaRegBell className={`w-10 h-10 ${
+                <FaBell className={`w-10 h-10 ${
                   theme === 'tet' ? 'text-red-400' : 'text-blue-400'
                 }`} />
               </div>
@@ -553,7 +552,7 @@ const Notification = () => {
         </div>
 
         {/* Phân trang */}
-        {!loading && notifications.length > 0 && (
+        {!loading && filteredNotifications.length > 0 && (
           <div className="mt-8">
             <Pagination
               currentPage={pagination.currentPage}
@@ -563,6 +562,22 @@ const Notification = () => {
             />
           </div>
         )}
+
+        {/* Phần thông tin lưu ý */}
+        <div className={`mt-12 p-6 rounded-2xl ${
+          theme === 'tet' ? 'bg-red-50' : 'bg-blue-50'
+        }`}>
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <FaInfoCircle />
+            Lưu ý:
+          </h3>
+          <ul className="list-disc list-inside space-y-2 text-gray-600">
+            <li>Thông báo sẽ tự động được đánh dấu là đã đọc sau khi bạn xem</li>
+            <li>Một số thông báo quan trọng sẽ được ghim lại trong thời gian dài</li>
+            <li>Thông báo khuyến mãi sẽ tự động ẩn sau khi hết hạn</li>
+            <li>Bạn có thể tắt thông báo cho từng loại trong phần cài đặt</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

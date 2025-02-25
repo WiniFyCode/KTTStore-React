@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FiSearch, FiPackage, FiDollarSign, FiTrendingUp, FiFilter, FiCalendar, FiTag, FiEye, FiEdit, FiList, FiPlus, FiUser } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiSearch, FiPackage, FiEye, FiEdit, FiList, FiPlus, FiUser } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import axios from '../../utils/axios';
 import { useTheme } from '../../contexts/AdminThemeContext';
@@ -7,89 +7,89 @@ import { formatDate } from '../../utils/dateUtils';
 import ImageUpload from '../../components/ImageUpload';
 import MultipleImageUpload from '../../components/MultipleImageUpload';
 
+// Component quản lý sản phẩm
 const ProductManagement = () => {
+    // Sử dụng theme tối/sáng
     const { isDarkMode } = useTheme();
 
     // ===== STATES =====
-    // ===== UI =====
-    const [loading, setLoading] = useState(false);
+    // ===== GIAO DIỆN =====
+    const [loading, setLoading] = useState(false); // Trạng thái đang tải
 
-    // ===== PRODUCT =====
-    const [allProducts, setAllProducts] = useState([]);
-    const [displayedProducts, setDisplayedProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [targets, setTargets] = useState([]);
+    // ===== SẢN PHẨM =====
+    const [allProducts, setAllProducts] = useState([]); // Danh sách tất cả sản phẩm
+    const [displayedProducts, setDisplayedProducts] = useState([]); // Sản phẩm đang hiển thị
+    const [categories, setCategories] = useState([]); // Danh sách danh mục
+    const [targets, setTargets] = useState([]); // Danh sách đối tượng (nam/nữ)
 
-    // ===== FILTER & SEARCH =====
-    const [searchTerm, setSearchTerm] = useState('');
+    // ===== TÌM KIẾM & LỌC =====
+    const [searchTerm, setSearchTerm] = useState(''); // Từ khóa tìm kiếm
     const [filters, setFilters] = useState({
-        category: 'all',
-        target: 'all',
-        priceRange: 'all',
-        sort: 'createAt',
-        order: 'desc'
+        category: 'all', // Lọc theo danh mục
+        target: 'all', // Lọc theo đối tượng
+        priceRange: 'all', // Lọc theo khoảng giá
+        sort: 'createAt', // Sắp xếp theo
+        order: 'desc' // Thứ tự sắp xếp
     });
 
-    // ===== PAGINATION =====
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    // ===== PHÂN TRANG =====
+    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+    const [itemsPerPage] = useState(10); // Số sản phẩm mỗi trang
 
-    // ===== STATS =====
+    // ===== THỐNG KÊ =====
     const [stats, setStats] = useState({
-        total: 0,
-        totalMaleProducts: 0,
-        totalFemaleProducts: 0,
-        totalDeactivatedProducts: 0,
-        totalRevenue: 0
+        total: 0, // Tổng số sản phẩm
+        totalMaleProducts: 0, // Tổng sản phẩm nam
+        totalFemaleProducts: 0, // Tổng sản phẩm nữ 
+        totalDeactivatedProducts: 0, // Tổng sản phẩm đã khóa
+        totalRevenue: 0 // Tổng doanh thu
     });
 
-    // ===== DETAIL MODAL =====
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    // ===== MODAL CHI TIẾT =====
+    const [selectedProduct, setSelectedProduct] = useState(null); // Sản phẩm được chọn
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // Trạng thái mở modal
+    const [productDetail, setProductDetail] = useState(null); // Chi tiết sản phẩm
 
-    // ===== PRODUCT DETAIL =====
-    const [productDetail, setProductDetail] = useState(null);
+    // ===== MODAL CHỈNH SỬA =====
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false); // Trạng thái mở modal sửa
+    const [editingProduct, setEditingProduct] = useState(null); // Sản phẩm đang sửa
 
-    // ===== EDIT MODAL =====
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState(null);
+    // ===== TẢI ẢNH LÊN =====
+    const [uploadedImages, setUploadedImages] = useState([]); // Danh sách ảnh đã tải lên
 
-    // ===== IMAGE UPLOAD =====
-    const [uploadedImages, setUploadedImages] = useState([]);
+    // ===== MÀU SẮC & KÍCH THƯỚC =====
+    const [isColorSizeModalOpen, setIsColorSizeModalOpen] = useState(false); // Trạng thái mở modal màu & size
+    const [selectedProductForColorSize, setSelectedProductForColorSize] = useState(null); // Sản phẩm được chọn
+    const [colorSizeDetail, setColorSizeDetail] = useState(null); // Chi tiết màu & size
 
-    // ===== COLOR & SIZE =====
-    const [isColorSizeModalOpen, setIsColorSizeModalOpen] = useState(false);
-    const [selectedProductForColorSize, setSelectedProductForColorSize] = useState(null);
-    const [colorSizeDetail, setColorSizeDetail] = useState(null);
+    // ===== CHỈNH SỬA KÍCH THƯỚC =====
+    const [editingSize, setEditingSize] = useState(null); // Size đang chỉnh sửa
 
-    // ===== EDIT SIZE =====
-    const [editingSize, setEditingSize] = useState(null);
+    // ===== TẢI ẢNH MÀU =====
+    const [uploadingColorImages, setUploadingColorImages] = useState(null); // Trạng thái tải ảnh màu
 
-    // ===== UPLOAD COLOR IMAGE =====
-    const [uploadingColorImages, setUploadingColorImages] = useState(null);
-
-    // ===== ADD COLOR MODAL =====
-    const [isAddColorModalOpen, setIsAddColorModalOpen] = useState(false);
+    // ===== THÊM MÀU MỚI =====
+    const [isAddColorModalOpen, setIsAddColorModalOpen] = useState(false); // Trạng thái mở modal thêm màu
     const [newColorData, setNewColorData] = useState({
-        colorName: '',
-        sizes: [
+        colorName: '', // Tên màu
+        sizes: [ // Danh sách size
             { size: 'S', stock: 0 },
             { size: 'M', stock: 0 },
             { size: 'L', stock: 0 },
         ],
-        images: []
+        images: [] // Danh sách ảnh
     });
 
-    // ===== ADD PRODUCT MODAL =====
-    const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+    // ===== THÊM SẢN PHẨM MỚI =====
+    const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false); // Trạng thái mở modal thêm sản phẩm
     const [newProduct, setNewProduct] = useState({
-        name: '',
-        price: '',
-        description: '',
-        thumbnail: '',
-        categoryID: '',
-        targetID: '',
-        colors: [
+        name: '', // Tên sản phẩm
+        price: '', // Giá
+        description: '', // Mô tả
+        thumbnail: '', // Ảnh đại diện
+        categoryID: '', // ID danh mục
+        targetID: '', // ID đối tượng
+        colors: [ // Danh sách màu
             {
                 colorName: '',
                 images: [],
@@ -103,16 +103,18 @@ const ProductManagement = () => {
     });
 
     // ===== EFFECTS =====
-    // ===== INITIAL DATA FETCH =====
+    // Lấy dữ liệu ban đầu
     useEffect(() => {
         fetchProducts();
     }, []);
 
-    // ===== SORT =====
+    // ===== CÁC HÀM XỬ LÝ =====
+    // Sắp xếp theo mới nhất
     const sortByNewest = (products) => {
         return [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     };
 
+    // Lấy dữ liệu sản phẩm từ API
     const fetchProducts = async () => {
         try {
             setLoading(true);
@@ -142,7 +144,7 @@ const ProductManagement = () => {
             // Đảm bảo price là string và format với dấu chấm
             const processedProducts = products.map(product => ({
                 ...product,
-                price: String(product.price).replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                price: product.price
             }));
 
             // Sắp xếp sản phẩm theo ngày tạo mới nhất
@@ -168,10 +170,11 @@ const ProductManagement = () => {
         }
     };
 
-    // 2. Filter & Search Effect
+    // Xử lý lọc và tìm kiếm
     useEffect(() => {
         let result = [...allProducts];
 
+        // Lọc theo từ khóa
         if (searchTerm) {
             result = result.filter(product =>
                 product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -180,14 +183,17 @@ const ProductManagement = () => {
             );
         }
 
+        // Lọc theo danh mục
         if (filters.category !== 'all') {
             result = result.filter(product => product.category === filters.category);
         }
 
+        // Lọc theo đối tượng
         if (filters.target !== 'all') {
             result = result.filter(product => product.target === filters.target);
         }
 
+        // Lọc theo khoảng giá
         if (filters.priceRange !== 'all') {
             switch (filters.priceRange) {
                 case 'under500':
@@ -275,15 +281,6 @@ const ProductManagement = () => {
         setIsEditModalOpen(true);
     };
 
-    // Thêm hàm xử lý format giá
-    const formatPrice = (price) => {
-        return String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    };
-
-    const unformatPrice = (price) => {
-        return String(price).replace(/\./g, '');
-    };
-
     // Thêm hàm xử lý cập nhật sản phẩm
     const handleUpdateProduct = async (e) => {
         e.preventDefault();
@@ -302,7 +299,7 @@ const ProductManagement = () => {
             // Tạo payload với thông tin cập nhật
             const updatePayload = {
                 ...editingProduct,
-                price: unformatPrice(editingProduct.price),
+                price: editingProduct.price,
                 thumbnail: uploadedImages[0] || editingProduct.thumbnail,
                 categoryID: selectedCategory.categoryID,
                 targetID: selectedTarget.targetID
@@ -312,10 +309,7 @@ const ProductManagement = () => {
             delete updatePayload.category;
             delete updatePayload.target;
 
-            const response = await axios.put(
-                `/api/admin/products/admin/products/update/${editingProduct.productID}`,
-                updatePayload
-            );
+
 
             toast.success('Cập nhật sản phẩm thành công!');
             setIsEditModalOpen(false);
@@ -400,28 +394,57 @@ const ProductManagement = () => {
         }
     };
 
-    // Xử lý xóa hình ảnh
+    // Cập nhật hàm xử lý xóa hình ảnh màu
     const handleDeleteColorImage = async (colorIndex, imageIndex) => {
         try {
+            // Kiểm tra colorSizeDetail và colors có tồn tại không
+            if (!colorSizeDetail?.colors) {
+                toast.error('Không tìm thấy thông tin sản phẩm');
+                return;
+            }
+
             const color = colorSizeDetail.colors[colorIndex];
+            
+            // Kiểm tra color có tồn tại không
+            if (!color) {
+                toast.error('Không tìm thấy thông tin màu sắc');
+                return;
+            }
+
+            // Kiểm tra images có tồn tại không
+            if (!color.images || !color.images[imageIndex]) {
+                toast.error('Không tìm thấy hình ảnh cần xóa');
+                return;
+            }
+
+            if (!window.confirm('Bạn có chắc chắn muốn xóa hình ảnh này?')) {
+                return;
+            }
+
             const imageUrl = color.images[imageIndex];
 
-            const response = await axios.delete(
-                `/api/admin/product-colors/admin/product-colors/delete/${color.colorID}/images`,
-                { data: { imageUrl } }  // Gửi imageUrl trong data của request
-            );
+            const response = await axios.delete(`/api/admin/product-colors/admin/product-colors/delete/${color.colorID}/images`, {
+                data: { imageUrl }
+            });
 
-            if (response.data) {
-                // Cập nhật state local
+            if (response.data.success) {
+                toast.success(response.data.message);
+                
+                // Tạo bản sao của state hiện tại
                 const updatedColorSizeDetail = { ...colorSizeDetail };
-                updatedColorSizeDetail.colors[colorIndex].images = response.data.color.images;
-                setColorSizeDetail(updatedColorSizeDetail);
-                toast.success('Xóa hình ảnh thành công!');
+                
+                // Kiểm tra và cập nhật mảng images
+                if (updatedColorSizeDetail.colors[colorIndex]?.images) {
+                    updatedColorSizeDetail.colors[colorIndex].images = 
+                        updatedColorSizeDetail.colors[colorIndex].images.filter((_, idx) => idx !== imageIndex);
+                    
+                    // Cập nhật state
+                    setColorSizeDetail(updatedColorSizeDetail);
+                }
             }
         } catch (error) {
             console.error('Lỗi khi xóa hình ảnh:', error);
-            const errorMessage = error.response?.data?.message || 'Lỗi khi xóa hình ảnh';
-            toast.error(errorMessage);
+            toast.error(error.response?.data?.message || 'Lỗi khi xóa hình ảnh');
         }
     };
 
@@ -442,7 +465,6 @@ const ProductManagement = () => {
 
             // Tạo payload với đầy đủ thông tin cần thiết
             const payload = {
-                productID: selectedProductForColorSize.productID,
                 colorName: newColorData.colorName,
                 images: newColorData.images,
                 sizes: newColorData.sizes
@@ -545,7 +567,7 @@ const ProductManagement = () => {
 
             const processedPayload = {
                 name: newProduct.name,
-                price: parseInt(unformatPrice(newProduct.price)), // Đảm bảo price là số
+                price: newProduct.price,
                 description: newProduct.description,
                 thumbnail: newProduct.thumbnail,
                 categoryID: parseInt(selectedCategory.categoryID), // Đảm bảo là số
@@ -641,6 +663,11 @@ const ProductManagement = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    // Thêm hàm format giá chỉ để hiển thị
+    const formatPriceDisplay = (price) => {
+        return price?.toLocaleString('vi-VN');
     };
 
     if (loading) {
@@ -860,7 +887,9 @@ const ProductManagement = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="text-sm font-semibold text-green-600">{product.price}đ</span>
+                                                <span className="text-sm font-semibold text-green-600">
+                                                    {formatPriceDisplay(product.price)}đ
+                                                </span>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-600">
@@ -1077,7 +1106,7 @@ const ProductManagement = () => {
                                                         Giá
                                                     </label>
                                                     <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'} text-green-500 font-medium`}>
-                                                        {productDetail.price}đ
+                                                        {formatPriceDisplay(productDetail.price)}đ
                                                     </div>
                                                 </div>
                                                 <div>
@@ -1210,7 +1239,7 @@ const ProductManagement = () => {
                                                                 Giá sau khuyến mãi
                                                             </label>
                                                             <div className="text-green-500 font-medium">
-                                                                {productDetail.promotion.discountedPrice}đ
+                                                                {formatPriceDisplay(productDetail.promotion?.discountedPrice)}đ
                                                             </div>
                                                         </div>
                                                         <div>
@@ -1317,16 +1346,14 @@ const ProductManagement = () => {
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Giá</label>
                                     <input
-                                        type="text"
-                                        value={formatPrice(editingProduct.price)}
+                                        type="number"
+                                        value={editingProduct.price}
                                         onChange={(e) => {
-                                            const unformattedValue = unformatPrice(e.target.value);
-                                            if (/^\d*$/.test(unformattedValue)) {
-                                                setEditingProduct({
-                                                    ...editingProduct,
-                                                    price: unformattedValue
-                                                });
-                                            }
+                                            const value = parseInt(e.target.value) || 0;
+                                            setEditingProduct({
+                                                ...editingProduct,
+                                                price: value
+                                            });
                                         }}
                                         className={`w-full p-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}
                                     />
@@ -1750,16 +1777,14 @@ const ProductManagement = () => {
                                             Giá
                                         </label>
                                         <input
-                                            type="text"
-                                            value={formatPrice(newProduct.price)}
+                                            type="number"
+                                            value={newProduct.price}
                                             onChange={(e) => {
-                                                const unformattedValue = unformatPrice(e.target.value);
-                                                if (/^\d*$/.test(unformattedValue)) {
-                                                    setNewProduct({
-                                                        ...newProduct,
-                                                        price: unformattedValue
-                                                    });
-                                                }
+                                                const value = parseInt(e.target.value) || 0;
+                                                setNewProduct({
+                                                    ...newProduct,
+                                                    price: value
+                                                });
                                             }}
                                             className={`w-full p-3 rounded-lg border transition-colors ${isDarkMode
                                                     ? 'bg-gray-700 border-gray-600 text-white hover:border-gray-500'

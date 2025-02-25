@@ -3,6 +3,69 @@ const Product = require('../models/Product');
 
 class PromotionController {
     // Helper function để lấy ID tiếp theo
+
+    // Lấy promotion áp dụng cho một sản phẩm
+    async getPromotionsForProduct(req, res) {
+        try {
+            const { productId } = req.params;
+            const currentDate = new Date();
+
+            const promotions = await Promotion.find({
+                status: 'active',
+                startDate: { $lte: currentDate },
+                endDate: { $gte: currentDate },
+                $or: [
+                    { products: productId },
+                    {
+                        categories: {
+                            $in: await Product.findById(productId).select('category').then(product => product.category)
+                        }
+                    }
+                ]
+            });
+
+            return res.status(200).json({
+                success: true,
+                data: promotions
+            });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Lỗi server',
+                error: error.message
+            });
+        }
+    }
+
+    // Lấy chi tiết một promotion
+    async getPromotionById(req, res) {
+        try {
+            const { promotionID } = req.params;
+
+            const promotion = await Promotion.findOne({ promotionID })
+                .populate('products', 'productID name price')
+                .populate('createdBy', 'userID fullName');
+
+            if (!promotion) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Không tìm thấy promotion'
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                data: promotion
+            });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Lỗi server',
+                error: error.message
+            });
+        }
+    }
+
     static async getNextPromotionID() {
         try {
             const lastPromotion = await Promotion.findOne({}, { promotionID: 1 })
@@ -29,7 +92,7 @@ class PromotionController {
             (currentHour >= 20 && currentHour < 22);
     }
 
-    // Tạo mới promotion
+    //!ADMIN - Tạo promotion
     async createPromotion(req, res) {
         try {
             console.log('Tạo promotion với dữ liệu:', req.body);
@@ -49,7 +112,6 @@ class PromotionController {
             if (!name || !description || !discountPercent || !startDate || !endDate) {
                 console.error('Thiếu thông tin bắt buộc');
                 return res.status(400).json({
-                    success: false,
                     message: 'Thiếu thông tin bắt buộc'
                 });
             }
@@ -58,7 +120,6 @@ class PromotionController {
             if (new Date(startDate) >= new Date(endDate)) {
                 console.error('Ngày không hợp lệ:', { startDate, endDate });
                 return res.status(400).json({
-                    success: false,
                     message: 'Ngày kết thúc phải sau ngày bắt đầu'
                 });
             }
@@ -88,14 +149,12 @@ class PromotionController {
             console.log('Lưu promotion thành công');
 
             return res.status(201).json({
-                success: true,
                 message: 'Tạo promotion thành công',
-                data: promotion
+                promotions: promotion
             });
         } catch (error) {
             console.error('Lỗi khi tạo promotion:', error);
             return res.status(500).json({
-                success: false,
                 message: 'Lỗi server',
                 error: error.message,
                 stack: error.stack
@@ -103,8 +162,7 @@ class PromotionController {
         }
     }
 
-    //! ADMIN
-    // Lấy danh sách tất cả promotion và thống kê
+    //! ADMIN - Lấy tất cả promotion và thống kê
     async getAllPromotions(req, res) {
         try {
             const currentDate = new Date();
@@ -143,101 +201,62 @@ class PromotionController {
         }
     }
 
-    // Lấy chi tiết một promotion
-    async getPromotionById(req, res) {
-        try {
-            const { promotionID } = req.params;
-
-            const promotion = await Promotion.findOne({ promotionID })
-                .populate('products', 'productID name price')
-                .populate('createdBy', 'userID fullName');
-
-            if (!promotion) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Không tìm thấy promotion'
-                });
-            }
-
-            return res.status(200).json({
-                success: true,
-                data: promotion
-            });
-        } catch (error) {
-            return res.status(500).json({
-                success: false,
-                message: 'Lỗi server',
-                error: error.message
-            });
-        }
-    }
-
-    //! ADMIN
-    // Cập nhật promotion
+    //! ADMIN - Cập nhật promotion
     async updatePromotion(req, res) {
         try {
-            const { promotionID } = req.params;
+            const { id } = req.params;
             const updateData = req.body;
 
             // Kiểm tra ngày nếu có cập nhật
             if (updateData.startDate && updateData.endDate) {
                 if (new Date(updateData.startDate) >= new Date(updateData.endDate)) {
                     return res.status(400).json({
-                        success: false,
                         message: 'Ngày kết thúc phải sau ngày bắt đầu'
                     });
                 }
             }
 
             const promotion = await Promotion.findOneAndUpdate(
-                { promotionID },
+                { promotionID: id },
                 updateData,
                 { new: true }
             );
 
             if (!promotion) {
                 return res.status(404).json({
-                    success: false,
                     message: 'Không tìm thấy promotion'
                 });
             }
 
             return res.status(200).json({
-                success: true,
-                message: 'Cập nhật promotion thành công',
-                data: promotion
+                message: 'Cập nhật promotion thành công'
             });
         } catch (error) {
             return res.status(500).json({
-                success: false,
                 message: 'Lỗi server',
                 error: error.message
             });
         }
     }
 
-    //! ADMIN
-    // Xóa promotion
+    //! ADMIN - Xóa promotion
     async deletePromotion(req, res) {
         try {
-            const { promotionID } = req.params;
+            const { id } = req.params;
 
-            const promotion = await Promotion.findOneAndDelete({ promotionID });
+            const promotion = await Promotion.findOneAndDelete({ promotionID: id });
 
             if (!promotion) {
                 return res.status(404).json({
-                    success: false,
                     message: 'Không tìm thấy promotion'
                 });
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Xóa promotion thành công'
             });
         } catch (error) {
             return res.status(500).json({
-                success: false,
                 message: 'Lỗi server',
                 error: error.message
             });
@@ -270,39 +289,6 @@ class PromotionController {
             });
         }
     }
-    
-    // Lấy promotion áp dụng cho một sản phẩm
-    async getPromotionsForProduct(req, res) {
-        try {
-            const { productId } = req.params;
-            const currentDate = new Date();
-
-            const promotions = await Promotion.find({
-                status: 'active',
-                startDate: { $lte: currentDate },
-                endDate: { $gte: currentDate },
-                $or: [
-                    { products: productId },
-                    {
-                        categories: {
-                            $in: await Product.findById(productId).select('category').then(product => product.category)
-                        }
-                    }
-                ]
-            });
-
-            return res.status(200).json({
-                success: true,
-                data: promotions
-            });
-        } catch (error) {
-            return res.status(500).json({
-                success: false,
-                message: 'Lỗi server',
-                error: error.message
-            });
-        }
-    }
 
     //! ADMIN
     // Thêm hàm xử lý toggle status
@@ -321,14 +307,11 @@ class PromotionController {
             await promotion.save();
 
             res.status(200).json({ 
-                success: true,
                 message: `Đã ${promotion.status === 'active' ? 'kích hoạt' : 'vô hiệu hóa'} khuyến mãi`,
-                promotion 
             });
         } catch (error) {
             console.error('Lỗi khi chuyển đổi trạng thái promotion:', error);
             res.status(500).json({ 
-                success: false,
                 message: 'Lỗi khi cập nhật trạng thái khuyến mãi',
                 error: error.message 
             });
