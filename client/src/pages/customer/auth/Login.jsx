@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaEnvelope, FaLock, FaSpinner, FaGamepad, FaTimes, FaCheck } from 'react-icons/fa'
 import { toast } from 'react-toastify'
+import { FcGoogle } from "react-icons/fc";
 import axiosInstance from '../../../utils/axios'
 import { useTheme } from '../../../contexts/CustomerThemeContext'
 import { useGoogleLogin } from '@react-oauth/google'
@@ -487,7 +488,7 @@ const Login = () => {
                 disabled={loading}
                 className="w-full flex justify-center items-center gap-3 px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                <FaGoogle className="w-5 h-5 text-red-500" />
+                <FcGoogle className="w-5 h-5 text-red-500" />
                 Đăng nhập với Google
               </button>
             </div>

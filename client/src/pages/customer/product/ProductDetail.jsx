@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaHeart, FaStar, FaMinus, FaPlus, FaArrowRight, FaHome, FaChevronRight, FaRegHeart, FaTag, FaEye, FaMedal, FaRuler, FaPalette, FaBolt, FaChevronDown, FaInfoCircle, FaPhoneAlt, FaFacebookMessenger, FaEdit, FaTrash, FaTshirt, FaTimes } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay, Thumbs, EffectFade } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, Thumbs, EffectFade, EffectCreative, EffectCards } from 'swiper/modules';
 import { useTheme } from '../../../contexts/CustomerThemeContext';
 import axiosInstance from '../../../utils/axios';
 import { toast } from 'react-toastify';

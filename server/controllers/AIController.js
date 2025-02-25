@@ -188,13 +188,6 @@ class AIController {
                 })
             );
 
-            // Log toàn bộ response trước khi gửi
-            console.log('AI Response:', {
-                query,
-                productsCount: formattedProducts.length,
-                sampleProduct: formattedProducts[0]
-            });
-
             // Tạo prompt chi tiết cho AI
             const prompt = `
             Bạn là trợ lý bán hàng của ${trainingData.shopInfo.name}.

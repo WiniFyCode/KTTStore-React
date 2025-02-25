@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, EffectFade, EffectCoverflow } from 'swiper/modules';
 import { FaArrowRight, FaGift, FaShippingFast, FaUndo, FaPhoneAlt, FaEnvelope, FaPaperPlane } from 'react-icons/fa';
 import { RiRedPacketLine, RiCoupon3Line, RiVipCrownLine } from 'react-icons/ri';
 import { MdCelebration } from 'react-icons/md';
