@@ -81,19 +81,39 @@ npm install
 
 4. Tạo file .env và cấu hình các biến môi trường:
 ```env
-PORT=5000
-MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-CLOUDINARY_NAME=your_cloudinary_name
-CLOUDINARY_KEY=your_cloudinary_key
-CLOUDINARY_SECRET=your_cloudinary_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-MAIL_USERNAME=your_email
-MAIL_PASSWORD=your_email_password
-PAYOS_CLIENT_ID=your_payos_client_id
-PAYOS_API_KEY=your_payos_api_key
-PAYOS_CHECKSUM_KEY=your_payos_checksum_key
+# Server config - Cấu hình server
+PORT=5000                    # Port máy chủ chạy
+JWT_SECRET=your_jwt_secret   # Khóa bí mật để tạo JWT token
+MONGODB_URI=your_mongodb_uri # URI kết nối MongoDB Atlas
+VITE_API_URL=http://localhost:5000  # URL API cho frontend
+
+# Shop info - Thông tin cửa hàng
+SHOP_NAME=KTT Store          # Tên cửa hàng
+SHOP_ADDRESS=your_address    # Địa chỉ cửa hàng
+SHOP_PHONE=your_phone       # Số điện thoại
+SHOP_EMAIL=your_email       # Email cửa hàng
+
+# Admin config - Cấu hình admin
+ADMIN_URL=your_admin_url    # URL trang quản trị
+
+# Email config - Cấu hình email
+EMAIL_USER=your_email       # Email dùng để gửi thông báo
+EMAIL_PASSWORD=your_password # Mật khẩu ứng dụng email
+EMAIL_ADMIN=your_admin_email # Email admin
+
+# AI Integration - Tích hợp AI
+OPENAI_API_KEY=your_openai_key    # API key OpenAI
+GEMINI_API_KEY=your_gemini_key    # API key Google Gemini
+
+# Payment Integration - Tích hợp thanh toán
+PAYOS_CLIENT_ID=your_client_id        # Client ID PayOS
+PAYOS_API_KEY=your_api_key            # API key PayOS
+PAYOS_CHECKSUM_KEY=your_checksum_key  # Checksum key PayOS
+
+# Social Login - Đăng nhập mạng xã hội
+FB_APP_ID=your_fb_app_id              # Facebook App ID
+GOOGLE_CLIENT_ID=your_google_client_id      # Google Client ID
+GOOGLE_CLIENT_SECRET=your_google_secret     # Google Client Secret
 ```
 
 5. Chạy server ở môi trường development:
@@ -105,75 +125,191 @@ npm run dev
 
 Server chạy tại: `http://localhost:5000`
 
-## Dashboard
+### 📍 Address Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/addresses` | Lấy danh sách địa chỉ | 🔒 Required |
+| POST | `/api/addresses` | Thêm địa chỉ mới | 🔒 Required |
+| PUT | `/api/addresses/:id` | Cập nhật địa chỉ | 🔒 Required |
+| DELETE | `/api/addresses/:id` | Xóa địa chỉ | 🔒 Required |
+| PATCH | `/api/addresses/:id/default` | Đặt địa chỉ mặc định | 🔒 Required |
 
-* GET /api/products/all-by-categories - Lấy thống kê sản phẩm theo danh mục
-* GET /api/admin/users - Lấy thống kê về người dùng
-* GET /api/admin/orders/admin/orders - Lấy thống kê về đơn hàng và doanh thu
-* GET /api/admin/coupons/admin/coupons - Lấy thống kê về mã giảm giá
-* GET /api/admin/promotions/all - Lấy thống kê về chương trình khuyến mãi
-* GET /api/admin/notifications/admin/notifications - Lấy thống kê về thông báo
-* GET /api/reviews/admin/all - Lấy thống kê về đánh giá sản phẩm
+### 🤖 AI Chat APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| POST | `/api/ai/chat` | Chat với AI Assistant | Không yêu cầu |
 
-## Customer Management
+### 🔐 Authentication APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| POST | `/api/auth/register` | Đăng ký tài khoản | Không |
+| POST | `/api/auth/login` | Đăng nhập | Không |
+| POST | `/api/auth/forgot-password` | Yêu cầu reset mật khẩu | Không |
+| POST | `/api/auth/reset-password` | Reset mật khẩu | Không |
+| POST | `/api/auth/verify-token` | Xác thực token | Không |
+| POST | `/api/auth/google-login` | Đăng nhập bằng Google | Không |
 
-* GET /api/admin/users/admin/users - Lấy danh sách khách hàng
-* PATCH /api/admin/users/admin/users/toggle/{userID} - Kích hoạt/vô hiệu hóa tài khoản người dùng
-* PUT /api/admin/users/admin/users/{userID} - Cập nhật thông tin cá nhân người dùng
+### 🛒 Cart Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/cart` | Lấy giỏ hàng của user | 🔒 Required |
+| POST | `/api/cart/add` | Thêm sản phẩm vào giỏ | 🔒 Required |
+| PUT | `/api/cart/:id` | Cập nhật số lượng sản phẩm | 🔒 Required |
+| DELETE | `/api/cart/:id` | Xóa sản phẩm khỏi giỏ | 🔒 Required |
+| DELETE | `/api/cart` | Xóa toàn bộ giỏ hàng | 🔒 Required |
 
-## Product Management
+### 📑 Category Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/categories` | Lấy tất cả danh mục | Không |
+| GET | `/api/categories/:id` | Lấy chi tiết danh mục | Không |
+| POST | `/api/categories` | Tạo danh mục mới | 🔒 Admin |
+| PUT | `/api/categories/:id` | Cập nhật danh mục | 🔒 Admin |
+| DELETE | `/api/categories/:id` | Xóa danh mục | 🔒 Admin |
 
-* GET /api/admin/products/admin/products - Lấy danh sách sản phẩm
-* GET /api/categories - Lấy danh sách danh mục
-* GET /api/targets - Lấy danh sách đối tượng ( nam / nữ )
-* GET /apip/admin/products/admin/produts/{productID} - Lấy chi tiết sản phẩm
-* PUT /api/admin/products/admin/products/update/{productID} - Cập nhật thông tin cơ bản sản phẩm
-* PUT /api/admin/product-size-stock/admin/product-size-stock/update/{SKU} - Cập nhật số lượng tồn
-* PUT /api/admin/product-colors/admin/product-colors/add/{colorID}/images - Cập nhật hình ảnh của từng màu sắc
-* DELETE /api/admin/product-colors/admin/product-colors/delete/{colorID}/images  - Xoá hình của màu
-* POST /api/admin/product-colors/admin/product-colors/add/{produtID} - Thêm màu mới cho sản phẩm đã tồn tại
-* DELETE /api/admin/product-colors/admin/product-colors/delete/{produtID} - Xoá màu của sản phẩm đã tồn tại
-* POST /api/admin/products/admin/products/create - Tạo sản phẩm mới
-* DELETE /api/admin/products/admin/products/delete/ - Xoá sản phẩm
-* PATCH /api/admin/products/admin/products/toggle/{productID} - Kích hoạt / Vô hiệu hoá sản phẩm
+### 🎫 Coupon Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/coupons/admin/coupons` | Lấy danh sách mã giảm giá | 🔒 Admin |
+| POST | `/api/coupons/admin/coupons/create` | Tạo mã giảm giá mới | 🔒 Admin |
+| PUT | `/api/coupons/admin/coupons/update/:id` | Cập nhật mã giảm giá | 🔒 Admin |
+| DELETE | `/api/coupons/admin/coupons/delete/:id` | Xóa mã giảm giá | 🔒 Admin |
+| PATCH | `/api/coupons/admin/coupons/toggle/:id` | Kích hoạt/vô hiệu hóa mã | 🔒 Admin |
 
-## Order Management
+### ❤️ Favorite Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/favorites` | Lấy danh sách yêu thích của user | 🔒 Required |
+| POST | `/api/favorites/add` | Thêm sản phẩm vào yêu thích | 🔒 Required |
+| PUT | `/api/favorites/:id` | Cập nhật ghi chú yêu thích | 🔒 Required |
+| DELETE | `/api/favorites/:SKU` | Xóa sản phẩm khỏi yêu thích | 🔒 Required |
+| GET | `/api/favorites/check/:SKU` | Kiểm tra sản phẩm có trong yêu thích | 🔒 Required |
 
-* GET /api/admin/orders/admin/orders - Lấy danh sách đơn hàng
-* GET /api/admin/orders/admin/order-details/{orderID} - Lấy chi tiết đơn hàng
-* PATCH /api/admin/orders/admin/orders/update/{orderID} - Cập nhật trạng thái vận chuyển
-* DELETE /api/admin/orders/admin/orders/delete/{orderID} - Xoá đơn hàng
+### 🔔 Notification Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/admin/notifications` | Lấy tất cả thông báo | 🔒 Admin |
+| POST | `/api/admin/notifications/create` | Tạo thông báo mới | 🔒 Admin |
+| PUT | `/api/admin/notifications/update/:id` | Cập nhật thông báo | 🔒 Admin |
+| DELETE | `/api/admin/notifications/delete/:id` | Xóa thông báo | 🔒 Admin |
 
-## Promotion Management
+### 📦 Order Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/orders/my-orders` | Lấy danh sách đơn hàng của user | 🔒 Required |
+| GET | `/api/orders/my-orders/:id` | Lấy chi tiết đơn hàng | 🔒 Required |
+| POST | `/api/orders/create` | Tạo đơn hàng mới | 🔒 Required |
+| POST | `/api/orders/cancel/:id` | Hủy đơn hàng | 🔒 Required |
+| GET | `/api/orders/admin/orders` | Lấy tất cả đơn hàng (Admin) | 🔒 Admin |
+| PATCH | `/api/orders/admin/orders/update/:id` | Cập nhật trạng thái đơn hàng | 🔒 Admin |
+| DELETE | `/api/orders/admin/orders/delete/:id` | Xóa đơn hàng | 🔒 Admin |
+| POST | `/api/orders/confirm-payment/:orderID` | Xác nhận thanh toán và gửi email (AUTO) | Không |
 
-* GET /api/admin/promotions/all - Lấy danh sách khuyến mãi
-* POST /api/admin/promotions/create - Tạo khuyến mãi mới
-* PUT /api/admin/promotions/update/{promotionID} - Cập nhật thông tin khuyến mãi
-* DELETE /api/admin/promotions/delete/{promotionID} - Xóa khuyến mãi
-* PATCH /api/admin/promotions/toggle-status/ - Kích hoạt/ Vô hiệu hoá khuyến mãi
-* 
-* GET /api/categories - Lấy các danh mục đang hoạt động trong khuyến mãi
-* GET /api/products - Lấy các sản phẩm đang hoạt động trong khuyến mãi
+### 📦 Order Detail Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/order-details/order/:orderID` | Lấy danh sách chi tiết đơn hàng | 🔒 Required |
+| GET | `/api/order-details/order/:orderID/detail/:id` | Lấy chi tiết một sản phẩm trong đơn hàng | 🔒 Required |
+| GET | `/api/order-details/:orderID` | Lấy chi tiết đơn hàng (Admin) | 🔒 Admin |
 
-## Coupon Management
 
-* GET /api/admin/coupons/admin/coupons - Lấy danh sách mã giảm giá
-* POST /api/admin/coupons/admin/coupons/create - Tạo mã giảm giá mới
-* PUT /api/admin/coupons/admin/coupons/update/{couponID} - Cập nhật thông tin mã giảm giá
-* DELETE /api/admin/coupons/admin/coupons/delete/{couponID} - Xóa mã giảm giá
-* PATCH /api/admin/coupons/admin/coupons/toggle/{couponID} - Kích hoạt/vô hiệu hóa mã giảm giá
-* 
-* GET /api/categories - Lấy các danh mục đang hoạt động của mã giảm giá
+### 🎨 Product Color Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/product-colors/product/:productID` | Lấy tất cả màu của sản phẩm | 🔒 Required |
+| GET | `/api/product-colors/:id` | Lấy chi tiết màu | 🔒 Required |
+| PUT | `/api/product-colors/:id` | Cập nhật màu | 🔒 Required |
+| PUT | `/api/product-colors/admin/product-colors/add/:id/images` | Upload hình ảnh | 🔒 Admin |
+| DELETE | `/api/product-colors/admin/product-colors/delete/:id/images` | Xóa hình ảnh | 🔒 Admin |
+| POST | `/api/product-colors/admin/product-colors/add/:id` | Thêm màu mới | 🔒 Admin |
+| DELETE | `/api/product-colors/admin/product-colors/delete/:id` | Xóa màu | 🔒 Admin |
 
-## Notification Management
+### 📦 Product Size Stock Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/product-size-stock/sku/:SKU` | Lấy thông tin tồn kho theo SKU | Không |
+| GET | `/api/product-size-stock/color/:colorID` | Lấy tồn kho theo màu | Không |
+| GET | `/api/product-size-stock/info/:productID/:colorName/:size` | Lấy thông tin SKU | Không |
+| PUT | `/api/product-size-stock/admin/product-size-stock/update/:SKU` | Cập nhật số lượng tồn kho | 🔒 Admin |
 
-* GET /api/admin/notifications/admin/notifications - Lấy danh sách thông báo
-* POST /api/admin/notifications/admin/notifications/create - Tạo thông báo mới
-* PUT /api/admin/notifications/admin/notifications/update/{notificationID} - Cập nhật thông tin thông báo
-* DELETE /api/admin/notifications/admin/notifications/delete/{notificationID} - Xóa thông báo
-* 
-* GET /api/admin/users - Lấy danh sách người dùng để gửi thông báo
+### 📦 Product Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/products` | Lấy danh sách sản phẩm | Không |
+| GET | `/api/products/basic` | Lấy thông tin cơ bản của tất cả sản phẩm | Không |
+| GET | `/api/products/gender` | Lấy sản phẩm theo giới tính | Không |
+| GET | `/api/products/category/:categoryID` | Lấy sản phẩm theo danh mục | Không |
+| GET | `/api/products/:id` | Lấy chi tiết sản phẩm | Không |
+| GET | `/api/products/all-by-categories` | Lấy sản phẩm theo danh mục (Dashboard) | 🔒 Admin |
+| GET | `/api/products/admin/products` | Lấy danh sách sản phẩm (Admin) | 🔒 Admin |
+| GET | `/api/products/admin/products/:id` | Lấy chi tiết sản phẩm (Admin) | 🔒 Admin |
+| PUT | `/api/products/admin/products/update/:id` | Cập nhật sản phẩm | 🔒 Admin |
+| POST | `/api/products/admin/products/create` | Tạo sản phẩm mới | 🔒 Admin |
+| DELETE | `/api/products/admin/products/delete/:id` | Xóa sản phẩm | 🔒 Admin |
+| PATCH | `/api/products/admin/products/toggle/:id` | Bật/tắt trạng thái sản phẩm | 🔒 Admin |
+| POST | `/api/products/admin/products/upload-images` | Upload hình ảnh sản phẩm | 🔒 Admin |
 
+### 🎯 Promotion Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/promotions/all` | Lấy tất cả khuyến mãi | 🔒 Admin |
+| POST | `/api/promotions/create` | Tạo khuyến mãi mới | 🔒 Admin |
+| PUT | `/api/promotions/update/:id` | Cập nhật khuyến mãi | 🔒 Admin |
+| DELETE | `/api/promotions/delete/:id` | Xóa khuyến mãi | 🔒 Admin |
+| PATCH | `/api/promotions/toggle-status/:id` | Bật/tắt trạng thái khuyến mãi | 🔒 Admin |
+| GET | `/api/promotions/active` | Lấy khuyến mãi đang hoạt động | Không |
+| GET | `/api/promotions/:promotionID` | Lấy chi tiết khuyến mãi | Không |
+| GET | `/api/promotions/product/:productId` | Lấy khuyến mãi của sản phẩm | Không |
+
+### ⭐ Review Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/reviews/product/:productID` | Lấy đánh giá của sản phẩm | Không |
+| POST | `/api/reviews` | Tạo đánh giá mới | 🔒 Customer |
+| PUT | `/api/reviews/:reviewID` | Cập nhật đánh giá | 🔒 Customer |
+| DELETE | `/api/reviews/:reviewID` | Xóa đánh giá | 🔒 Customer |
+| GET | `/api/reviews/user` | Lấy đánh giá của user hiện tại | 🔒 Customer |
+| GET | `/api/reviews/admin/all` | Lấy tất cả đánh giá | 🔒 Admin |
+| DELETE | `/api/reviews/admin/:reviewID` | Admin xóa đánh giá | 🔒 Admin |
+
+### 🎯 Target Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/targets` | Lấy tất cả target | Không |
+| GET | `/api/targets/:id` | Lấy chi tiết target | 🔒 Admin |
+| POST | `/api/targets` | Tạo target mới | 🔒 Admin |
+| PUT | `/api/targets/:id` | Cập nhật target | 🔒 Admin |
+| DELETE | `/api/targets/:id` | Xóa target | 🔒 Admin |
+
+### 🎫 User-Coupon Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/user-coupons/my-coupons` | Lấy danh sách mã giảm giá của user | 🔒 Customer |
+| GET | `/api/user-coupons/my-coupons/:id` | Lấy chi tiết mã giảm giá | 🔒 Customer |
+| POST | `/api/user-coupons/apply` | Sử dụng mã giảm giá | 🔒 Customer |
+| GET | `/api/user-coupons/available` | Lấy danh sách mã giảm giá có thể sử dụng | 🔒 Customer |
+| GET | `/api/user-coupons` | Lấy danh sách mã giảm giá của tất cả user | 🔒 Admin |
+| POST | `/api/user-coupons` | Thêm mã giảm giá cho user | 🔒 Admin |
+| PUT | `/api/user-coupons/:id` | Cập nhật mã giảm giá | 🔒 Admin |
+| PATCH | `/api/user-coupons/:id/cancel` | Hủy mã giảm giá | 🔒 Admin |
+
+### 🔔 User-Notification Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/user-notifications` | Lấy danh sách thông báo của user | 🔒 Customer |
+| PUT | `/api/user-notifications/:userNotificationID/read` | Đánh dấu thông báo đã đọc | 🔒 Customer |
+| PUT | `/api/user-notifications/read-all` | Đánh dấu tất cả thông báo đã đọc | 🔒 Customer |
+| GET | `/api/user-notifications/unread/count` | Lấy số lượng thông báo chưa đọc | 🔒 Customer |
+
+### 👤 User Management APIs
+| Method | Endpoint | Mô tả | Xác thực |
+|--------|----------|--------|----------|
+| GET | `/api/users/profile` | Lấy thông tin cá nhân | 🔒 Customer |
+| PUT | `/api/users/profile` | Cập nhật thông tin cá nhân | 🔒 Customer |
+| PUT | `/api/users/change-password` | Đổi mật khẩu | 🔒 Customer |
+| GET | `/api/users/admin/users` | Lấy danh sách người dùng cho admin | 🔒 Admin |
+| PUT | `/api/users/admin/users/:id` | Cập nhật thông tin người dùng | 🔒 Admin |
+| PATCH | `/api/users/admin/users/toggle/:id` | Vô hiệu hóa/Kích hoạt tài khoản | 🔒 Admin |
 
 
 ## 📝 Scripts
