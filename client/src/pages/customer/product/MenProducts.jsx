@@ -84,23 +84,35 @@ const MenProducts = () => {
 
    // Hàm xử lý khi click vào bộ lọc
    const handleFilterChange = (type, value) => {
-      if (type === 'priceRanges') {
-         setFilters(prev => ({
-            ...prev,
-            [type]: prev[type].includes(value)
-               ? prev[type].filter(item => item !== value)
-               : [...prev[type], value]
-         }));
-      } else {
-         setFilters(prev => ({
-            ...prev,
-            [type]: Array.isArray(prev[type])
-               ? prev[type].includes(value)
-                  ? prev[type].filter(item => item !== value)
-                  : [...prev[type], value]
-               : value
-         }));
-      }
+      // Reset trang về 1 khi thay đổi bất kỳ bộ lọc nào
+      setPagination(prev => ({
+         ...prev,
+         currentPage: 1
+      }));
+
+      setFilters(prev => {
+         if (Array.isArray(prev[type])) {
+            if (prev[type].includes(value)) {
+               // Nếu đã có thì xóa
+               return {
+                  ...prev,
+                  [type]: prev[type].filter(item => item !== value)
+               };
+            } else {
+               // Nếu chưa có thì thêm
+               return {
+                  ...prev,
+                  [type]: [...prev[type], value]
+               };
+            }
+         } else {
+            // Nếu không phải array thì gán trực tiếp
+            return {
+               ...prev,
+               [type]: value
+            };
+         }
+      });
    };
 
    // Effect xử lý lọc và sắp xếp sản phẩm
@@ -184,14 +196,6 @@ const MenProducts = () => {
          if (filters.search) params.append('search', filters.search);
          if (filters.categories.length > 0) {
             params.append('categories', filters.categories.join(','));
-         }
-
-         if (filters.priceRanges.length > 0) {
-            const selectedRanges = filters.priceRanges.map(rangeId => filterOptions.priceRanges.find(r => r.id === rangeId));
-            if (selectedRanges.length > 0) {
-               params.append('minPrice', selectedRanges[0].range[0]);
-               params.append('maxPrice', selectedRanges[selectedRanges.length - 1].range[1]);
-            }
          }
 
          if (filters.inStock) params.append('inStock', 'true');
