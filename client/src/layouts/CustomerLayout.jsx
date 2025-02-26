@@ -787,7 +787,7 @@ const CustomerLayout = () => {
                     ) : (
                       <Link
                         to="/new-arrivals"
-                        className="block px-6 py-2 text-white hover:bg-white/10"
+                        className="block px-6 py-2 text-white hover:bg-white/10 "
                         onClick={() => setIsMenuOpen(false)}
                       >
                         Hàng mới về

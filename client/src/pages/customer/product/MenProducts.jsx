@@ -314,14 +314,14 @@ const MenProducts = () => {
                   {/* Bar tìm kiếm và bộ lọc */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                      <div className="flex items-center gap-3 flex-grow">
-                        {/* Tìm kiếm */}
+                        {/* Ô tìm kiếm */}
                         <div className="relative flex-grow max-w-md">
                            <input
                               type="text"
                               placeholder="Tìm kiếm sản phẩm nam..."
                               value={filters.search}
                               onChange={(e) => handleFilterChange('search', e.target.value)}
-                              className="w-full pl-10 pr-4 py-2.5 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                              className="w-full pl-10 pr-4 py-2.5 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm h-10"
                            />
                            <FaSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         </div>
@@ -329,23 +329,21 @@ const MenProducts = () => {
                         {/* Nút bộ lọc */}
                         <div className="flex items-center gap-2">
                            <button
-                              onClick={() => {
-                                 setIsMobileFilterOpen(true);
-                              }}
-                              className="px-4 py-2.5 bg-white rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 flex items-center gap-2 text-sm font-medium transition-all"
+                              onClick={() => setIsMobileFilterOpen(true)}
+                              className="h-10 px-3 bg-white rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 flex items-center gap-2 text-sm font-medium transition-all"
                            >
-                              <FaFilter className="text-gray-500" />
-                              <span>Bộ lọc</span>
-                              {filters.categories.length > 0 || filters.priceRanges.length > 0 || filters.inStock || filters.sort ? (
-                                 <span className="ml-1 w-5 h-5 flex items-center justify-center bg-blue-500 text-white text-xs rounded-full">
+                              <FaFilter className="w-4 h-4 text-gray-500" />
+                              <span className="hidden sm:inline">Bộ lọc</span>
+                              {(filters.categories.length > 0 || filters.priceRanges.length > 0 || filters.inStock || filters.sort) && (
+                                 <span className="flex items-center justify-center w-4 h-4 text-[10px] bg-blue-500 text-white rounded-full">
                                     {filters.categories.length + filters.priceRanges.length + (filters.inStock ? 1 : 0) + (filters.sort ? 1 : 0)}
                                  </span>
-                              ) : null}
+                              )}
                            </button>
                         </div>
                      </div>
 
-                     {/* Nút xem và số lượng sản phẩm */}
+                     {/* Hiển thị số lượng sản phẩm */}
                      <div className="flex items-center gap-4">
                         {!loading && (
                            <div className="text-sm text-gray-500">
@@ -634,10 +632,10 @@ const MenProducts = () => {
                                                 >
                                                    <div
                                                       className={`min-w-[2.5rem] h-8 flex items-center justify-center text-sm rounded cursor-help transition-all ${size.stock > 0
-                                                            ? theme === 'tet'
-                                                               ? 'bg-red-50 text-red-700 hover:bg-red-100'
-                                                               : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                                                            : 'bg-gray-50 text-gray-400'
+                                                         ? theme === 'tet'
+                                                            ? 'bg-red-50 text-red-700 hover:bg-red-100'
+                                                            : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                                                         : 'bg-gray-50 text-gray-400'
                                                          }`}
                                                       onClick={(e) => {
                                                          e.preventDefault();

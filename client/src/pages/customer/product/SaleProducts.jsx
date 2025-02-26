@@ -302,131 +302,122 @@ const SaleProducts = () => {
         {/* Filter Bar */}
         <div className="relative z-10 mb-8 bg-white rounded-xl shadow-sm border border-gray-100">
           <div className="p-4">
-            <div className="space-y-4">
-              {/* Search & Filter Bar */}
-              <div className="flex flex-col md:flex-row justify-between gap-4">
-                <div className="flex flex-1 items-center gap-4">
-                  {/* Search */}
-                  <div className="relative flex-1 max-w-md">
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm sản phẩm sale..."
-                      value={filters.search}
-                      onChange={(e) => handleFilterChange('search', e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
-                    />
-                    <FaSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  </div>
+            {/* Phần tìm kiếm và điều khiển bộ lọc */}
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3 flex-grow">
+                {/* Ô tìm kiếm */}
+                <div className="relative flex-grow max-w-md">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm sale..."
+                    value={filters.search}
+                    onChange={(e) => handleFilterChange('search', e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm h-10"
+                  />
+                  <FaSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                </div>
 
-                  {/* Filter Button */}
+                {/* Nút bộ lọc */}
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsMobileFilterOpen(true)}
-                    className="px-4 py-2.5 bg-white rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 flex items-center gap-2 text-sm font-medium transition-all"
+                    className="h-10 px-3 bg-white rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 flex items-center gap-2 text-sm font-medium transition-all"
                   >
-                    <FaFilter className="text-gray-500" />
-                    <span>Bộ lọc</span>
+                    <FaFilter className="w-4 h-4 text-gray-500" />
+                    <span className="hidden sm:inline">Bộ lọc</span>
                     {(filters.categories.length > 0 || filters.priceRanges.length > 0 || filters.discountRanges.length > 0 || filters.sort !== 'discount-desc') && (
-                      <span className="ml-1 w-5 h-5 flex items-center justify-center bg-pink-500 text-white text-xs rounded-full">
+                      <span className="flex items-center justify-center w-4 h-4 text-[10px] bg-pink-500 text-white rounded-full">
                         {filters.categories.length + filters.priceRanges.length + filters.discountRanges.length + (filters.sort !== 'discount-desc' ? 1 : 0)}
                       </span>
                     )}
                   </button>
                 </div>
-
-                {/* Product Count */}
-                <div className="flex items-center gap-4">
-                  {!loading && (
-                    <div className="text-sm text-gray-500">
-                      Hiển thị <span className="font-medium text-gray-900">{filteredProducts.length}</span> sản phẩm
-                    </div>
-                  )}
-                </div>
               </div>
 
-              {/* Active Filters */}
-              {(filters.categories.length > 0 || filters.priceRanges.length > 0 || filters.discountRanges.length > 0 || filters.sort !== 'discount-desc') && (
-                <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-100">
-                  <span className="text-xs font-medium text-gray-500 uppercase">Bộ lọc đang chọn:</span>
-
-                  {/* Lọc theo danh mục */}
-                  {filters.categories.map((category, index) => (
-                    <div
-                      key={index}
-                      className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100"
-                    >
-                      <span>{category}</span>
-                      <button
-                        onClick={() => handleFilterChange('categories', category)}
-                        className="text-pink-400 hover:text-pink-600"
-                      >
-                        <FaTimes className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-
-                  {/* Lọc theo khoảng giá */}
-                  {filters.priceRanges.map((rangeId, index) => (
-                    <div
-                      key={index}
-                      className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100"
-                    >
-                      <span>{filterOptions.priceRanges.find(r => r.id === rangeId)?.label}</span>
-                      <button
-                        onClick={() => handleFilterChange('priceRanges', rangeId)}
-                        className="text-pink-400 hover:text-pink-600"
-                      >
-                        <FaTimes className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-
-                  {/* Lọc theo mức giảm giá */}
-                  {filters.discountRanges.map((rangeId, index) => (
-                    <div
-                      key={index}
-                      className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100"
-                    >
-                      <span>{filterOptions.discountRanges.find(r => r.id === rangeId)?.label}</span>
-                      <button
-                        onClick={() => handleFilterChange('discountRanges', rangeId)}
-                        className="text-pink-400 hover:text-pink-600"
-                      >
-                        <FaTimes className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-
-                  {/* Lọc theo sắp xếp */}
-                  {filters.sort !== 'discount-desc' && (
-                    <div className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100">
-                      <span>{filterOptions.sortOptions.find(o => o.id === filters.sort)?.label}</span>
-                      <button
-                        onClick={() => handleFilterChange('sort', 'discount-desc')}
-                        className="text-pink-400 hover:text-pink-600"
-                      >
-                        <FaTimes className="w-3 h-3" />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Clear All Button */}
-                  <button
-                    onClick={() => {
-                      setFilters({
-                        search: '',
-                        categories: [],
-                        priceRanges: [],
-                        discountRanges: [],
-                        sort: 'discount-desc'
-                      });
-                    }}
-                    className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 flex items-center gap-1.5 transition-all hover:bg-gray-200"
-                  >
-                    Xóa tất cả
-                  </button>
-                </div>
-              )}
+              {/* Hiển thị số lượng sản phẩm */}
+              <div className="flex items-center gap-4">
+                {!loading && (
+                  <div className="text-sm text-gray-500">
+                    Hiển thị <span className="font-medium text-gray-900">{filteredProducts.length}</span> sản phẩm
+                  </div>
+                )}
+              </div>
             </div>
+
+            {/* Hiển thị các bộ lọc đang được áp dụng */}
+            {(filters.categories.length > 0 || filters.priceRanges.length > 0 || filters.discountRanges.length > 0 || filters.sort !== 'discount-desc') && (
+              <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-100">
+                <span className="text-xs font-medium text-gray-500 uppercase">Bộ lọc đang chọn:</span>
+
+                {/* Hiển thị các danh mục đã chọn */}
+                {filters.categories.map((category, index) => (
+                  <div key={index} className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100">
+                    <span>{category}</span>
+                    <button
+                      onClick={() => handleFilterChange('categories', category)}
+                      className="text-pink-400 hover:text-pink-600"
+                    >
+                      <FaTimes className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Hiển thị các khoảng giá đã chọn */}
+                {filters.priceRanges.map((rangeId) => (
+                  <div key={rangeId} className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100">
+                    <span>{filterOptions.priceRanges.find(r => r.id === rangeId)?.label}</span>
+                    <button
+                      onClick={() => handleFilterChange('priceRanges', rangeId)}
+                      className="text-pink-400 hover:text-pink-600"
+                    >
+                      <FaTimes className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Hiển thị các khoảng giảm giá đã chọn */}
+                {filters.discountRanges.map((rangeId) => (
+                  <div key={rangeId} className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100">
+                    <span>{filterOptions.discountRanges.find(r => r.id === rangeId)?.label}</span>
+                    <button
+                      onClick={() => handleFilterChange('discountRanges', rangeId)}
+                      className="text-pink-400 hover:text-pink-600"
+                    >
+                      <FaTimes className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Hiển thị kiểu sắp xếp đã chọn */}
+                {filters.sort !== 'discount-desc' && (
+                  <div className="px-3 py-1 bg-pink-50 rounded-full text-sm text-pink-700 flex items-center gap-1.5 transition-all hover:bg-pink-100">
+                    <span>{filterOptions.sortOptions.find(option => option.id === filters.sort)?.label}</span>
+                    <button
+                      onClick={() => handleFilterChange('sort', 'discount-desc')}
+                      className="text-pink-400 hover:text-pink-600"
+                    >
+                      <FaTimes className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Nút xóa tất cả bộ lọc */}
+                <button
+                  onClick={() => {
+                    setFilters({
+                      search: '',
+                      categories: [],
+                      priceRanges: [],
+                      discountRanges: [], 
+                      sort: 'discount-desc'
+                    });
+                  }}
+                  className="px-3 py-1 text-sm text-pink-600 hover:text-pink-700 hover:underline"
+                >
+                  Xóa tất cả
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
