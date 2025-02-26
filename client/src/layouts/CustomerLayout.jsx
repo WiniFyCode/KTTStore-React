@@ -671,7 +671,7 @@ const CustomerLayout = () => {
 
           {/* Mobile Navigation Menu */}
           <div
-            className={`lg:hidden fixed inset-0 z-50 bg-gray-900/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${isMenuOpen
+            className={`lg:hidden fixed inset-0 bg-gray-900/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${isMenuOpen
               ? 'opacity-100 visible'
               : 'opacity-0 invisible pointer-events-none'
               }`}
@@ -778,7 +778,7 @@ const CustomerLayout = () => {
                       <>
                         <Link
                           to="/tet-collection"
-                          className="block px-6 py-2 text-white hover:bg-white/10"
+                          className="block px-9 py-2 text-white hover:bg-white/10"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           Thời trang Tết
@@ -787,7 +787,7 @@ const CustomerLayout = () => {
                     ) : (
                       <Link
                         to="/new-arrivals"
-                        className="block px-6 py-2 text-white hover:bg-white/10 "
+                        className="block px-9 py-2 text-white hover:bg-white/10 "
                         onClick={() => setIsMenuOpen(false)}
                       >
                         Hàng mới về
@@ -795,28 +795,28 @@ const CustomerLayout = () => {
                     )}
                     <Link
                       to="/products"
-                      className="block px-6 py-2 text-white hover:bg-white/10"
+                      className="block px-9 py-2 text-white hover:bg-white/10"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Tất cả sản phẩm
                     </Link>
                     <Link
                       to="/male"
-                      className="block px-6 py-2 text-white hover:bg-white/10"
+                      className="block px-9 py-2 text-white hover:bg-white/10"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Nam
                     </Link>
                     <Link
                       to="/female"
-                      className="block px-6 py-2 text-white hover:bg-white/10"
+                      className="block px-9 py-2 text-white hover:bg-white/10"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Nữ
                     </Link>
                     <Link
                       to={theme === 'tet' ? '/sale-tet' : '/sale'}
-                      className="block px-6 py-2 text-white hover:bg-white/10"
+                      className="block px-9 py-2 text-white hover:bg-white/10"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {theme === 'tet' ? 'Giảm giá Tết' : 'Giảm giá'}
@@ -857,7 +857,7 @@ const CustomerLayout = () => {
                       <div className={`overflow-hidden transition-all duration-300 ${openDropdowns.account ? 'max-h-96 mb-4 border-b border-white/10 pb-4' : 'max-h-0'}`}>
                         <Link
                           to="/profile"
-                          className="flex items-center px-6 py-2 text-white hover:bg-white/10"
+                          className="flex items-center px-9 py-2 text-white hover:bg-white/10"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <FaUser className="mr-3" size={16} />
@@ -865,7 +865,7 @@ const CustomerLayout = () => {
                         </Link>
                         <Link
                           to="/orders"
-                          className="flex items-center px-6 py-2 text-white hover:bg-white/10"
+                          className="flex items-center px-9 py-2 text-white hover:bg-white/10"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <FaClipboardList className="mr-3" size={16} />
@@ -876,7 +876,7 @@ const CustomerLayout = () => {
                             handleLogout();
                             setIsMenuOpen(false);
                           }}
-                          className="w-full flex items-center px-6 py-2 text-red-500 hover:bg-white/10"
+                          className="w-full flex items-center px-9 py-2 text-red-500 hover:bg-white/10"
                         >
                           <span>Đăng xuất</span>
                         </button>
