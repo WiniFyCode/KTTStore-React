@@ -249,7 +249,7 @@ const AIChat = () => {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-10 right-6 p-3 rounded-full shadow-lg z-50 transition-all duration-300 
+        className={`fixed bottom-10 right-6 p-3 rounded-full shadow-lg z-30 transition-all duration-300 
           hover:scale-110 animate-bounce ${theme === 'tet'
             ? 'bg-red-600 hover:bg-red-700 text-white'
             : 'bg-blue-600 hover:bg-blue-700 text-white'
