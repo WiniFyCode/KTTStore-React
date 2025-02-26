@@ -317,13 +317,13 @@ const CustomerLayout = () => {
                   <Link
                     key={item.name}
                     to={item.path}
-                    className={`whitespace-nowrap hover:text-white/80 transition-colors border-b-2 ${location.pathname === item.path
+                    className={`whitespace-nowrap transition-all duration-300 border-b-2 relative before:content-[''] before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:transition-all before:duration-300 hover:before:w-full ${location.pathname === item.path
                       ? theme === 'tet'
-                        ? 'text-yellow-400 font-semibold border-yellow-400'
-                        : 'text-blue-400 font-semibold border-blue-400'
+                        ? 'text-yellow-400 font-semibold border-yellow-400 hover:text-yellow-300 before:bg-yellow-300'
+                        : 'text-blue-400 font-semibold border-blue-400 hover:text-blue-300 before:bg-blue-300'
                       : theme === 'tet'
-                        ? 'text-white border-transparent'
-                        : 'text-white border-transparent'
+                        ? 'text-yellow-100/90 border-transparent hover:text-yellow-400 before:bg-yellow-400'
+                        : 'text-white border-transparent hover:text-blue-300 before:bg-blue-300'
                       }`}
                   >
                     {item.name}
