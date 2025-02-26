@@ -671,7 +671,7 @@ const CustomerLayout = () => {
 
           {/* Mobile Navigation Menu */}
           <div
-            className={`lg:hidden fixed inset-0 bg-gray-900/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${isMenuOpen
+            className={`lg:hidden fixed inset-0 z-50 bg-gray-900/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${isMenuOpen
               ? 'opacity-100 visible'
               : 'opacity-0 invisible pointer-events-none'
               }`}

@@ -25,7 +25,7 @@ class FavoriteController {
                     // Tìm thông tin ProductSizeStock
                     const sizeStock = await ProductSizeStock.findOne({ SKU: fav.SKU });
                     if (!sizeStock) {
-                        console.warn(`Không tìm thấy thông tin size cho SKU: ${fav.SKU}`);
+                        // console.warn(`Không tìm thấy thông tin size cho SKU: ${fav.SKU}`);
                         return null;
                     }
 
@@ -39,7 +39,7 @@ class FavoriteController {
                     ).populate('targetInfo').populate('categoryInfo');
 
                     if (!product) {
-                        console.warn(`FavC - Không tìm thấy thông tin sản phẩm cho productID : ${productID}`);
+                        // console.warn(`FavC - Không tìm thấy thông tin sản phẩm cho productID : ${productID}`);
                         return null;
                     }
 
@@ -50,7 +50,7 @@ class FavoriteController {
                     });
 
                     if (!color) {
-                        console.warn(`FavC - Không tìm thấy thông tin màu sắc cho colorID: ${colorID}, productID: ${productID}`);
+                        // console.warn(`FavC - Không tìm thấy thông tin màu sắc cho colorID: ${colorID}, productID: ${productID}`);
                         color = {
                             colorName: 'Mặc định',
                             images: []
