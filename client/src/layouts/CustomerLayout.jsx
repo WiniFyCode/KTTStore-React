@@ -317,13 +317,13 @@ const CustomerLayout = () => {
                   <Link
                     key={item.name}
                     to={item.path}
-                    className={`whitespace-nowrap hover:text-white/80 transition-colors ${location.pathname === item.path
+                    className={`whitespace-nowrap hover:text-white/80 transition-colors border-b-2 ${location.pathname === item.path
                       ? theme === 'tet'
-                        ? 'text-yellow-400 font-semibold'
-                        : 'text-blue-400 font-semibold'
+                        ? 'text-yellow-400 font-semibold border-yellow-400'
+                        : 'text-blue-400 font-semibold border-blue-400'
                       : theme === 'tet'
-                        ? 'text-yellow-300/90'
-                        : 'text-white'
+                        ? 'text-white border-transparent'
+                        : 'text-white border-transparent'
                       }`}
                   >
                     {item.name}
