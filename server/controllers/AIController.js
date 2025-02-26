@@ -11,11 +11,11 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Cấu hình generation cho model
 const generationConfig = {
-    temperature: 0.7,
+    temperature: 2,
     topP: 0.95,
     topK: 64,
     maxOutputTokens: 65536,
-};
+  };
 
 // Khởi tạo model với cấu hình mới
 const model = genAI.getGenerativeModel({
@@ -39,7 +39,7 @@ class AIController {
                         parts: [{ text: 'Xin chào' }]
                     });
                 }
-                
+
                 // Thêm các message từ context và map role assistant thành model
                 chatHistory = [
                     ...chatHistory,
@@ -58,7 +58,7 @@ class AIController {
             // Lấy dữ liệu sản phẩm với aggregate pipeline
             const products = await Product.aggregate([
                 { $match: { isActivated: true } },
-                
+
                 // Join với Target
                 {
                     $lookup: {
@@ -174,79 +174,74 @@ class AIController {
                         } : null
                     };
 
-                    // Log để kiểm tra từng sản phẩm
-                    console.log('Processed Product:', {
-                        name: processedProduct.name,
-                        thumbnail: processedProduct.thumbnail,
-                        colorImages: processedProduct.colors.map(c => ({
-                            color: c.colorName,
-                            images: c.images
-                        }))
-                    });
-
                     return processedProduct;
                 })
             );
 
             // Tạo prompt chi tiết cho AI
             const prompt = `
-            Bạn là trợ lý bán hàng của ${trainingData.shopInfo.name}.
-
-            NGUYÊN TẮC TRẢ LỜI:
-            1. Chỉ trả lời sản phẩm có trong dữ liệu
-            2. KHÔNG ĐƯỢC LẶP LẠI câu hỏi của khách
-            3. KHÔNG HIỂN THỊ template gốc
-            4. Trả lời ngắn gọn, đi thẳng vào vấn đề
-            5. Luôn giữ giọng điệu thân thiện
-            6. Sử dụng emojis phù hợp
-            7. Xuống dòng 1 cách hợp lý để dễ đọc
-            8. Phải hiển thị ảnh khác nhau, không được trùng lặp
-            9. Phải đưa ra ảnh dựa theo câu hỏi của khách hàng
-            10. Hiển thị 6 ảnh sản phẩm để tránh spam
-            11. Nếu mà khách hỏi về sản phẩm có nhiều màu sắc, thì hiển thị ảnh của tất cả các màu sắc
-            12. Nếu khách hỏi về nhiều sản phẩm thì hiển thị ảnh thumbnail của các sản phẩm đó
-
-            CÁCH XỬ LÝ TÌNH HUỐNG:
-            - Chào hỏi: Chào ngắn gọn và hỏi nhu cầu của khách
-            - Hỏi sản phẩm: Trả lời thông tin và đề xuất sản phẩm phù hợp
-            - Hỏi size: Tư vấn size dựa vào thông số của khách
-            - Hỏi bảo quản: Hướng dẫn cách bảo quản theo chất liệu
-            - Hỏi khuyến mãi: Thông báo các chương trình đang có
-            - Hỏi size lớn: Thông báo dịch vụ may đo theo yêu cầu
-                + Giải thích shop chỉ có sẵn size S/M/L
-                + Đề xuất dịch vụ may đo cho size lớn hơn
-                + Hướng dẫn cách đặt may (liên hệ, gửi số đo, đặt cọc)
-            - Hỏi về đơn hàng: Tư vấn về đơn hàng, cách thanh toán, vận chuyển
-            - Hỏi về dịch vụ: Tư vấn về dịch vụ, cách sử dụng, hướng dẫn
-            - Hỏi về shop: Tư vấn về shop, cách mua hàng, các chính sách
-            - Hỏi về sản phẩm: Tư vấn về sản phẩm, cách sử dụng, hướng dẫn
-            - Hỏi về màu sắc: Chỉ hiển thị ảnh sản phẩm có màu sắc tương ứng với yêu cầu
-                + Nếu khách hỏi về màu xanh -> Chỉ hiển thị ảnh sản phẩm màu xanh
-                + Nếu khách hỏi về màu đỏ -> Chỉ hiển thị ảnh sản phẩm màu đỏ
-                + Nếu khách hỏi về màu đen -> Chỉ hiển thị ảnh sản phẩm màu đen
-                + Nếu khách hỏi về màu trắng -> Chỉ hiển thị ảnh sản phẩm màu trắng
-
-            CÁCH HIỂN THỊ ẢNH:
-            - Format: ![Ảnh sản phẩm](URL)
-            - Ví dụ: ![Áo dài Đan Yên màu đỏ](https://example.com/image.jpg)
-            - Không hiển thị ID sản phẩm
-            - Chỉ hiển thị tên và màu sắc
-            - Dưới mỗi ảnh là để tên sản phẩm - màu sắc
-            - Ghi chú: Ảnh của sản phẩm chính - Ảnh của sản phẩm gợi ý
-
-            Dữ liệu sản phẩm hiện có:
+            You are a sales assistant for ${trainingData.shopInfo.name}.
+            
+            RESPONSE PRINCIPLES:
+            1. Only answer about products in the data
+            2. DO NOT REPEAT customer's questions
+            3. DO NOT SHOW original templates
+            4. Answer concisely, get straight to the point
+            5. Always maintain a friendly tone
+            6. Use appropriate emojis
+            7. Use line breaks appropriately for readability
+            8. Must display different images, no duplicates
+            9. Must show images based on customer's questions
+            10. Display 6 product images to avoid spam
+            11. If customer asks about products with multiple colors, show images of all colors
+            12. If customer asks about multiple products, show thumbnail images of those products
+            13. Prioritize showing product images with colors matching customer's requirements
+            
+            HOW TO HANDLE SITUATIONS:
+            - Greeting: Brief greeting and ask about customer's needs
+            - Product inquiry: Provide information and suggest suitable products
+            - Size inquiry: Advise size based on customer's measurements
+            - Care instructions: Guide care methods based on material
+            - Promotion inquiry: Inform about current programs
+            - Large size inquiry: Inform about custom tailoring service
+                + Explain shop only has ready-made S/M/L sizes
+                + Suggest tailoring service for larger sizes
+                + Guide ordering process (contact, measurements, deposit)
+            - Order inquiry: Advise about orders, payment, shipping
+            - Service inquiry: Advise about services, usage, guidance
+            - Shop inquiry: Advise about shop, purchasing, policies
+            - Product inquiry: Advise about products, usage, guidance
+            - Color inquiry: Only show product images in corresponding colors
+                + If customer asks about blue -> Only show blue product images
+                + If customer asks about red -> Only show red product images
+                + If customer asks about black -> Only show black product images
+                + If customer asks about white -> Only show white product images
+            
+            IMAGE DISPLAY FORMAT:
+            - Format: ![Product Name - Color](URL)
+             http://localhost:5173/product/{productID}
+            - Don't show product ID in name
+            - Only show name and color
+            - Under each image must have:
+                + Product name - color
+            - Complete example:
+                ![Dan Yen Ao Dai Red](https://example.com/image.jpg)
+                Dan Yen Ao Dai - Red
+                http://localhost:5173/product/111
+            
+            Available product data:
             ${JSON.stringify(formattedProducts, null, 2)}
-
-            Thông tin shop:
+            
+            Shop information:
             ${JSON.stringify(trainingData.shopInfo, null, 2)}
-
+            
             Templates:
             ${JSON.stringify(trainingData.responses, null, 2)}
-
-            Lịch sử chat:
+            
+            Chat history:
             ${context.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
-
-            Câu hỏi hiện tại: "${query}"
+            
+            Current question: "${query}"
             `;
 
             // Gửi message và nhận response
@@ -258,7 +253,7 @@ class AIController {
                 success: true,
                 response: text
             });
-            
+
 
         } catch (error) {
             console.error('Lỗi khi xử lý AI chat:', error);

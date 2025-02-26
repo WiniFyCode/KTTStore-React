@@ -210,7 +210,7 @@ class ReviewController {
             const { productID } = req.params;
             const { sort = 'newest' } = req.query;
 
-            console.log('Lấy đánh giá cho sản phẩm:', productID);
+            // console.log('Lấy đánh giá cho sản phẩm:', productID);
 
             // Kiểm tra sản phẩm tồn tại
             const product = await Product.findOne({ productID: parseInt(productID) });
@@ -222,15 +222,15 @@ class ReviewController {
             const reviews = await Review.find({ productID: parseInt(productID) })
                 .sort(sort === 'newest' ? { createdAt: -1 } : { rating: -1 });
 
-            console.log('Tìm thấy đánh giá:', reviews);
+            // console.log('Tìm thấy đánh giá:', reviews);
 
             // Lấy thông tin user cho mỗi review
             const formattedReviews = await Promise.all(reviews.map(async review => {
-                console.log('Đang xử lý đánh giá:', review);
-                console.log('Tìm kiếm người dùng với ID:', review.userID);
+                // console.log('Đang xử lý đánh giá:', review);
+                // console.log('Tìm kiếm người dùng với ID:', review.userID);
                 
                 const user = await User.findOne({ userID: parseInt(review.userID) });
-                console.log('Tìm thấy người dùng:', user);
+                // console.log('Tìm thấy người dùng:', user);
 
                 return {
                     reviewID: review.reviewID,
@@ -247,7 +247,7 @@ class ReviewController {
                 };
             }));
 
-            console.log('Formatted reviews:', formattedReviews);
+            // console.log('Formatted reviews:', formattedReviews);
 
             res.json({
                 message: 'Lấy danh sách đánh giá thành công',

@@ -1,33 +1,34 @@
 // NewsData.js - Dữ liệu mẫu cho tin tức
 export const newsData = [
-  {
-    id: 1,
-    title: 'Bộ sưu tập xuân hè 2025 đã về',
-    summary: 'Khám phá những xu hướng thời trang mới nhất trong bộ sưu tập xuân hè 2025 của KTT Store.',
-    content: `
-      &lt;p class="mb-4"&gt;
-        KTT Store hân hạnh giới thiệu bộ sưu tập xuân hè 2025 với những thiết kế độc đáo và phong cách mới nhất. 
-        Bộ sưu tập lần này mang đến những gam màu tươi sáng, họa tiết độc đáo và kiểu dáng hiện đại, 
-        phù hợp với xu hướng thời trang thế giới.
-      &lt;/p&gt;
-      
-      &lt;h3 class="text-xl font-semibold mb-3"&gt;Xu hướng màu sắc&lt;/h3&gt;
-      &lt;p class="mb-4"&gt;
-        Bộ sưu tập sử dụng các tông màu chủ đạo như: xanh pastel, hồng nhạt, và be đất. 
-        Đây là những gam màu đang được ưa chuộng trên các sàn diễn thời trang quốc tế.
-      &lt;/p&gt;
 
-      &lt;h3 class="text-xl font-semibold mb-3"&gt;Chất liệu cao cấp&lt;/h3&gt;
-      &lt;p class="mb-4"&gt;
-        Các thiết kế được sử dụng chất liệu cao cấp như lụa tơ tằm, cotton organic, và len merino, 
-        đảm bảo sự thoải mái và sang trọng cho người mặc.
-      &lt;/p&gt;
-    `,
-    image: 'https://picsum.photos/1920/1081',
-    date: '2025-01-15',
-    views: 1234,
-    category: 'Xu hướng',
-    tags: ['Bộ sưu tập', 'Xuân hè', 'Thời trang 2025']
+  {
+    id: 11,
+    title: 'Cảm ơn Pantio - Đối tác cung cấp hình ảnh',
+    summary: 'Lời cảm ơn chân thành đến Pantio.vn - đối tác cung cấp hình ảnh chất lượng cao cho KTT Store.',
+    content: `
+        &lt;p class="mb-4"&gt;
+          KTT Store xin gửi lời cảm ơn chân thành đến Pantio.vn - đối tác đã đồng hành và cung cấp những hình ảnh 
+          chất lượng cao cho website của chúng tôi. Sự hợp tác này đã góp phần tạo nên trải nghiệm mua sắm trực tuyến 
+          tuyệt vời cho khách hàng.
+        &lt;/p&gt;
+  
+        &lt;h3 class="text-xl font-semibold mb-3"&gt;Về Pantio.vn&lt;/h3&gt;
+        &lt;p class="mb-4"&gt;
+          Pantio.vn là đơn vị cung cấp dịch vụ hình ảnh chuyên nghiệp, với kho ảnh đa dạng và chất lượng cao. 
+          Việc hợp tác với Pantio.vn đã giúp KTT Store nâng cao chất lượng trình bày sản phẩm trên website.
+        &lt;/p&gt;
+  
+        &lt;h3 class="text-xl font-semibold mb-3"&gt;Cam kết hợp tác&lt;/h3&gt;
+        &lt;p class="mb-4"&gt;
+          Chúng tôi sẽ tiếp tục duy trì mối quan hệ hợp tác bền vững với Pantio.vn, 
+          để mang đến cho khách hàng những trải nghiệm mua sắm tốt nhất.
+        &lt;/p&gt;
+      `,
+    image: 'https://picsum.photos/1920/1091',
+    date: '2025-01-05',
+    views: 567,
+    category: 'Sự kiện',
+    tags: ['Đối tác', 'Cảm ơn', 'Pantio']
   },
   {
     id: 2,
@@ -252,7 +253,36 @@ export const newsData = [
     views: 892,
     category: 'Xu hướng',
     tags: ['Bền vững', 'Môi trường', 'Eco-friendly']
-  }
+  },
+  {
+    id: 1,
+    title: 'Bộ sưu tập xuân hè 2025 đã về',
+    summary: 'Khám phá những xu hướng thời trang mới nhất trong bộ sưu tập xuân hè 2025 của KTT Store.',
+    content: `
+    &lt;p class="mb-4"&gt;
+      KTT Store hân hạnh giới thiệu bộ sưu tập xuân hè 2025 với những thiết kế độc đáo và phong cách mới nhất. 
+      Bộ sưu tập lần này mang đến những gam màu tươi sáng, họa tiết độc đáo và kiểu dáng hiện đại, 
+      phù hợp với xu hướng thời trang thế giới.
+    &lt;/p&gt;
+    
+    &lt;h3 class="text-xl font-semibold mb-3"&gt;Xu hướng màu sắc&lt;/h3&gt;
+    &lt;p class="mb-4"&gt;
+      Bộ sưu tập sử dụng các tông màu chủ đạo như: xanh pastel, hồng nhạt, và be đất. 
+      Đây là những gam màu đang được ưa chuộng trên các sàn diễn thời trang quốc tế.
+    &lt;/p&gt;
+
+    &lt;h3 class="text-xl font-semibold mb-3"&gt;Chất liệu cao cấp&lt;/h3&gt;
+    &lt;p class="mb-4"&gt;
+      Các thiết kế được sử dụng chất liệu cao cấp như lụa tơ tằm, cotton organic, và len merino, 
+      đảm bảo sự thoải mái và sang trọng cho người mặc.
+    &lt;/p&gt;
+  `,
+    image: 'https://picsum.photos/1920/1081',
+    date: '2025-01-15',
+    views: 1234,
+    category: 'Xu hướng',
+    tags: ['Bộ sưu tập', 'Xuân hè', 'Thời trang 2025']
+  },
 ];
 
 // Lấy tin tức theo ID

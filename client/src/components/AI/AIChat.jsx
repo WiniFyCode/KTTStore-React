@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FiSend, FiX, FiMessageSquare, FiUser, FiHelpCircle } from 'react-icons/fi';
 import { useTheme } from '../../contexts/CustomerThemeContext';
 import axiosInstance from '../../utils/axios';
+import { Link } from 'react-router-dom';
 
 // Thêm ImageModal component
 const ImageModal = ({ image, onClose }) => {
@@ -44,7 +45,8 @@ const AIChat = () => {
     "Làm sao để chọn size phù hợp?",
     "Gợi ý phối đồ với áo sơ mi trắng",
     "Cách bảo quản áo len",
-    "Chất liệu vải cotton có tốt không?"
+    "Chất liệu vải cotton có tốt không?",
+    "Tôi muốn mua áo len nam, bạn có thể giúp tôi không?"
   ];
 
   const scrollToBottom = () => {
@@ -118,20 +120,21 @@ const AIChat = () => {
 
   // Hàm format tin nhắn để hiển thị ảnh
   const formatMessage = (content) => {
-    // Tìm các ảnh sản phẩm trong nội dung
-    const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
+    // Tìm các ảnh sản phẩm và link trong nội dung
+    const productRegex = /!\[(.*?)\]\((.*?)\)[\n\r]*(.*?)[\n\r]*http:\/\/localhost:5173\/product\/(\d+)/g;
     let formattedContent = content;
     const images = [];
 
     // Thu thập tất cả ảnh sản phẩm
     let match;
-    while ((match = imageRegex.exec(content)) !== null) {
-      const [fullMatch, altText, imageUrl] = match;
+    while ((match = productRegex.exec(content)) !== null) {
+      const [fullMatch, altText, imageUrl, productName, productId] = match;
       images.push({
-        name: altText,
-        url: imageUrl
+        name: productName.trim(), // Sử dụng tên sản phẩm từ dòng riêng
+        url: imageUrl,
+        productUrl: `http://localhost:5173/product/${productId}`
       });
-      // Xóa phần markdown ảnh khỏi nội dung
+      // Xóa toàn bộ phần markdown ảnh, tên và URL khỏi nội dung
       formattedContent = formattedContent.replace(fullMatch, '');
     }
 
@@ -167,19 +170,24 @@ const AIChat = () => {
                   animationDelay: `${index * 0.1}s`
                 }}
               >
-                <div className="aspect-w-3 aspect-h-4">
-                  <img
-                    src={image.url}
-                    alt={image.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
-                    onClick={() => setSelectedImage(image)}
-                  />
-                </div>
-                <div className="p-2 bg-gray-50">
-                  <p className="text-xs text-gray-600 text-center truncate">
-                    {image.name}
-                  </p>
-                </div>
+                <Link to={image.productUrl.replace('http://localhost:5173', '')} className="block">
+                  <div className="aspect-w-3 aspect-h-4 relative">
+                    <img
+                      src={image.url}
+                      alt={image.name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setSelectedImage(image);
+                      }}
+                    />
+                  </div>
+                  <div className="p-2 bg-gray-50">
+                    <p className="text-xs text-gray-600 text-center truncate hover:text-blue-600">
+                      {image.name}
+                    </p>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
@@ -198,8 +206,8 @@ const AIChat = () => {
       {/* Avatar cho AI */}
       {message.type !== 'user' && (
         <div className="flex-shrink-0 mr-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-            theme === 'tet' ? 'bg-red-100' : 'bg-blue-100'
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm ${
+            theme === 'tet' ? 'bg-gradient-to-br from-red-50 to-red-100' : 'bg-gradient-to-br from-blue-50 to-blue-100'
           }`}>
             <FiHelpCircle className={`w-5 h-5 ${
               theme === 'tet' ? 'text-red-500' : 'text-blue-500'
@@ -210,14 +218,14 @@ const AIChat = () => {
 
       {/* Nội dung tin nhắn */}
       <div
-        className={`max-w-[85%] rounded-lg p-3 ${
+        className={`max-w-[85%] rounded-2xl p-3.5 shadow-sm ${
           message.type === 'user'
             ? theme === 'tet'
-              ? 'bg-red-600 text-white rounded-tr-none'
-              : 'bg-blue-600 text-white rounded-tr-none'
+              ? 'bg-gradient-to-r from-red-500 to-red-600 text-white'
+              : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
             : theme === 'tet'
-            ? 'bg-red-50 rounded-tl-none'
-            : 'bg-gray-50 rounded-tl-none'
+            ? 'bg-white border border-red-100'
+            : 'bg-white border border-blue-100'
         }`}
       >
         {formatMessage(message.content)}
@@ -226,8 +234,8 @@ const AIChat = () => {
       {/* Avatar cho User */}
       {message.type === 'user' && (
         <div className="flex-shrink-0 ml-2">
-          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-            <FiUser className="w-5 h-5 text-gray-500" />
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-sm">
+            <FiUser className="w-5 h-5 text-gray-600" />
           </div>
         </div>
       )}
@@ -252,44 +260,45 @@ const AIChat = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-0 md:inset-auto md:bottom-20 md:right-20 md:w-96 md:h-[600px] bg-white rounded-none md:rounded-lg shadow-2xl z-50 flex flex-col animate-slideIn backdrop-blur-sm bg-opacity-95">
+        <div className="fixed inset-0 md:inset-auto md:bottom-24 md:right-8 md:w-[400px] md:h-[600px] bg-white rounded-none md:rounded-2xl shadow-2xl z-50 flex flex-col animate-slideIn">
           {/* Header */}
-          <div className={`p-3 md:p-4 md:rounded-t-lg flex justify-between items-center
+          <div className={`p-4 md:rounded-t-2xl flex justify-between items-center
             ${theme === 'tet'
-              ? 'bg-gradient-to-r from-red-600 to-red-500'
-              : 'bg-gradient-to-r from-blue-600 to-blue-500'
+              ? 'bg-gradient-to-r from-red-500 to-red-600'
+              : 'bg-gradient-to-r from-blue-500 to-blue-600'
             }`}
           >
-            <div className="flex items-center space-x-2">
-              <FiHelpCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                <FiHelpCircle className="w-6 h-6 text-white" />
+              </div>
               <div>
-                <h3 className="text-white font-medium text-sm md:text-base">KTT Store</h3>
-                <p className="text-xs text-white/80">Luôn sẵn sàng hỗ trợ bạn</p>
+                <h3 className="text-white font-semibold text-lg">KTT Store</h3>
+                <p className="text-sm text-white/90">Luôn sẵn sàng hỗ trợ bạn</p>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-white hover:text-gray-200 transition-colors p-1.5 md:p-2 hover:bg-white/10 rounded-full"
+              className="text-white/90 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full"
             >
-              <FiX className="w-5 h-5" />
+              <FiX className="w-6 h-6" />
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4 bg-gray-50">
-            {/* Messages content */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
             {messages.length === 0 && (
-              <div className="text-center space-y-3 md:space-y-4 message-animation">
-                <div className="w-12 h-12 md:w-16 md:h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                  <FiHelpCircle className={`w-6 h-6 md:w-8 md:h-8 ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`} />
+              <div className="text-center space-y-4 py-8">
+                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-50 to-blue-100 rounded-full flex items-center justify-center shadow-sm">
+                  <FiHelpCircle className={`w-8 h-8 ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`} />
                 </div>
-                <div>
-                  <p className="font-medium text-gray-800 text-sm md:text-base">Xin chào! Tôi có thể giúp gì cho bạn?</p>
-                  <p className="text-xs md:text-sm text-gray-500 mt-1">Hãy chọn câu hỏi hoặc nhập câu hỏi của bạn</p>
+                <div className="space-y-2">
+                  <p className="font-semibold text-gray-800 text-lg">Xin chào! Tôi có thể giúp gì cho bạn?</p>
+                  <p className="text-gray-500">Hãy chọn câu hỏi hoặc nhập câu hỏi của bạn</p>
                 </div>
 
                 {/* Suggested Questions */}
-                <div className="grid grid-cols-1 gap-2 mt-3 md:mt-4 text-xs md:text-sm">
+                <div className="grid grid-cols-1 gap-2.5 mt-6">
                   {suggestedQuestions.map((question, index) => (
                     <button
                       key={index}
@@ -297,7 +306,10 @@ const AIChat = () => {
                         setInputMessage(question);
                         handleSend();
                       }}
-                      className={`p-2 rounded-lg transition-all duration-200 text-left message-animation`}
+                      className={`p-3 rounded-xl transition-all duration-200 text-left hover:shadow-md
+                        ${theme === 'tet' 
+                          ? 'bg-white hover:bg-red-50 border border-red-100' 
+                          : 'bg-white hover:bg-blue-50 border border-blue-100'}`}
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       {question}
@@ -327,7 +339,7 @@ const AIChat = () => {
           </div>
 
           {/* Input */}
-          <div className="p-3 md:p-4 border-t bg-white md:rounded-b-lg">
+          <div className="p-4 border-t bg-white md:rounded-b-2xl">
             <div className="flex space-x-2">
               <input
                 type="text"
@@ -335,17 +347,18 @@ const AIChat = () => {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Nhập câu hỏi của bạn..."
-                className="flex-1 px-3 md:px-4 py-2 text-sm md:text-base border rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-50"
+                className="flex-1 px-4 py-2.5 text-base border rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-50"
               />
               <button
                 onClick={handleSend}
                 disabled={isLoading || !inputMessage.trim()}
-                className={`p-3 rounded-full transition-all duration-200 ${theme === 'tet'
-                    ? 'bg-red-600 hover:bg-red-700 disabled:bg-red-400'
-                    : 'bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400'
-                  } text-white disabled:cursor-not-allowed hover:scale-105`}
+                className={`p-3 rounded-xl transition-all duration-200 ${
+                  theme === 'tet'
+                    ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-red-400 disabled:to-red-400'
+                    : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-blue-400 disabled:to-blue-400'
+                } text-white disabled:cursor-not-allowed hover:shadow-md`}
               >
-                <FiSend className="w-4 h-4" />
+                <FiSend className="w-5 h-5" />
               </button>
             </div>
           </div>

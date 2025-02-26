@@ -17,6 +17,7 @@
     "@ant-design/icons": "^5.5.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@greatsumini/react-facebook-login": "^3.4.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@mui/icons-material": "^6.4.0",

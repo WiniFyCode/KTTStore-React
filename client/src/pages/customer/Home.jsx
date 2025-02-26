@@ -65,8 +65,8 @@ const Home = () => {
   const isInFlashSaleTimeRange = () => {
     const now = new Date();
     const currentHour = now.getHours();
-    return (currentHour >= 12 && currentHour < 14) || 
-           (currentHour >= 20 && currentHour < 22);
+    return (currentHour >= 12 && currentHour < 14) ||
+      (currentHour >= 20 && currentHour < 22);
   };
 
   // Function để lấy ngẫu nhiên n phần tử từ một mảng
@@ -91,7 +91,7 @@ const Home = () => {
           .map(product => ({
             ...product,
             originalPrice: product.price,
-            discountedPrice: isInTimeRange 
+            discountedPrice: isInTimeRange
               ? calculateDiscountPrice(product.price, product.promotion.discountPercent)
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
@@ -104,7 +104,7 @@ const Home = () => {
         if (flashSaleProducts.length > 0) {
           // Lấy thông tin flash sale từ sản phẩm đầu tiên
           const flashSale = flashSaleProducts[0].promotion;
-          
+
           // Tính thời gian bắt đầu và kết thúc của khung giờ flash sale tiếp theo
           const now = new Date();
           const currentHour = now.getHours();
@@ -133,8 +133,8 @@ const Home = () => {
           setFlashSaleProducts(getRandomItems(flashSaleProducts, 4));
         }
       }
-      } catch (error) {
-        console.error('Lỗi khi tải dữ liệu Flash Sale(Home.jsx):', error);
+    } catch (error) {
+      console.error('Lỗi khi tải dữ liệu Flash Sale(Home.jsx):', error);
       toast.error('Không thể tải thông tin Flash Sale');
     }
   };
@@ -207,33 +207,29 @@ const Home = () => {
   return (
     <div className="flex flex-col">
       {/* Dòng chạy thông báo */}
-      <div className={`w-full py-3 ${
-        theme === 'tet' 
-          ? 'bg-gradient-to-r from-red-700/90 to-red-600/90 border-y border-yellow-300/30' 
+      <div className={`w-full py-3 ${theme === 'tet'
+          ? 'bg-gradient-to-r from-red-700/90 to-red-600/90 border-y border-yellow-300/30'
           : 'bg-gradient-to-r from-blue-600/90 to-blue-500/90 border-y border-blue-300/30'
-      }`}>
+        }`}>
         <div className="overflow-hidden">
           <div className="animate-marquee whitespace-nowrap">
-            <span className={`inline-block ${
-              theme === 'tet' 
-                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' 
+            <span className={`inline-block ${theme === 'tet'
+                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
                 : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
-            } text-lg font-medium mx-8 tracking-wide`}>
-              🎉 Chào mừng đến với cửa hàng thời trang của chúng tôi! 
+              } text-lg font-medium mx-8 tracking-wide`}>
+              🎉 Chào mừng đến với cửa hàng thời trang của chúng tôi!
             </span>
-            <span className={`inline-block ${
-              theme === 'tet' 
-                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' 
+            <span className={`inline-block ${theme === 'tet'
+                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
                 : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
-            } text-lg font-medium mx-8 tracking-wide`}>
-              🌟 Giảm giá đặc biệt cho các sản phẩm mới! 
+              } text-lg font-medium mx-8 tracking-wide`}>
+              🌟 Giảm giá đặc biệt cho các sản phẩm mới!
             </span>
-            <span className={`inline-block ${
-              theme === 'tet' 
-                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' 
+            <span className={`inline-block ${theme === 'tet'
+                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
                 : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
-            } text-lg font-medium mx-8 tracking-wide`}>
-              🎁 Miễn phí vận chuyển cho đơn hàng trên 500,000đ! 
+              } text-lg font-medium mx-8 tracking-wide`}>
+              🎁 Miễn phí vận chuyển cho đơn hàng trên 500,000đ!
             </span>
           </div>
         </div>
@@ -241,9 +237,9 @@ const Home = () => {
 
       {/* Slider Section */}
       {sliderContent.map((slide, index) => (
-        <div 
+        <div
           key={index}
-          className={`relative min-h-[100vh] md:min-h-[600px] flex items-center justify-center text-white ${slide.backgroundColor}`}
+          className={`relative min-h-[100vh] md:min-h-[660px] flex items-center justify-center text-white ${slide.backgroundColor}`}
           style={{
             backgroundImage: `url(${slide.image})`,
             backgroundSize: 'cover',
@@ -252,29 +248,26 @@ const Home = () => {
         >
           <div className="absolute inset-0 bg-black bg-opacity-50" />
           <div className="relative z-10 text-center px-4 py-8 md:py-12 w-full max-w-4xl mx-auto">
-            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 ${
-              theme === 'tet' ? 'text-yellow-400' : 'text-white'
-            }`}>
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 ${theme === 'tet' ? 'text-yellow-400' : 'text-white'
+              }`}>
               {slide.title}
             </h1>
             <p className="text-base sm:text-lg md:text-xl mb-8 md:mb-12">{slide.subtitle}</p>
-            
+
             {/* Benefits */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
               {slide.benefits.map((benefit, idx) => (
-                <div 
+                <div
                   key={idx}
                   // Background color
-                  className={`p-4 md:p-6 rounded-lg backdrop-blur-sm ${
-                    theme === 'tet' 
+                  className={`p-4 md:p-6 rounded-lg backdrop-blur-sm ${theme === 'tet'
                       ? 'bg-red-800/50 border border-yellow-400'
                       : 'bg-blue-900/50'
-                  }`}
+                    }`}
                 >
                   {/* Icon */}
-                  <div className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${
-                    theme === 'tet' ? 'text-yellow-400' : 'text-white'
-                  }`}>
+                  <div className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${theme === 'tet' ? 'text-yellow-400' : 'text-white'
+                    }`}>
                     {benefit.value}
                   </div>
                   {/* Description */}
@@ -286,11 +279,10 @@ const Home = () => {
             {/* CTA Button */}
             <Link
               to="/products"
-              className={`inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all ${
-                theme === 'tet'
+              className={`inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all ${theme === 'tet'
                   ? 'bg-yellow-400 text-red-700 hover:bg-yellow-300 hover:text-white'
                   : 'bg-blue-500 text-white hover:bg-blue-400'
-              }`}
+                }`}
             >
               {slide.cta}
             </Link>
@@ -301,73 +293,74 @@ const Home = () => {
       {/* Hero Section với Slider */}
       <section className="relative h-[calc(100vh-4rem)]">
         <Swiper
-          modules={[Navigation, Pagination, Autoplay, EffectFade]}
-          effect="fade"
-          spaceBetween={0}
+          modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
+          effect="coverflow"
+          grabCursor={true}
+          centeredSlides={true}
           slidesPerView={1}
+          coverflowEffect={{
+            rotate: 30,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          }}
           navigation={false}
           pagination={{
             clickable: true,
-            dynamicBullets: true,
+            el: '.swiper-pagination',
           }}
           autoplay={{
-            delay: 3500,
+            delay: 2500,
             disableOnInteraction: false
           }}
           loop={true}
           className="h-full"
         >
           {sliderData.map((slide, index) => (
-            <SwiperSlide key={index}>
-              <div className="relative h-full">
-                <div className={`absolute inset-0 ${
-                  theme === 'tet' 
-                    ? 'bg-gradient-to-r from-red-900/80 to-transparent'
-                    : 'bg-gradient-to-r from-gray-900/80 to-transparent'
-                }`} />
+            <SwiperSlide key={index} className="w-[80%]">
+              <div className="relative h-full group">
+                <div className={`absolute inset-0 bg-gradient-to-r ${slide.overlayColor} to-transparent`} />
                 <img
                   src={slide.image}
                   alt={slide.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-xl"
                 />
-                <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-4">
-                    <div className="max-w-xl space-y-4 md:space-y-6">
-                      <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-tight ${
-                        theme === 'tet' ? 'text-yellow-300' : 'text-white'
+                <div className="absolute inset-0 flex flex-col justify-end pb-16">
+                  <div className="text-center transform transition-all duration-500 group-hover:scale-105">
+                    <h1 className={`text-5xl font-bold mb-3 ${theme === 'tet' ? 'text-yellow-300' : 'text-white'
                       }`}
-                          style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-                        {slide.title}
-                      </h1>
-                      <p className="text-lg sm:text-xl md:text-2xl text-white/90">
-                        {slide.subtitle}
-                      </p>
-                      <Link
-                        to={slide.buttonLink}
-                        className={`inline-flex items-center ${
-                          theme === 'tet' 
-                            ? 'bg-red-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-full hover:bg-white hover:text-red-600 hover:border-2 hover:border-red-600 transition duration-300 text-sm md:text-base'
-                            : 'bg-blue-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-full hover:bg-white hover:text-blue-600 hover:border-2 hover:border-blue-600 transition duration-300 text-sm md:text-base'
-                        }`}
-                      >
-                        {slide.buttonText}
-                        <FaArrowRight className="ml-2" />
-                      </Link>
-                    </div>
+                      style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+                      {slide.title}
+                    </h1>
+                    <p className="text-xl text-white mb-6"
+                      style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}>
+                      {slide.subtitle}
+                    </p>
+                    <Link
+                      to={slide.buttonLink}
+                      className={`inline-flex items-center ${theme === 'tet'
+                          ? 'bg-red-600 hover:bg-white hover:text-red-600'
+                          : 'bg-blue-600 hover:bg-white hover:text-blue-600'
+                        } text-white px-8 py-3 rounded-full text-lg transition duration-300 border-2 border-transparent hover:border-current`}
+                    >
+                      {slide.buttonText}
+                      <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    </Link>
                   </div>
                 </div>
               </div>
             </SwiperSlide>
           ))}
+          <div className="swiper-pagination !bottom-4"></div>
         </Swiper>
       </section>
 
       {/* Dịch vụ */}
-      <section className={`py-10 ${
-        theme === 'tet' 
-          ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50' 
+      <section className={`py-10 ${theme === 'tet'
+          ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50'
           : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
-      }`}>
+        }`}>
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="flex items-center space-x-4 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -409,13 +402,12 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {banners.map((banner) => (
-              <div 
-                key={banner.id} 
-                className={`relative overflow-hidden group rounded-2xl shadow-lg md:hover:shadow-2xl transition-all duration-500 ${
-                  theme === 'tet' 
-                    ? 'md:hover:shadow-red-200/50' 
+              <div
+                key={banner.id}
+                className={`relative overflow-hidden group rounded-2xl shadow-lg md:hover:shadow-2xl transition-all duration-500 ${theme === 'tet'
+                    ? 'md:hover:shadow-red-200/50'
                     : 'md:hover:shadow-blue-200/50'
-                }`}
+                  }`}
               >
                 {/* Banner Image */}
                 <img
@@ -430,7 +422,7 @@ const Home = () => {
                   <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 transform md:translate-y-6 md:group-hover:translate-y-0 transition-transform duration-500">
                     {/* Title */}
                     <h2 className={`text-4xl md:text-5xl font-light ${theme === 'tet' ? 'text-yellow-300' : 'text-white'} mb-4 drop-shadow-lg`}
-                        style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+                      style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
                       {banner.title}
                     </h2>
 
@@ -442,31 +434,27 @@ const Home = () => {
                     {/* Button */}
                     <Link
                       to={banner.link}
-                      className={`inline-flex items-center px-6 py-3 rounded-full ${
-                        theme === 'tet'
+                      className={`inline-flex items-center px-6 py-3 rounded-full ${theme === 'tet'
                           ? 'bg-yellow-400 text-red-700 hover:bg-yellow-300'
                           : 'bg-white/90 hover:bg-white'
-                      } transition-all duration-300 transform md:-translate-y-2 md:group-hover:translate-y-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 shadow-lg`}
+                        } transition-all duration-300 transform md:-translate-y-2 md:group-hover:translate-y-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 shadow-lg`}
                     >
                       <span className="font-medium">{banner.buttonText}</span>
-                      <FaArrowRight className={`ml-2 transform md:group-hover:translate-x-1 transition-transform duration-300 ${
-                        theme === 'tet' ? 'text-red-700' : 'text-blue-600'
-                      }`} />
+                      <FaArrowRight className={`ml-2 transform md:group-hover:translate-x-1 transition-transform duration-300 ${theme === 'tet' ? 'text-red-700' : 'text-blue-600'
+                        }`} />
                     </Link>
                   </div>
                 </div>
 
                 {/* Decorative Elements */}
-                <div className={`absolute top-0 right-0 w-32 h-32 transform rotate-45 translate-x-16 -translate-y-16 ${
-                  theme === 'tet' 
-                    ? 'bg-gradient-to-br from-yellow-400/20 to-red-500/20' 
+                <div className={`absolute top-0 right-0 w-32 h-32 transform rotate-45 translate-x-16 -translate-y-16 ${theme === 'tet'
+                    ? 'bg-gradient-to-br from-yellow-400/20 to-red-500/20'
                     : 'bg-gradient-to-br from-blue-400/20 to-purple-500/20'
-                }`} />
-                <div className={`absolute bottom-0 left-0 w-24 h-24 transform rotate-45 -translate-x-12 translate-y-12 ${
-                  theme === 'tet' 
-                    ? 'bg-gradient-to-tr from-red-500/20 to-yellow-400/20' 
+                  }`} />
+                <div className={`absolute bottom-0 left-0 w-24 h-24 transform rotate-45 -translate-x-12 translate-y-12 ${theme === 'tet'
+                    ? 'bg-gradient-to-tr from-red-500/20 to-yellow-400/20'
                     : 'bg-gradient-to-tr from-purple-500/20 to-blue-400/20'
-                }`} />
+                  }`} />
               </div>
             ))}
           </div>
@@ -474,23 +462,21 @@ const Home = () => {
       </section>
 
       {/* Flash Sale Section */}
-      <section className={`py-12 md:py-20 ${
-        theme === 'tet' 
-          ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50' 
+      <section className={`py-12 md:py-20 ${theme === 'tet'
+          ? 'bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50'
           : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
-      }`}>
+        }`}>
         <div className="container mx-auto px-4">
           {/* Header Flash Sale */}
           <div className="flex flex-col items-center justify-center mb-8 md:mb-12">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-3xl md:text-4xl">{theme === 'tet' ? '🧧' : '⚡'}</span>
-              <h2 className={`text-3xl md:text-4xl font-bold ${
-                theme === 'tet' ? 'text-red-700' : 'text-indigo-600'
-              }`}>
+              <h2 className={`text-3xl md:text-4xl font-bold ${theme === 'tet' ? 'text-red-700' : 'text-indigo-600'
+                }`}>
                 {theme === 'tet' ? 'FLASH SALE TẾT' : 'FLASH SALE'}
               </h2>
             </div>
-            
+
             <div className="flex items-center gap-2 text-lg md:text-xl mb-2">
               {isFlashSaleActive ? (
                 <div className="flex items-center gap-2">
@@ -504,9 +490,8 @@ const Home = () => {
                 </div>
               )}
             </div>
-            <p className={`text-base md:text-lg mt-1 ${
-              theme === 'tet' ? 'text-red-500' : 'text-indigo-500'
-            }`}>
+            <p className={`text-base md:text-lg mt-1 ${theme === 'tet' ? 'text-red-500' : 'text-indigo-500'
+              }`}>
               {theme === 'tet' ? 'Săn deal hot - Đón Tết sang' : 'Săn deal hot - Giá sốc mỗi ngày'}
             </p>
           </div>
@@ -535,11 +520,10 @@ const Home = () => {
                     to={`/product/${product.productID}`}
                     className="group"
                   >
-                    <div className={`group-hover:shadow-xl transition-all duration-300 ${
-                      theme === 'tet'
+                    <div className={`group-hover:shadow-xl transition-all duration-300 ${theme === 'tet'
                         ? 'hover:shadow-red-100'
                         : 'hover:shadow-blue-100'
-                    } relative mb-4 overflow-hidden rounded-lg`}>
+                      } relative mb-4 overflow-hidden rounded-lg`}>
                       <img
                         src={product.thumbnail || (product.images && product.images[0]) || '/placeholder-image.jpg'}
                         alt={product.name}
@@ -551,16 +535,14 @@ const Home = () => {
                         }}
                       />
                       {/* Label SALE */}
-                      <div className={`absolute top-0 left-0 ${
-                        theme === 'tet' ? 'bg-red-600' : 'bg-indigo-600'
-                      } text-white px-2 md:px-3 py-1 rounded-tl-lg rounded-br-lg`}>
+                      <div className={`absolute top-0 left-0 ${theme === 'tet' ? 'bg-red-600' : 'bg-indigo-600'
+                        } text-white px-2 md:px-3 py-1 rounded-tl-lg rounded-br-lg`}>
                         {theme === 'tet' ? 'SALE TẾT' : 'FLASH SALE'}
                       </div>
                       {/* Label giảm giá */}
                       {isFlashSaleActive ? (
-                        <div className={`absolute top-0 right-0 ${
-                          theme === 'tet' ? 'bg-yellow-500' : 'bg-indigo-500'
-                        } text-white px-2 md:px-3 py-1 rounded font-medium text-sm md:text-base`}>
+                        <div className={`absolute top-0 right-0 ${theme === 'tet' ? 'bg-yellow-500' : 'bg-indigo-500'
+                          } text-white px-2 md:px-3 py-1 rounded font-medium text-sm md:text-base`}>
                           -{product.discountPercent}%
                         </div>
                       ) : (
@@ -571,11 +553,10 @@ const Home = () => {
                       {/* Overlay khi hover */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
                         <div className="absolute bottom-2 md:bottom-4 left-0 right-0 text-center">
-                          <button className={`${
-                            theme === 'tet' 
-                              ? 'bg-red-600 hover:bg-red-700' 
+                          <button className={`${theme === 'tet'
+                              ? 'bg-red-600 hover:bg-red-700'
                               : 'bg-indigo-600 hover:bg-indigo-700'
-                          } text-white px-4 md:px-6 py-2 rounded-full font-medium transition duration-300 text-sm md:text-base`}>
+                            } text-white px-4 md:px-6 py-2 rounded-full font-medium transition duration-300 text-sm md:text-base`}>
                             Xem chi tiết
                           </button>
                         </div>
@@ -605,13 +586,12 @@ const Home = () => {
                           </span>
                         )}
                       </div>
-                      
+
                       {/* Progress bar */}
                       <div className="w-full bg-gray-100 rounded-full h-2.5 mb-2 overflow-hidden">
                         <div
-                          className={`h-full ${
-                            theme === 'tet' ? 'bg-red-600' : 'bg-indigo-600'
-                          } transition-all duration-300`}
+                          className={`h-full ${theme === 'tet' ? 'bg-red-600' : 'bg-indigo-600'
+                            } transition-all duration-300`}
                           style={{
                             width: `${Math.min((product.soldQuantity / product.totalQuantity) * 100, 100)}%`
                           }}
@@ -629,11 +609,10 @@ const Home = () => {
               <div className="text-center mt-8 md:mt-12">
                 <Link
                   to="/sale"
-                  className={`inline-flex items-center ${
-                    theme === 'tet' 
-                      ? 'bg-red-600 hover:bg-red-700' 
+                  className={`inline-flex items-center ${theme === 'tet'
+                      ? 'bg-red-600 hover:bg-red-700'
                       : 'bg-indigo-600 hover:bg-white border-2 border-indigo-600 hover:text-indigo-600'
-                  } text-white px-6 md:px-8 py-2 md:py-3 rounded-full transition-colors text-sm md:text-base`}
+                    } text-white px-6 md:px-8 py-2 md:py-3 rounded-full transition-colors text-sm md:text-base`}
                 >
                   {theme === 'tet' ? 'XEM TẤT CẢ FLASH SALE TẾT' : 'XEM TẤT CẢ FLASH SALE'}
                   <FaArrowRight className="ml-2" />
@@ -643,7 +622,7 @@ const Home = () => {
           )}
         </div>
       </section>
-      
+
       {/* Sản phẩm nổi bật */}
       <section className={`py-12 md:py-20 ${flashSaleData.featuredStyle.bg}`}>
         <div className="container mx-auto px-4">
@@ -733,44 +712,39 @@ const Home = () => {
       </section>
 
       {/* Ưu đãi Section - Lì xì đầu năm */}
-      <section className={`py-20 ${
-        theme === 'tet' 
-          ? 'bg-gradient-to-br from-red-50 via-white to-red-50' 
+      <section className={`py-20 ${theme === 'tet'
+          ? 'bg-gradient-to-br from-red-50 via-white to-red-50'
           : 'bg-gradient-to-br from-blue-50 via-white to-blue-50'
-      }`}>
+        }`}>
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="max-w-3xl mx-auto text-center mb-16">
             <div className="inline-block mb-6">
-              <div className={`inline-flex items-center justify-center px-6 py-2 rounded-full ${
-                theme === 'tet'
+              <div className={`inline-flex items-center justify-center px-6 py-2 rounded-full ${theme === 'tet'
                   ? 'bg-red-100'
                   : 'bg-blue-100'
-              }`}>
+                }`}>
                 {theme === 'tet' ? (
                   <RiRedPacketLine className="text-3xl text-red-600 mr-2" />
                 ) : (
                   <MdCelebration className="text-3xl text-blue-600 mr-2" />
                 )}
-                <span className={`text-lg font-medium ${
-                  theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                }`}>
+                <span className={`text-lg font-medium ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                  }`}>
                   {theme === 'tet' ? 'Khuyến mãi Tết 2025' : 'Summer Sale 2025'}
                 </span>
               </div>
             </div>
-            
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
-              theme === 'tet'
+
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${theme === 'tet'
                 ? 'bg-gradient-to-r from-red-600 via-yellow-500 to-red-600'
                 : 'bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600'
-            } bg-clip-text text-transparent`}>
+              } bg-clip-text text-transparent`}>
               {theme === 'tet' ? 'LÌ XÌ MAY MẮN ĐẦU NĂM' : 'SUMMER SALE 2025'}
             </h2>
-            
-            <p className={`text-xl ${
-              theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-            }`}>
+
+            <p className={`text-xl ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+              }`}>
               {theme === 'tet'
                 ? 'Mừng Xuân Ất Tỵ, KTT Store gửi tặng những phần quà đặc biệt:'
                 : 'Đón hè rực rỡ với những ưu đãi hấp dẫn từ KTT Store:'}
@@ -784,22 +758,19 @@ const Home = () => {
               {benefits.map((benefit, index) => (
                 <div
                   key={index}
-                  className={`group relative overflow-hidden p-8 rounded-2xl transition-all duration-500 ${
-                    theme === 'tet'
+                  className={`group relative overflow-hidden p-8 rounded-2xl transition-all duration-500 ${theme === 'tet'
                       ? 'hover:bg-gradient-to-br from-red-100 to-yellow-50 bg-white'
                       : 'hover:bg-gradient-to-br from-blue-100 to-purple-50 bg-white'
-                  } border-2 ${
-                    theme === 'tet'
+                    } border-2 ${theme === 'tet'
                       ? 'border-red-100 hover:border-red-200'
                       : 'border-blue-100 hover:border-blue-200'
-                  }`}
+                    }`}
                 >
                   <div className="relative z-10">
-                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl mb-6 transition-all duration-500 ${
-                      theme === 'tet'
+                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl mb-6 transition-all duration-500 ${theme === 'tet'
                         ? 'bg-red-50 group-hover:bg-red-100'
                         : 'bg-blue-50 group-hover:bg-blue-100'
-                    }`}>
+                      }`}>
                       {index === 0 ? (
                         <RiVipCrownLine className={`text-3xl ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`} />
                       ) : index === 1 ? (
@@ -808,16 +779,14 @@ const Home = () => {
                         <FaGift className={`text-3xl ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'}`} />
                       )}
                     </div>
-                    
-                    <h3 className={`text-2xl font-bold mb-4 ${
-                      theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                    }`}>
+
+                    <h3 className={`text-2xl font-bold mb-4 ${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                      }`}>
                       {benefit.value}
                     </h3>
-                    
-                    <p className={`${
-                      theme === 'tet' ? 'text-red-700' : 'text-blue-700'
-                    }`}>
+
+                    <p className={`${theme === 'tet' ? 'text-red-700' : 'text-blue-700'
+                      }`}>
                       {benefit.description}
                     </p>
                   </div>
@@ -828,24 +797,20 @@ const Home = () => {
             {/* Newsletter & CTA Section */}
             <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Newsletter */}
-              <div className={`p-8 rounded-2xl ${
-                theme === 'tet'
+              <div className={`p-8 rounded-2xl ${theme === 'tet'
                   ? 'bg-gradient-to-br from-white to-red-50 border-2 border-red-100'
                   : 'bg-gradient-to-br from-white to-blue-50 border-2 border-blue-100'
-              }`}>
+                }`}>
                 <div className="flex items-center space-x-4 mb-6">
-                  <FaEnvelope className={`text-3xl ${
-                    theme === 'tet' ? 'text-red-500' : 'text-blue-500'
-                  }`} />
+                  <FaEnvelope className={`text-3xl ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'
+                    }`} />
                   <div>
-                    <h3 className={`text-2xl font-bold mb-1 ${
-                      theme === 'tet' ? 'text-red-700' : 'text-blue-700'
-                    }`}>
+                    <h3 className={`text-2xl font-bold mb-1 ${theme === 'tet' ? 'text-red-700' : 'text-blue-700'
+                      }`}>
                       {subscriptionContent.title}
                     </h3>
-                    <p className={`${
-                      theme === 'tet' ? 'text-red-600' : 'text-blue-600'
-                    }`}>
+                    <p className={`${theme === 'tet' ? 'text-red-600' : 'text-blue-600'
+                      }`}>
                       {subscriptionContent.description}
                     </p>
                   </div>
@@ -857,20 +822,18 @@ const Home = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={subscriptionContent.placeholder}
-                    className={`flex-1 px-6 py-3 rounded-xl focus:outline-none border-2 transition-all ${
-                      theme === 'tet'
+                    className={`flex-1 px-6 py-3 rounded-xl focus:outline-none border-2 transition-all ${theme === 'tet'
                         ? 'border-red-200 focus:border-red-400 bg-red-50'
                         : 'border-blue-200 focus:border-blue-400 bg-blue-50'
-                    }`}
+                      }`}
                   />
                   <button
                     onClick={handleSubscribe}
                     disabled={isLoading}
-                    className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center justify-center whitespace-nowrap ${
-                      theme === 'tet'
+                    className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center justify-center whitespace-nowrap ${theme === 'tet'
                         ? 'bg-gradient-to-r from-red-500 to-yellow-500 text-white hover:shadow-lg hover:shadow-red-200'
                         : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:shadow-lg hover:shadow-blue-200'
-                    } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     {isLoading ? (
                       'Đang xử lý...'
@@ -884,32 +847,29 @@ const Home = () => {
                 </div>
 
                 {theme === 'tet' && (
-                  <p className={`mt-4 text-sm ${
-                    theme === 'tet' ? 'text-red-500' : 'text-blue-500'
-                  }`}>
+                  <p className={`mt-4 text-sm ${theme === 'tet' ? 'text-red-500' : 'text-blue-500'
+                    }`}>
                     * Áp dụng cho khách hàng đăng ký mới từ nay đến mùng 5 Tết
                   </p>
                 )}
               </div>
 
               {/* CTA */}
-              <div className={`p-8 rounded-2xl flex flex-col justify-center items-center text-center ${
-                theme === 'tet'
+              <div className={`p-8 rounded-2xl flex flex-col justify-center items-center text-center ${theme === 'tet'
                   ? 'bg-gradient-to-br from-red-600 to-yellow-500'
                   : 'bg-gradient-to-br from-blue-600 to-purple-500'
-              }`}>
+                }`}>
                 <h3 className="text-3xl font-bold text-white mb-6">
-                  {theme === 'tet' 
-                    ? 'Săn lì xì may mắn ngay!' 
+                  {theme === 'tet'
+                    ? 'Săn lì xì may mắn ngay!'
                     : 'Khám phá ưu đãi mùa hè!'}
                 </h3>
                 <Link
                   to="/promotion"
-                  className={`inline-flex items-center px-8 py-4 rounded-xl text-lg font-medium transition-all ${
-                    theme === 'tet'
+                  className={`inline-flex items-center px-8 py-4 rounded-xl text-lg font-medium transition-all ${theme === 'tet'
                       ? 'bg-white text-red-600 hover:bg-red-50 hover:text-blue-600'
                       : 'bg-white text-blue-600 hover:bg-blue-50 hover:text-red-600'
-                  }`}
+                    }`}
                 >
                   {theme === 'tet' ? 'NHẬN LÌ XÌ NGAY' : 'KHÁM PHÁ NGAY'}
                   <FaArrowRight className="ml-2" />
