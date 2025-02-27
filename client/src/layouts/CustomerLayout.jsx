@@ -681,13 +681,12 @@ const CustomerLayout = () => {
                 {/* Trang chủ */}
                 <Link
                   to="/"
-                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${
-                    location.pathname === '/' 
-                      ? theme === 'tet'
-                        ? 'bg-red-500/20 text-yellow-300'
-                        : 'bg-blue-500/20 text-blue-300'
-                      : 'hover:bg-white/10'
-                  }`}
+                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${location.pathname === '/'
+                    ? theme === 'tet'
+                      ? 'bg-red-500/20 text-yellow-300 border-b-2 border-yellow-300'
+                      : 'bg-blue-500/20 text-blue-300 border-b-2 border-blue-300'
+                    : 'hover:bg-white/10'
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <FaHome className="mr-3" size={16} />
@@ -698,13 +697,12 @@ const CustomerLayout = () => {
                 <div className="relative">
                   <button
                     onClick={() => toggleDropdown('products')}
-                    className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-300 text-white ${
-                      ['/products', '/male', '/female', '/new-arrivals', '/tet-collection', '/sale', '/sale-tet'].includes(location.pathname)
-                        ? theme === 'tet'
-                          ? 'bg-red-500/20 text-yellow-300'
-                          : 'bg-blue-500/20 text-blue-300'
-                        : 'hover:bg-white/10'
-                    }`}
+                    className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-300 text-white ${['/products', '/male', '/female', '/new-arrivals', '/tet-collection', '/sale', '/sale-tet'].includes(location.pathname)
+                      ? theme === 'tet'
+                        ? 'bg-red-500/20 text-yellow-300 border-b-2 border-yellow-300'
+                        : 'bg-blue-500/20 text-blue-300 border-b-2 border-blue-300'
+                      : 'hover:bg-white/10'
+                      }`}
                   >
                     <div className="flex items-center">
                       <FaTshirt className="mr-3" size={16} />
@@ -716,13 +714,12 @@ const CustomerLayout = () => {
                     {theme === 'tet' ? (
                       <Link
                         to="/tet-collection"
-                        className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
-                          location.pathname === '/tet-collection'
-                            ? theme === 'tet'
-                              ? 'bg-red-500/20 text-yellow-300'
-                              : 'bg-blue-500/20 text-blue-300'
-                            : 'hover:bg-white/10'
-                        }`}
+                        className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === '/tet-collection'
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                          }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <FaFireAlt className="mr-3" size={16} />
@@ -731,13 +728,12 @@ const CustomerLayout = () => {
                     ) : (
                       <Link
                         to="/new-arrivals"
-                        className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
-                          location.pathname === '/new-arrivals'
-                            ? theme === 'tet'
-                              ? 'bg-red-500/20 text-yellow-300'
-                              : 'bg-blue-500/20 text-blue-300'
-                            : 'hover:bg-white/10'
-                        }`}
+                        className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === '/new-arrivals'
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                          }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <FaStar className="mr-3" size={16} />
@@ -746,13 +742,12 @@ const CustomerLayout = () => {
                     )}
                     <Link
                       to="/products"
-                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
-                        location.pathname === '/products'
-                          ? theme === 'tet'
-                            ? 'bg-red-500/20 text-yellow-300'
-                            : 'bg-blue-500/20 text-blue-300'
-                          : 'hover:bg-white/10'
-                      }`}
+                      className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === '/products'
+                        ? theme === 'tet'
+                          ? 'bg-red-500/20 text-yellow-300'
+                          : 'bg-blue-500/20 text-blue-300'
+                        : 'hover:bg-white/10'
+                        }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <FaBoxOpen className="mr-3" size={16} />
@@ -760,13 +755,12 @@ const CustomerLayout = () => {
                     </Link>
                     <Link
                       to="/male"
-                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
-                        location.pathname === '/male'
-                          ? theme === 'tet'
-                            ? 'bg-red-500/20 text-yellow-300'
-                            : 'bg-blue-500/20 text-blue-300'
-                          : 'hover:bg-white/10'
-                      }`}
+                      className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === '/male'
+                        ? theme === 'tet'
+                          ? 'bg-red-500/20 text-yellow-300'
+                          : 'bg-blue-500/20 text-blue-300'
+                        : 'hover:bg-white/10'
+                        }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <FaMale className="mr-3" size={16} />
@@ -774,13 +768,12 @@ const CustomerLayout = () => {
                     </Link>
                     <Link
                       to="/female"
-                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
-                        location.pathname === '/female'
-                          ? theme === 'tet'
-                            ? 'bg-red-500/20 text-yellow-300'
-                            : 'bg-blue-500/20 text-blue-300'
-                          : 'hover:bg-white/10'
-                      }`}
+                      className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === '/female'
+                        ? theme === 'tet'
+                          ? 'bg-red-500/20 text-yellow-300'
+                          : 'bg-blue-500/20 text-blue-300'
+                        : 'hover:bg-white/10'
+                        }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <FaFemale className="mr-3" size={16} />
@@ -788,13 +781,12 @@ const CustomerLayout = () => {
                     </Link>
                     <Link
                       to={theme === 'tet' ? '/sale-tet' : '/sale'}
-                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
-                        location.pathname === (theme === 'tet' ? '/sale-tet' : '/sale')
-                          ? theme === 'tet'
-                            ? 'bg-red-500/20 text-yellow-300'
-                            : 'bg-blue-500/20 text-blue-300'
-                          : 'hover:bg-white/10'
-                      }`}
+                      className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === (theme === 'tet' ? '/sale-tet' : '/sale')
+                        ? theme === 'tet'
+                          ? 'bg-red-500/20 text-yellow-300'
+                          : 'bg-blue-500/20 text-blue-300'
+                        : 'hover:bg-white/10'
+                        }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <FaPercent className="mr-3" size={16} />
@@ -806,13 +798,12 @@ const CustomerLayout = () => {
                 {/* News */}
                 <Link
                   to="/news"
-                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white ${
-                    location.pathname === '/news'
-                      ? theme === 'tet'
-                        ? 'bg-red-500/20 text-yellow-300'
-                        : 'bg-blue-500/20 text-blue-300'
-                      : 'hover:bg-white/10'
-                  }`}
+                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === '/news'
+                    ? theme === 'tet'
+                      ? 'bg-red-500/20 text-yellow-300 border-b-2 border-yellow-300'
+                      : 'bg-blue-500/20 text-blue-300 border-b-2 border-blue-300'
+                    : 'hover:bg-white/10'
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <FaNewspaper className="mr-3" size={16} />
@@ -822,13 +813,12 @@ const CustomerLayout = () => {
                 {/* About */}
                 <Link
                   to="/about"
-                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white ${
-                    location.pathname === '/about'
-                      ? theme === 'tet'
-                        ? 'bg-red-500/20 text-yellow-300'
-                        : 'bg-blue-500/20 text-blue-300'
-                      : 'hover:bg-white/10'
-                  }`}
+                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white ${location.pathname === '/about'
+                    ? theme === 'tet'
+                      ? 'bg-red-500/20 text-yellow-300 border-b-2 border-yellow-300'
+                      : 'bg-blue-500/20 text-blue-300 border-b-2 border-blue-300'
+                    : 'hover:bg-white/10'
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <FaInfoCircle className="mr-3" size={16} />
@@ -844,60 +834,45 @@ const CustomerLayout = () => {
                     <div className="relative">
                       <button
                         onClick={() => toggleDropdown('account')}
-                        className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${
-                          ['/profile', '/orders'].includes(location.pathname)
-                            ? theme === 'tet'
-                              ? 'bg-red-500/20 text-yellow-300'
-                              : 'bg-blue-500/20 text-blue-300'
-                            : 'hover:bg-white/10'
-                        }`}
+                        className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${['/profile', '/orders'].includes(location.pathname)
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                          }`}
                       >
                         <span className="relative z-10">Tài khoản của tôi</span>
                         <span className={`transform transition-transform duration-200 ${openDropdowns.account ? 'rotate-180' : ''}`}>▼</span>
-                        <span className={`absolute bottom-0 left-0 h-0.5 ${
-                          theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
-                        } transition-all duration-300 ${
-                          ['/profile', '/orders'].includes(location.pathname) ? 'w-full' : 'w-0'
-                        }`} />
+                        <span className={`absolute bottom-0 left-0 h-0.5 ${theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                          } transition-all duration-300 ${['/profile', '/orders'].includes(location.pathname) ? 'w-full' : 'w-0'
+                          }`} />
                       </button>
                       <div className={`overflow-hidden transition-all duration-300 ${openDropdowns.account ? 'max-h-96 mb-4 border-b border-white/10 pb-4' : 'max-h-0'}`}>
                         <Link
                           to="/profile"
-                          className={`flex items-center px-9 py-2 transition-all duration-300 text-white relative overflow-hidden ${
-                            location.pathname === '/profile'
-                              ? theme === 'tet'
-                                ? 'bg-red-500/20 text-yellow-300'
-                                : 'bg-blue-500/20 text-blue-300'
-                              : 'hover:bg-white/10'
-                          }`}
+                          className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${location.pathname === '/profile'
+                            ? theme === 'tet'
+                              ? 'bg-red-500/20 text-yellow-300'
+                              : 'bg-blue-500/20 text-blue-300'
+                            : 'hover:bg-white/10'
+                            }`}
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <FaUser className="mr-3" size={16} />
                           <span className="relative z-10">Thông tin tài khoản</span>
-                          <span className={`absolute bottom-0 left-0 h-0.5 ${
-                            theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
-                          } transition-all duration-300 ${
-                            location.pathname === '/profile' ? 'w-full' : 'w-0'
-                          }`} />
                         </Link>
                         <Link
                           to="/orders"
-                          className={`flex items-center px-9 py-2 transition-all duration-300 text-white relative overflow-hidden ${
-                            location.pathname === '/orders'
-                              ? theme === 'tet'
-                                ? 'bg-red-500/20 text-yellow-300'
-                                : 'bg-blue-500/20 text-blue-300'
-                              : 'hover:bg-white/10'
-                          }`}
+                          className={`flex items-center px-9 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${location.pathname === '/orders'
+                            ? theme === 'tet'
+                              ? 'bg-red-500/20 text-yellow-300'
+                              : 'bg-blue-500/20 text-blue-300'
+                            : 'hover:bg-white/10'
+                            }`}
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <FaClipboardList className="mr-3" size={16} />
                           <span className="relative z-10">Đơn hàng</span>
-                          <span className={`absolute bottom-0 left-0 h-0.5 ${
-                            theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
-                          } transition-all duration-300 ${
-                            location.pathname === '/orders' ? 'w-full' : 'w-0'
-                          }`} />
                         </Link>
                         <button
                           onClick={() => {
@@ -908,7 +883,6 @@ const CustomerLayout = () => {
                         >
                           <FaSignOutAlt className="mr-3" size={16} />
                           <span className="relative z-10">Đăng xuất</span>
-                          <span className="absolute bottom-0 left-0 h-0.5 bg-red-500 transition-all duration-300 w-0 group-hover:w-full" />
                         </button>
                       </div>
                     </div>
@@ -916,41 +890,29 @@ const CustomerLayout = () => {
                     <>
                       <Link
                         to="/login"
-                        className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${
-                          location.pathname === '/login'
-                            ? theme === 'tet'
-                              ? 'bg-red-500/20 text-yellow-300'
-                              : 'bg-blue-500/20 text-blue-300'
-                            : 'hover:bg-white/10'
-                        }`}
+                        className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${location.pathname === '/login'
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                          }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <FaUser className="mr-3" size={16} />
                         <span className="relative z-10">Đăng nhập</span>
-                        <span className={`absolute bottom-0 left-0 h-0.5 ${
-                          theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
-                        } transition-all duration-300 ${
-                          location.pathname === '/login' ? 'w-full' : 'w-0'
-                        }`} />
                       </Link>
                       <Link
                         to="/register"
-                        className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg mb-4 border-b border-white/10 pb-4 ${
-                          location.pathname === '/register'
-                            ? theme === 'tet'
-                              ? 'bg-red-500/20 text-yellow-300'
-                              : 'bg-blue-500/20 text-blue-300'
-                            : 'hover:bg-white/10'
-                        }`}
+                        className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg mb-4 border-b border-white/10 pb-4 ${location.pathname === '/register'
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                          }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <FaUserPlus className="mr-3" size={16} />
                         <span className="relative z-10">Đăng ký</span>
-                        <span className={`absolute bottom-0 left-0 h-0.5 ${
-                          theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
-                        } transition-all duration-300 ${
-                          location.pathname === '/register' ? 'w-full' : 'w-0'
-                        }`} />
                       </Link>
                     </>
                   )}
@@ -961,13 +923,12 @@ const CustomerLayout = () => {
               <div className="p-4 space-y-2">
                 <Link
                   to="/wishlist"
-                  className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${
-                    location.pathname === '/wishlist'
-                      ? theme === 'tet'
-                        ? 'bg-red-500/20 text-yellow-300'
-                        : 'bg-blue-500/20 text-blue-300'
-                      : 'hover:bg-white/10'
-                  }`}
+                  className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${location.pathname === '/wishlist'
+                    ? theme === 'tet'
+                      ? 'bg-red-500/20 text-yellow-300'
+                      : 'bg-blue-500/20 text-blue-300'
+                    : 'hover:bg-white/10'
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <div className="relative mr-3">
@@ -979,21 +940,18 @@ const CustomerLayout = () => {
                     )}
                   </div>
                   <span className="relative z-10">Yêu thích</span>
-                  <span className={`absolute bottom-0 left-0 h-0.5 ${
-                    theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
-                  } transition-all duration-300 ${
-                    location.pathname === '/wishlist' ? 'w-full' : 'w-0'
-                  }`} />
+                  <span className={`absolute bottom-0 left-0 h-0.5 ${theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                    } transition-all duration-300 ${location.pathname === '/wishlist' ? 'w-full' : 'w-0'
+                    }`} />
                 </Link>
                 <Link
                   to="/cart"
-                  className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${
-                    location.pathname === '/cart'
-                      ? theme === 'tet'
-                        ? 'bg-red-500/20 text-yellow-300'
-                        : 'bg-blue-500/20 text-blue-300'
-                      : 'hover:bg-white/10'
-                  }`}
+                  className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${location.pathname === '/cart'
+                    ? theme === 'tet'
+                      ? 'bg-red-500/20 text-yellow-300'
+                      : 'bg-blue-500/20 text-blue-300'
+                    : 'hover:bg-white/10'
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <div className="relative mr-3">
@@ -1005,11 +963,9 @@ const CustomerLayout = () => {
                     )}
                   </div>
                   <span className="relative z-10">Giỏ hàng</span>
-                  <span className={`absolute bottom-0 left-0 h-0.5 ${
-                    theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
-                  } transition-all duration-300 ${
-                    location.pathname === '/cart' ? 'w-full' : 'w-0'
-                  }`} />
+                  <span className={`absolute bottom-0 left-0 h-0.5 ${theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                    } transition-all duration-300 ${location.pathname === '/cart' ? 'w-full' : 'w-0'
+                    }`} />
                 </Link>
               </div>
 
@@ -1034,7 +990,10 @@ const CustomerLayout = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg">
+      <main className={`flex-1 rounded-lg shadow-lg ${theme === 'tet'
+        ? 'bg-red-50' // Gradient màu đỏ-vàng cho theme Tết
+        : 'bg-blue-50' // Gradient màu xanh-tím cho theme thường
+        }`}>
         <Outlet />
       </main>
 

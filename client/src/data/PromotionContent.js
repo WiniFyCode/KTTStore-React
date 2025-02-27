@@ -20,11 +20,11 @@ export const getPromotionContent = (theme) => ({
       ],
       cta: 'NHẬN ƯU ĐÃI NGAY',
       image: '/images/tet-banner.jpg',
-      backgroundColor: 'bg-red-800'
+      backgroundColor: 'bg-red-700'
     }
   ] : [
     {
-      title: 'SUMMER SALE',
+      title: 'GIẢM GIÁ HÈ',
       subtitle: 'Giảm giá lên đến 70% cho tất cả sản phẩm mùa hè',
       benefits: [
         {
@@ -42,7 +42,7 @@ export const getPromotionContent = (theme) => ({
       ],
       cta: 'MUA NGAY',
       image: '/images/summer-banner.jpg',
-      backgroundColor: 'bg-blue-600'
+      backgroundColor: 'bg-blue-700'
     }
   ],
   benefits: theme === 'tet' ? [

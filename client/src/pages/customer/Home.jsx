@@ -208,8 +208,8 @@ const Home = () => {
     <div className="flex flex-col">
       {/* Dòng chạy thông báo */}
       <div className={`w-full py-3 ${theme === 'tet'
-          ? 'bg-gradient-to-r from-red-700/90 to-red-600/90 border-y border-yellow-300/30'
-          : 'bg-gradient-to-r from-blue-600/90 to-blue-500/90 border-y border-blue-300/30'
+          ? 'bg-gradient-to-r from-red-700/100 to-red-700/90 border-y border-yellow-300/30'
+          : 'bg-gradient-to-r from-blue-800/100 to-blue-700/100 border-y border-blue-300/30'
         }`}>
         <div className="overflow-hidden">
           <div className="animate-marquee whitespace-nowrap">
@@ -234,62 +234,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      {/* Slider Section */}
-      {sliderContent.map((slide, index) => (
-        <div
-          key={index}
-          className={`relative min-h-[100vh] md:min-h-[660px] flex items-center justify-center text-white ${slide.backgroundColor}`}
-          style={{
-            backgroundImage: `url(${slide.image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          <div className="absolute inset-0 bg-black bg-opacity-50" />
-          <div className="relative z-10 text-center px-4 py-8 md:py-12 w-full max-w-4xl mx-auto">
-            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 ${theme === 'tet' ? 'text-yellow-400' : 'text-white'
-              }`}>
-              {slide.title}
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl mb-8 md:mb-12">{slide.subtitle}</p>
-
-            {/* Benefits */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
-              {slide.benefits.map((benefit, idx) => (
-                <div
-                  key={idx}
-                  // Background color
-                  className={`p-4 md:p-6 rounded-lg backdrop-blur-sm ${theme === 'tet'
-                      ? 'bg-red-800/50 border border-yellow-400'
-                      : 'bg-blue-900/50'
-                    }`}
-                >
-                  {/* Icon */}
-                  <div className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${theme === 'tet' ? 'text-yellow-400' : 'text-white'
-                    }`}>
-                    {benefit.value}
-                  </div>
-                  {/* Description */}
-                  <div className="text-xs sm:text-sm md:text-base">{benefit.description}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA Button */}
-            <Link
-              to="/products"
-              className={`inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all ${theme === 'tet'
-                  ? 'bg-yellow-400 text-red-700 hover:bg-yellow-300 hover:text-white'
-                  : 'bg-blue-500 text-white hover:bg-blue-400'
-                }`}
-            >
-              {slide.cta}
-            </Link>
-          </div>
-        </div>
-      ))}
-
+      
       {/* Hero Section với Slider */}
       <section className="relative h-[calc(100vh-4rem)]">
         <Swiper
@@ -324,7 +269,7 @@ const Home = () => {
                 <img
                   src={slide.image}
                   alt={slide.title}
-                  className="w-full h-full object-cover rounded-xl"
+                  className="w-full h-full object-contain md:object-cover"
                 />
                 <div className="absolute inset-0 flex flex-col justify-end pb-16">
                   <div className="text-center transform transition-all duration-500 group-hover:scale-105">
@@ -355,6 +300,62 @@ const Home = () => {
           <div className="swiper-pagination !bottom-4"></div>
         </Swiper>
       </section>
+
+      {/* Slider Section */}
+      {sliderContent.map((slide, index) => (
+        <div
+          key={index}
+          className={`relative min-h-[100vh] md:min-h-[580px] flex items-center justify-center text-white ${slide.backgroundColor} `}
+          style={{
+            backgroundImage: `url(${slide.image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-50" />
+          <div className="relative z-10 text-center px-4 py-8 md:py-12 w-full max-w-4xl mx-auto">
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 ${theme === 'tet' ? 'text-yellow-400' : 'text-white'
+              }`}>
+              {slide.title}
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl mb-8 md:mb-12">{slide.subtitle}</p>
+
+            {/* Benefits */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
+              {slide.benefits.map((benefit, idx) => (
+                <div
+                  key={idx}
+                  // Background color
+                  className={`p-4 md:p-6 rounded-lg backdrop-blur-sm ${theme === 'tet'
+                      ? 'bg-red-800/50 border border-yellow-400'
+                      : 'bg-blue-900/50 border border-blue-400'
+                    }`}
+                >
+                  {/* Icon */}
+                  <div className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${theme === 'tet' ? 'text-yellow-400' : 'text-white'
+                    }`}>
+                    {benefit.value}
+                  </div>
+                  {/* Description */}
+                  <div className="text-xs sm:text-sm md:text-base">{benefit.description}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA Button */}
+            <Link
+              to="/products"
+              className={`inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all ${theme === 'tet'
+                  ? 'bg-yellow-400 text-red-700 hover:bg-yellow-300 hover:text-white'
+                  : 'bg-blue-500 text-white hover:bg-blue-400 hover:text-white'
+                }`}
+            >
+              {slide.cta}
+            </Link>
+          </div>
+        </div>
+      ))}
+
 
       {/* Dịch vụ */}
       <section className={`py-10 ${theme === 'tet'
@@ -413,7 +414,7 @@ const Home = () => {
                 <img
                   src={banner.image}
                   alt={banner.title}
-                  className="w-full h-[500px] object-cover transition duration-700 md:group-hover:scale-110"
+                  className="w-full h-[300px] md:h-[500px] object-contain md:object-cover transition duration-700 md:group-hover:scale-110"
                 />
 
                 {/* Gradient Overlay */}
