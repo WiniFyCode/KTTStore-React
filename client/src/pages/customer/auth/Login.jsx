@@ -324,24 +324,27 @@ const Login = () => {
 
           {/* Form đăng nhập */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Input email với hiệu ứng focus và error */}
+            {/* Input email */}
             <div className="relative animate-slide-up animation-delay-200">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                <FaEnvelope className={`h-5 w-5 transition-colors duration-200 ${errors.email ? 'text-red-400' : 'text-gray-400'}`} />
-              </div>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`pl-10 block w-full px-3 py-3 border ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
-                  } rounded-xl shadow-sm focus:outline-none focus:ring-2 ${theme === 'tet'
-                    ? 'focus:ring-red-500'
-                    : 'focus:ring-indigo-500'
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaEnvelope className={`h-5 w-5 transition-colors duration-200 ${errors.email ? 'text-red-400' : 'text-gray-400'}`} />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`pl-10 block w-full px-3 py-3 border ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
+                    } rounded-xl shadow-sm focus:outline-none focus:ring-2 ${
+                    theme === 'tet'
+                      ? 'focus:ring-red-500'
+                      : 'focus:ring-indigo-500'
                   } focus:border-transparent bg-white/60 transition-all duration-200 transform hover:translate-y-[-1px]`}
-                placeholder="Email"
-              />
+                  placeholder="Email"
+                />
+              </div>
               {errors.email && (
                 <p className="mt-1 text-sm text-red-500 flex items-center gap-1 animate-shake">
                   <FaTimes className="w-4 h-4" />
