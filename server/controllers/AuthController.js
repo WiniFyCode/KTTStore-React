@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
 // Tạo token JWT
 const generateToken = (userID) => {
     return jwt.sign({ userID }, process.env.JWT_SECRET, {
-        expiresIn: '24h' // Token hết hạn sau 12 giờ
+        expiresIn: '24h' // Token hết hạn sau 24 giờ
     })
 }
 

@@ -131,17 +131,19 @@ UserSchema.methods.comparePassword = async function(candidatePassword) {
 
 // Method để tăng số lần đăng nhập thất bại
 UserSchema.methods.incLoginAttempts = async function() {
-    // Nếu có lockUntil và vẫn còn trong thời gian khóa
-    if (this.lockUntil && this.lockUntil > Date.now()) {
-        return this.save();
+    // Nếu tài khoản đã hết thời gian khóa
+    if (this.lockUntil && this.lockUntil < Date.now()) {
+        // Reset lại số lần thử và thời gian khóa
+        this.loginAttempts = 0;
+        this.lockUntil = null;
+    } else {
+        // Tăng số lần thử
+        this.loginAttempts = (this.loginAttempts || 0) + 1;
     }
-    
-    // Tăng số lần thử
-    this.loginAttempts++;
     
     // Khóa tài khoản nếu thử quá MAX_LOGIN_ATTEMPTS lần
     if (this.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
-        this.lockUntil = new Date(Date.now() + 30*60*1000); // Khóa 30 phút
+        this.lockUntil = new Date(Date.now() + 5*60*1000); // Khóa 5 phút
     }
     
     return this.save();

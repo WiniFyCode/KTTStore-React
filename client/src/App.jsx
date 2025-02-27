@@ -17,6 +17,7 @@ import PromotionManagement from './pages/admin/PromotionManagement';
 import SettingManagement from './pages/admin/SettingManagement';
 
 // Customer Pages
+
 import Login from "./pages/customer/auth/Login";
 import Register from "./pages/customer/auth/Register";
 import ForgotPassword from "./pages/customer/auth/ForgotPassword";
@@ -66,7 +67,6 @@ import CustomerLayout from './layouts/CustomerLayout';
 
 // Payment Page
 import PaymentSuccess from "./pages/customer/payment/PaymentSuccess";
-// Payment Page
 
 function App() {
   return (
