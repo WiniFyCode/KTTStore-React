@@ -315,7 +315,7 @@ class UserCouponController {
                 }
 
                 // Cập nhật số lượt còn lại
-                userCoupon.usageLeft -= 1;
+                // userCoupon.usageLeft -= 1;
                 await userCoupon.save();
             } else {
                 // Tạo UserCoupon mới
@@ -326,7 +326,7 @@ class UserCouponController {
                     userCouponsID,
                     couponID: coupon.couponID,
                     userID,
-                    usageLeft: coupon.usageLimit - 1,
+                    usageLeft: coupon.usageLimit,
                     expiryDate: coupon.endDate
                 });
                 await userCoupon.save();

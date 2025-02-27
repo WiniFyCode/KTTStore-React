@@ -1,6 +1,7 @@
 const Category = require('../models/Category');
 const Coupon = require('../models/Coupon');
 const UserCoupon = require('../models/UserCoupon');
+const mongoose = require('mongoose');
 
 class CouponController {
     
@@ -181,15 +182,11 @@ class CouponController {
                 return res.status(404).json({ message: 'Không tìm thấy mã giảm giá' });
             }
 
-            // Kiểm tra có user nào đang sử dụng mã không
-            // const usersUsingCoupon = await UserCoupon.countDocuments({ couponID: id });
-            // if (usersUsingCoupon > 0) {
-            //     return res.status(400).json({
-            //         message: 'Không thể xóa mã giảm giá này vì đang có người dùng sử dụng'
-            //     });
-            // }
-
-            await coupon.deleteOne();
+            // Xóa tất cả UserCoupon liên quan và Coupon
+            await Promise.all([
+                UserCoupon.deleteMany({ couponID: id }),
+                coupon.deleteOne()
+            ]);
 
             res.json({ message: 'Xóa mã giảm giá thành công' });
         } catch (error) {

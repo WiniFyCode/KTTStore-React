@@ -1,12 +1,13 @@
 // CustomerLayout.jsx - Layout chung cho phần customer của website
 import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaHeart, FaUser, FaBars, FaTimes, FaSearch, FaFacebook, FaInstagram, FaTiktok, FaYoutube, FaClipboardList, FaMapMarker, FaArrowUp, FaUserPlus, FaSignOutAlt, FaTrash } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaUser, FaBars, FaTimes, FaSearch, FaFacebook, FaInstagram, FaTiktok, FaYoutube, FaClipboardList, FaMapMarker, FaArrowUp, FaUserPlus, FaSignOutAlt, FaTrash, FaHome, FaFireAlt, FaStar, FaBoxOpen, FaMale, FaFemale, FaPercent, FaNewspaper, FaInfoCircle, FaTshirt } from 'react-icons/fa';
 import { useTheme } from '../contexts/CustomerThemeContext';
 import { toast } from 'react-toastify';
 import axiosInstance from '../utils/axios';
 import { shopInfo } from '../data/ShopInfo';
 import AIChat from '../components/AI/AIChat';
+import Logo from '../components/CustomerLayout/Logo';
 
 const CustomerLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -232,75 +233,7 @@ const CustomerLayout = () => {
         }`}>
         <nav className="container mx-auto px-4">
           <div className="flex items-center h-16">
-            {/* Logo - Giữ nguyên width trên mobile */}
-            <div className="w-auto">
-              <Link to="/" className="relative group inline-block">
-                <div className="flex items-center">
-                  {/* Logo Text */}
-                  <div className="relative">
-                    <span className={`text-2xl font-bold ${theme === 'tet'
-                      ? 'text-yellow-300/90'
-                      : 'text-white'
-                      } transition-all duration-300 animate-pulse-slow`}>
-                      KTT
-                    </span>
-                    <span className={`ml-2 text-2xl font-light ${theme === 'tet'
-                      ? 'text-yellow-200/90'
-                      : 'text-gray-300'
-                      } transition-all duration-300`}>
-                      Store
-                    </span>
-
-                    {/* Glow Effect */}
-                    <div className={`absolute inset-0 opacity-75 ${theme === 'tet'
-                      ? 'animate-glow-gold'
-                      : 'animate-glow-blue'
-                      }`} />
-
-                    {/* Sparkles */}
-                    <div className="absolute inset-0 overflow-hidden">
-                      <div className="absolute top-0 left-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-1" />
-                      <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full animate-sparkle-2" />
-                      <div className="absolute bottom-0 right-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-3" />
-                    </div>
-
-                    {/* Glowing Border */}
-                    <div className={`absolute -inset-0.5 opacity-0 ${theme === 'tet'
-                      ? 'bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-400'
-                      : 'bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400'
-                      } rounded-lg blur animate-border-glow`} />
-
-                    {/* Glowing Dot */}
-                    <div className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${theme === 'tet'
-                      ? 'bg-yellow-400'
-                      : 'bg-blue-400'
-                      } transition-all duration-300 animate-ping`} />
-                  </div>
-
-                  {/* Theme-based Decoration */}
-                  {theme === 'tet' && (
-                    <>
-                      {/* Mai Flower */}
-                      <div className="absolute -top-3 -right-6 text-yellow-400 animate-bounce-slow">
-                        ✿
-                      </div>
-                      {/* Red Envelope */}
-                      <div className="absolute -bottom-2 -right-4 animate-bounce-slow" style={{ animationDelay: '0.5s' }}>
-                        🧧
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Tooltip */}
-                <div className={`absolute ml-4 -bottom-8 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-lg text-sm font-medium transition-all duration-300 whitespace-nowrap ${theme === 'tet'
-                  ? 'bg-yellow-400 text-red-700'
-                  : 'bg-blue-500 text-white'
-                  } opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0`}>
-                  {theme === 'tet' ? 'Chúc Mừng Năm Mới' : 'Welcome to KTT Store'}
-                </div>
-              </Link>
-            </div>
+            <Logo />
 
             {/* Mobile menu button - Hiển thị trên màn <= 1024px */}
             <button
@@ -686,17 +619,7 @@ const CustomerLayout = () => {
 
             {/* Logo */}
             <div className="p-4 border-b border-white/10">
-              <Link to="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
-                <span className={`text-2xl font-bold ${theme === 'tet'
-                  ? 'text-yellow-300/90'
-                  : 'text-white'
-                  }`}>
-                  KTT
-                </span>
-                <span className="ml-2 text-2xl font-light text-white">
-                  Store
-                </span>
-              </Link>
+              <Logo />
             </div>
 
             <div className="h-[calc(100vh-80px)] overflow-y-auto">
@@ -712,7 +635,7 @@ const CustomerLayout = () => {
                       className={`w-full px-4 py-3 pl-12 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 border-2 transition-all duration-300 ${theme === 'tet'
                         ? 'border-red-500/30 focus:border-red-500/50'
                         : 'border-blue-500/30 focus:border-blue-500/50'
-                        } focus:outline-none`}
+                        }`}
                     />
                     <FaSearch
                       size={16}
@@ -758,86 +681,158 @@ const CustomerLayout = () => {
                 {/* Trang chủ */}
                 <Link
                   to="/"
-                  className={`block px-4 py-2 rounded-lg transition-colors text-white hover:bg-white/10`}
+                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${
+                    location.pathname === '/' 
+                      ? theme === 'tet'
+                        ? 'bg-red-500/20 text-yellow-300'
+                        : 'bg-blue-500/20 text-blue-300'
+                      : 'hover:bg-white/10'
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Trang chủ
+                  <FaHome className="mr-3" size={16} />
+                  <span className="relative z-10">Trang chủ</span>
                 </Link>
 
                 {/* Products Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => toggleDropdown('products')}
-                    className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-colors text-white hover:bg-white/10`}
+                    className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-300 text-white ${
+                      ['/products', '/male', '/female', '/new-arrivals', '/tet-collection', '/sale', '/sale-tet'].includes(location.pathname)
+                        ? theme === 'tet'
+                          ? 'bg-red-500/20 text-yellow-300'
+                          : 'bg-blue-500/20 text-blue-300'
+                        : 'hover:bg-white/10'
+                    }`}
                   >
-                    <span>Sản phẩm</span>
+                    <div className="flex items-center">
+                      <FaTshirt className="mr-3" size={16} />
+                      <span>Sản phẩm</span>
+                    </div>
                     <span className={`transform transition-transform duration-200 ${openDropdowns.products ? 'rotate-180' : ''}`}>▼</span>
                   </button>
                   <div className={`overflow-hidden transition-all duration-300 ${openDropdowns.products ? 'max-h-96' : 'max-h-0'}`}>
                     {theme === 'tet' ? (
-                      <>
-                        <Link
-                          to="/tet-collection"
-                          className="block px-9 py-2 text-white hover:bg-white/10"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          Thời trang Tết
-                        </Link>
-                      </>
+                      <Link
+                        to="/tet-collection"
+                        className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
+                          location.pathname === '/tet-collection'
+                            ? theme === 'tet'
+                              ? 'bg-red-500/20 text-yellow-300'
+                              : 'bg-blue-500/20 text-blue-300'
+                            : 'hover:bg-white/10'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <FaFireAlt className="mr-3" size={16} />
+                        <span>Thời trang Tết</span>
+                      </Link>
                     ) : (
                       <Link
                         to="/new-arrivals"
-                        className="block px-9 py-2 text-white hover:bg-white/10 "
+                        className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
+                          location.pathname === '/new-arrivals'
+                            ? theme === 'tet'
+                              ? 'bg-red-500/20 text-yellow-300'
+                              : 'bg-blue-500/20 text-blue-300'
+                            : 'hover:bg-white/10'
+                        }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        Hàng mới về
+                        <FaStar className="mr-3" size={16} />
+                        <span>Hàng mới về</span>
                       </Link>
                     )}
                     <Link
                       to="/products"
-                      className="block px-9 py-2 text-white hover:bg-white/10"
+                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
+                        location.pathname === '/products'
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Tất cả sản phẩm
+                      <FaBoxOpen className="mr-3" size={16} />
+                      <span>Tất cả sản phẩm</span>
                     </Link>
                     <Link
                       to="/male"
-                      className="block px-9 py-2 text-white hover:bg-white/10"
+                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
+                        location.pathname === '/male'
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Nam
+                      <FaMale className="mr-3" size={16} />
+                      <span>Nam</span>
                     </Link>
                     <Link
                       to="/female"
-                      className="block px-9 py-2 text-white hover:bg-white/10"
+                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
+                        location.pathname === '/female'
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Nữ
+                      <FaFemale className="mr-3" size={16} />
+                      <span>Nữ</span>
                     </Link>
                     <Link
                       to={theme === 'tet' ? '/sale-tet' : '/sale'}
-                      className="block px-9 py-2 text-white hover:bg-white/10"
+                      className={`flex items-center px-9 py-2 transition-all duration-300 text-white ${
+                        location.pathname === (theme === 'tet' ? '/sale-tet' : '/sale')
+                          ? theme === 'tet'
+                            ? 'bg-red-500/20 text-yellow-300'
+                            : 'bg-blue-500/20 text-blue-300'
+                          : 'hover:bg-white/10'
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      {theme === 'tet' ? 'Giảm giá Tết' : 'Giảm giá'}
+                      <FaPercent className="mr-3" size={16} />
+                      <span>{theme === 'tet' ? 'Giảm giá Tết' : 'Giảm giá'}</span>
                     </Link>
                   </div>
                 </div>
 
-                {/* Other Menu Items */}
+                {/* News */}
                 <Link
                   to="/news"
-                  className={`block px-4 py-2 rounded-lg transition-colors text-white hover:bg-white/10`}
+                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white ${
+                    location.pathname === '/news'
+                      ? theme === 'tet'
+                        ? 'bg-red-500/20 text-yellow-300'
+                        : 'bg-blue-500/20 text-blue-300'
+                      : 'hover:bg-white/10'
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Tin tức
+                  <FaNewspaper className="mr-3" size={16} />
+                  <span>Tin tức</span>
                 </Link>
+
+                {/* About */}
                 <Link
                   to="/about"
-                  className={`block px-4 py-2 rounded-lg transition-colors text-white hover:bg-white/10`}
+                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 text-white ${
+                    location.pathname === '/about'
+                      ? theme === 'tet'
+                        ? 'bg-red-500/20 text-yellow-300'
+                        : 'bg-blue-500/20 text-blue-300'
+                      : 'hover:bg-white/10'
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Giới thiệu
+                  <FaInfoCircle className="mr-3" size={16} />
+                  <span>Giới thiệu</span>
                 </Link>
               </div>
 
@@ -849,36 +844,71 @@ const CustomerLayout = () => {
                     <div className="relative">
                       <button
                         onClick={() => toggleDropdown('account')}
-                        className="w-full flex items-center justify-between px-4 py-2 rounded-lg transition-colors text-white hover:bg-white/10"
+                        className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-300 text-white relative overflow-hidden ${
+                          ['/profile', '/orders'].includes(location.pathname)
+                            ? theme === 'tet'
+                              ? 'bg-red-500/20 text-yellow-300'
+                              : 'bg-blue-500/20 text-blue-300'
+                            : 'hover:bg-white/10'
+                        }`}
                       >
-                        <span>Tài khoản của tôi</span>
+                        <span className="relative z-10">Tài khoản của tôi</span>
                         <span className={`transform transition-transform duration-200 ${openDropdowns.account ? 'rotate-180' : ''}`}>▼</span>
+                        <span className={`absolute bottom-0 left-0 h-0.5 ${
+                          theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                        } transition-all duration-300 ${
+                          ['/profile', '/orders'].includes(location.pathname) ? 'w-full' : 'w-0'
+                        }`} />
                       </button>
                       <div className={`overflow-hidden transition-all duration-300 ${openDropdowns.account ? 'max-h-96 mb-4 border-b border-white/10 pb-4' : 'max-h-0'}`}>
                         <Link
                           to="/profile"
-                          className="flex items-center px-9 py-2 text-white hover:bg-white/10"
+                          className={`flex items-center px-9 py-2 transition-all duration-300 text-white relative overflow-hidden ${
+                            location.pathname === '/profile'
+                              ? theme === 'tet'
+                                ? 'bg-red-500/20 text-yellow-300'
+                                : 'bg-blue-500/20 text-blue-300'
+                              : 'hover:bg-white/10'
+                          }`}
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <FaUser className="mr-3" size={16} />
-                          <span>Thông tin tài khoản</span>
+                          <span className="relative z-10">Thông tin tài khoản</span>
+                          <span className={`absolute bottom-0 left-0 h-0.5 ${
+                            theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                          } transition-all duration-300 ${
+                            location.pathname === '/profile' ? 'w-full' : 'w-0'
+                          }`} />
                         </Link>
                         <Link
                           to="/orders"
-                          className="flex items-center px-9 py-2 text-white hover:bg-white/10"
+                          className={`flex items-center px-9 py-2 transition-all duration-300 text-white relative overflow-hidden ${
+                            location.pathname === '/orders'
+                              ? theme === 'tet'
+                                ? 'bg-red-500/20 text-yellow-300'
+                                : 'bg-blue-500/20 text-blue-300'
+                              : 'hover:bg-white/10'
+                          }`}
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <FaClipboardList className="mr-3" size={16} />
-                          <span>Đơn hàng</span>
+                          <span className="relative z-10">Đơn hàng</span>
+                          <span className={`absolute bottom-0 left-0 h-0.5 ${
+                            theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                          } transition-all duration-300 ${
+                            location.pathname === '/orders' ? 'w-full' : 'w-0'
+                          }`} />
                         </Link>
                         <button
                           onClick={() => {
                             handleLogout();
                             setIsMenuOpen(false);
                           }}
-                          className="w-full flex items-center px-9 py-2 text-red-500 hover:bg-white/10"
+                          className="w-full flex items-center px-9 py-2 text-red-500 hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
                         >
-                          <span>Đăng xuất</span>
+                          <FaSignOutAlt className="mr-3" size={16} />
+                          <span className="relative z-10">Đăng xuất</span>
+                          <span className="absolute bottom-0 left-0 h-0.5 bg-red-500 transition-all duration-300 w-0 group-hover:w-full" />
                         </button>
                       </div>
                     </div>
@@ -886,19 +916,41 @@ const CustomerLayout = () => {
                     <>
                       <Link
                         to="/login"
-                        className="flex items-center px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+                        className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${
+                          location.pathname === '/login'
+                            ? theme === 'tet'
+                              ? 'bg-red-500/20 text-yellow-300'
+                              : 'bg-blue-500/20 text-blue-300'
+                            : 'hover:bg-white/10'
+                        }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <FaUser className="mr-3" size={16} />
-                        <span>Đăng nhập</span>
+                        <span className="relative z-10">Đăng nhập</span>
+                        <span className={`absolute bottom-0 left-0 h-0.5 ${
+                          theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                        } transition-all duration-300 ${
+                          location.pathname === '/login' ? 'w-full' : 'w-0'
+                        }`} />
                       </Link>
                       <Link
                         to="/register"
-                        className="flex items-center px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors mb-4 border-b border-white/10 pb-4"
+                        className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg mb-4 border-b border-white/10 pb-4 ${
+                          location.pathname === '/register'
+                            ? theme === 'tet'
+                              ? 'bg-red-500/20 text-yellow-300'
+                              : 'bg-blue-500/20 text-blue-300'
+                            : 'hover:bg-white/10'
+                        }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <FaUserPlus className="mr-3" size={16} />
-                        <span>Đăng ký</span>
+                        <span className="relative z-10">Đăng ký</span>
+                        <span className={`absolute bottom-0 left-0 h-0.5 ${
+                          theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                        } transition-all duration-300 ${
+                          location.pathname === '/register' ? 'w-full' : 'w-0'
+                        }`} />
                       </Link>
                     </>
                   )}
@@ -909,7 +961,13 @@ const CustomerLayout = () => {
               <div className="p-4 space-y-2">
                 <Link
                   to="/wishlist"
-                  className="flex items-center px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${
+                    location.pathname === '/wishlist'
+                      ? theme === 'tet'
+                        ? 'bg-red-500/20 text-yellow-300'
+                        : 'bg-blue-500/20 text-blue-300'
+                      : 'hover:bg-white/10'
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <div className="relative mr-3">
@@ -920,11 +978,22 @@ const CustomerLayout = () => {
                       </span>
                     )}
                   </div>
-                  <span>Yêu thích</span>
+                  <span className="relative z-10">Yêu thích</span>
+                  <span className={`absolute bottom-0 left-0 h-0.5 ${
+                    theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                  } transition-all duration-300 ${
+                    location.pathname === '/wishlist' ? 'w-full' : 'w-0'
+                  }`} />
                 </Link>
                 <Link
                   to="/cart"
-                  className="flex items-center px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className={`flex items-center px-4 py-2 transition-all duration-300 text-white relative overflow-hidden rounded-lg ${
+                    location.pathname === '/cart'
+                      ? theme === 'tet'
+                        ? 'bg-red-500/20 text-yellow-300'
+                        : 'bg-blue-500/20 text-blue-300'
+                      : 'hover:bg-white/10'
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <div className="relative mr-3">
@@ -935,7 +1004,12 @@ const CustomerLayout = () => {
                       </span>
                     )}
                   </div>
-                  <span>Giỏ hàng</span>
+                  <span className="relative z-10">Giỏ hàng</span>
+                  <span className={`absolute bottom-0 left-0 h-0.5 ${
+                    theme === 'tet' ? 'bg-yellow-400' : 'bg-blue-400'
+                  } transition-all duration-300 ${
+                    location.pathname === '/cart' ? 'w-full' : 'w-0'
+                  }`} />
                 </Link>
               </div>
 
@@ -974,62 +1048,9 @@ const CustomerLayout = () => {
                 <img
                   src="/logo.png"
                   alt="KTT Store Logo"
-                  className="h-16 w-auto object-contain"
+                  className="h-16 w-auto object-contain mr-4"
                 />
-                {/* Logo Text với hiệu ứng giống như ở nav */}
-                <div className="ml-4 relative">
-                  <span className={`text-2xl font-bold ${theme === 'tet'
-                    ? 'text-yellow-300/90'
-                    : 'text-white'
-                    } transition-all duration-300 animate-pulse-slow`}>
-                    KTT
-                  </span>
-                  <span className={`ml-2 text-2xl font-light ${theme === 'tet'
-                    ? 'text-yellow-200/90'
-                    : 'text-gray-300'
-                    } transition-all duration-300`}>
-                    Store
-                  </span>
-
-                  {/* Glow Effect */}
-                  <div className={`absolute inset-0 opacity-75 ${theme === 'tet'
-                    ? 'animate-glow-gold'
-                    : 'animate-glow-blue'
-                    }`} />
-
-                  {/* Lấp lánh */}
-                  <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute top-0 left-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-1" />
-                    <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full animate-sparkle-2" />
-                    <div className="absolute bottom-0 right-1/4 w-1 h-1 bg-white rounded-full animate-sparkle-3" />
-                  </div>
-
-                  {/* Đường viền sáng */}
-                  <div className={`absolute -inset-0.5 opacity-0 ${theme === 'tet'
-                    ? 'bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-400'
-                    : 'bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400'
-                    } rounded-lg blur animate-border-glow`} />
-
-                  {/* Điểm sáng */}
-                  <div className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${theme === 'tet'
-                    ? 'bg-yellow-400'
-                    : 'bg-blue-400'
-                    } transition-all duration-300 animate-ping`} />
-
-                  {/* Theme-based Decoration */}
-                  {theme === 'tet' && (
-                    <>
-                      {/* Hoa Mai */}
-                      <div className="absolute -top-3 -right-6 text-yellow-400 animate-bounce-slow">
-                        ✿
-                      </div>
-                      {/* Thiệp đỏ */}
-                      <div className="absolute -bottom-2 -right-4 animate-bounce-slow" style={{ animationDelay: '0.5s' }}>
-                        🧧
-                      </div>
-                    </>
-                  )}
-                </div>
+                <Logo />
               </div>
 
               {/* Thông tin liên hệ với hiệu ứng hover mới */}

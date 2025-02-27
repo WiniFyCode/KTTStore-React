@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const OrderDetail = require('../models/OrderDetail');
 const Cart = require('../models/Cart');
 const ProductSizeStock = require('../models/ProductSizeStock');
+const Coupon = require('../models/Coupon');
 const UserCoupon = require('../models/UserCoupon');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
@@ -266,19 +267,39 @@ class OrderController {
         // Tính giá cuối cùng: tổng tiền các sản phẩm không được giảm + (tổng tiền các sản phẩm được giảm - số tiền giảm)
         const finalPaymentPrice = nonApplicableTotal + (applicableTotal - discountAmount);
 
-        // Cập nhật usageLeft ngay tại đây
-        await UserCoupon.updateOne(
-            { userCouponsID },
-            {
-                $inc: { usageLeft: -1 },
-                // Nếu usageLeft sẽ về 0, cập nhật trạng thái
-                $set: {
-                    status: await UserCoupon.findOne({ userCouponsID }).then(uc => 
-                        uc.usageLeft <= 1 ? 'used' : 'active'
-                    )
+        // Cập nhật usageLeft của UserCoupon và usedCount của Coupon
+        await Promise.all([
+            UserCoupon.updateOne(
+                { userCouponsID },
+                {
+                    $inc: { usageLeft: -1 },
+                    $set: {
+                        status: await UserCoupon.findOne({ userCouponsID }).then(uc => 
+                            uc.usageLeft <= 1 ? 'used' : 'active'
+                        )
+                    }
                 }
-            }
-        );
+            ),
+            // Cập nhật usedCount của Coupon và kiểm tra totalUsageLimit
+            Coupon.findOneAndUpdate(
+                { couponID: coupon.couponID },
+                [
+                    {
+                        $set: {
+                            usedCount: { $add: ['$usedCount', 1] },
+                            isActive: {
+                                $cond: {
+                                    if: { $gte: [{ $add: ['$usedCount', 1] }, '$totalUsageLimit'] },
+                                    then: false,
+                                    else: '$isActive'
+                                }
+                            }
+                        }
+                    }
+                ],
+                { new: true }
+            )
+        ]);
 
         return {
             finalPaymentPrice,

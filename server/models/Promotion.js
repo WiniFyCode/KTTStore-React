@@ -65,6 +65,15 @@ const promotionSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// Middleware để tự động cập nhật trạng thái khi hết hạn
+promotionSchema.pre('save', function(next) {
+    const now = new Date();
+    if (this.endDate < now && this.status === 'active') {
+        this.status = 'inactive';
+    }
+    next();
+});
+
 // Tạo index cho các trường thường xuyên tìm kiếm
 promotionSchema.index({ promotionID: 1, status: 1, type: 1 });
 promotionSchema.index({ startDate: 1, endDate: 1 });

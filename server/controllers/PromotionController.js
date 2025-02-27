@@ -4,9 +4,30 @@ const Product = require('../models/Product');
 class PromotionController {
     // Helper function để lấy ID tiếp theo
 
+    // Helper function để cập nhật trạng thái các promotion hết hạn
+    static async updateExpiredPromotions() {
+        const currentDate = new Date();
+        try {
+            await Promotion.updateMany(
+                {
+                    status: 'active',
+                    endDate: { $lt: currentDate }
+                },
+                {
+                    $set: { status: 'inactive' }
+                }
+            );
+        } catch (error) {
+            console.error('Lỗi khi cập nhật trạng thái promotion hết hạn:', error);
+        }
+    }
+
     // Lấy promotion áp dụng cho một sản phẩm
     async getPromotionsForProduct(req, res) {
         try {
+            // Cập nhật trạng thái các promotion hết hạn
+            await PromotionController.updateExpiredPromotions();
+
             const { productId } = req.params;
             const currentDate = new Date();
 
@@ -165,6 +186,9 @@ class PromotionController {
     //! ADMIN - Lấy tất cả promotion và thống kê
     async getAllPromotions(req, res) {
         try {
+            // Cập nhật trạng thái các promotion hết hạn
+            await PromotionController.updateExpiredPromotions();
+            
             const currentDate = new Date();
             
             // Lấy tất cả promotions
@@ -185,7 +209,7 @@ class PromotionController {
                     new Date(promo.startDate) > currentDate
                 ).length,
                 endedPromotions: promotions.filter(promo =>
-                    new Date(promo.endDate) < currentDate
+                    new Date(promo.endDate) < currentDate || promo.status === 'inactive'
                 ).length
             };
 
@@ -267,6 +291,9 @@ class PromotionController {
     // Lấy các promotion đang active
     async getActivePromotions(req, res) {
         try {
+            // Cập nhật trạng thái các promotion hết hạn
+            await PromotionController.updateExpiredPromotions();
+
             const currentDate = new Date();
 
             const activePromotions = await Promotion.find({

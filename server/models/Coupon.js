@@ -80,7 +80,15 @@ const couponSchema = new Schema({
         min: 0,
         validate: {
             validator: function (value) {
-                return value <= this.totalUsageLimit;
+                // Kiểm tra số lần sử dụng không vượt quá giới hạn
+                if (value > this.totalUsageLimit) {
+                    return false;
+                }
+                // Nếu số lần sử dụng bằng giới hạn, tự động set isActive = false
+                if (value === this.totalUsageLimit) {
+                    this.isActive = false;
+                }
+                return true;
             },
             message: 'Số lần sử dụng không thể vượt quá giới hạn'
         }
