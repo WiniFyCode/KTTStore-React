@@ -1583,7 +1583,7 @@ const ProductDetail = () => {
                                     <div className="flex justify-end gap-2">
                                       <button
                                         type="button"
-                                        onClick={() => setEditingReview({ id: null, rating: 5, comment: '' })}
+                                        onClick={() => setEditingReview({ id: null, rating: 5, comment: 'hi' })}
                                         className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-200 ${
                                           theme === 'tet'
                                             ? 'border-red-200 text-red-600 hover:bg-red-50'
@@ -1625,6 +1625,15 @@ const ProductDetail = () => {
                                 </div>
                               )}
                             </div>
+
+                            {/* Hiển thị nội dung comment */}
+                            {editingReview.id !== review.reviewID && (
+                              <div className="mt-3">
+                                <p className="text-gray-700 whitespace-pre-line">
+                                  {review.comment}
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </div>
 

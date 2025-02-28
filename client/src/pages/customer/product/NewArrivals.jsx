@@ -135,28 +135,25 @@ const NewArrivals = () => {
       }));
 
       setFilters(prev => {
-         if (Array.isArray(prev[type])) {
-            if (prev[type].includes(value)) {
-               // Nếu đã có thì xóa
-               return {
-                  ...prev,
-                  [type]: prev[type].filter(item => item !== value)
-               };
-            } else {
-               // Nếu chưa có thì thêm
-               return {
-                  ...prev,
-                  [type]: [...prev[type], value]
-               };
-            }
-         } else {
-            // Nếu không phải array thì gán trực tiếp
-            return {
-               ...prev,
-               [type]: value
-            };
-         }
-      });
+        if (Array.isArray(prev[type])) {  // Kiểm tra nếu giá trị hiện tại là mảng
+           if (prev[type].includes(value)) {  // Nếu giá trị đã tồn tại trong mảng
+              return {
+                 ...prev,  // Giữ nguyên các giá trị khác
+                 [type]: prev[type].filter(item => item !== value)  // Xóa giá trị khỏi mảng
+              };
+           } else {  // Nếu giá trị chưa có trong mảng
+              return {
+                 ...prev,  // Giữ nguyên các giá trị khác
+                 [type]: [...prev[type], value]  // Thêm giá trị mới vào mảng
+              };
+           }
+        } else {  // Nếu không phải mảng (ví dụ: search, sort)
+           return {
+              ...prev,  // Giữ nguyên các giá trị khác
+              [type]: value  // Gán trực tiếp giá trị mới
+           };
+        }
+     });
    };
 
   // Hàm chuyển trang

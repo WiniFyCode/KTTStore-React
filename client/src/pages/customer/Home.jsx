@@ -256,7 +256,7 @@ const Home = () => {
             el: '.swiper-pagination',
           }}
           autoplay={{
-            delay: 2500,
+            delay: 5000,
             disableOnInteraction: false
           }}
           loop={true}
