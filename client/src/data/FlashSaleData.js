@@ -33,7 +33,7 @@ const tetFlashSale = {
 
 const normalFlashSale = {
   startTime: new Date().setHours(12, 0, 0, 0), // 12h trưa
-  endTime: new Date().setHours(18, 0, 0, 0),   // 20h tối
+  endTime: new Date().setHours(20, 0, 0, 0),   // 20h tối
   title: "FLASH SALE",
   subtitle: "Giá sốc trong ngày - Số lượng có hạn",
   labelText: "SALE SỐC",
