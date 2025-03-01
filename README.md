@@ -3,6 +3,17 @@
 ## 📝 Mô tả
 KTT Store là website bán quần áo thời trang trực tuyến được xây dựng bằng React. Dự án bao gồm đầy đủ tính năng cho cả người dùng và quản trị viên, với giao diện thân thiện và trải nghiệm mua sắm mượt mà.
 
+## Giao diện
+### Login:
+![login](https://github.com/user-attachments/assets/8f3de936-268b-4435-95a2-c9851b695eb0)
+![login-tet](https://github.com/user-attachments/assets/e7bc90d6-84a5-4210-ac9b-52a83f4c1e4a)
+
+### Register
+![register](https://github.com/user-attachments/assets/002d60a0-6ff7-48fe-a6f7-768aa0be9dd8)
+![register-tet](https://github.com/user-attachments/assets/ef12cd7f-2ba2-44f9-8bfd-d9e102c4e141)
+
+### Home
+
 ## 🛠️ Công nghệ sử dụng
 - Frontend: 
   - React + Vite
