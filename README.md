@@ -50,7 +50,7 @@ KTT Store là website bán quần áo thời trang trực tuyến được xây 
   - Nodemailer
   - Cloudinary
   - PayOS
-  - Socket.io
+  - OAuth 2.0
 
 ## ✨ Tính năng chính
 
