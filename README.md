@@ -3,6 +3,33 @@
 ## 📝 Mô tả
 KTT Store là website bán quần áo thời trang trực tuyến được xây dựng bằng React. Dự án bao gồm đầy đủ tính năng cho cả người dùng và quản trị viên, với giao diện thân thiện và trải nghiệm mua sắm mượt mà.
 
+## Giao diện
+### Login
+![login](https://github.com/user-attachments/assets/8f3de936-268b-4435-95a2-c9851b695eb0)
+
+### Register
+![register](https://github.com/user-attachments/assets/002d60a0-6ff7-48fe-a6f7-768aa0be9dd8)
+
+### Forgot Password
+![forgot-password-no-OTP](https://github.com/user-attachments/assets/31221418-bdbc-4c01-96bc-643f72cdc677)
+![forgot-password](https://github.com/user-attachments/assets/1b3ac041-5965-4840-9f78-dfe1a17c5fe0)
+
+### Home
+![Home](https://github.com/user-attachments/assets/7fe23968-2ef4-4faa-8ea5-190a9988f5dd)
+
+### Products
+![products](https://github.com/user-attachments/assets/733e926e-eef0-48f8-bd89-d8b1e002f5cf)
+
+### Cart
+![cart](https://github.com/user-attachments/assets/22bf6e92-9a8f-414f-84e3-488ba024ca6b)
+
+### Checkout
+![checkout-s1](https://github.com/user-attachments/assets/2a20759f-19d5-4519-809e-59227a6b2f75)
+
+### Favorite
+![wishlist](https://github.com/user-attachments/assets/3f7fbcfc-07af-42ad-912b-707920832a90)
+...
+
 ## 🛠️ Công nghệ sử dụng
 - Frontend: 
   - React + Vite
