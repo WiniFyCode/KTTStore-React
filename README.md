@@ -226,5 +226,5 @@ Mọi đóng góp đều được chào đón! Vui lòng:
 Dự án được phân phối dưới giấy phép MIT. Xem `LICENSE` để biết thêm thông tin.
 
 ## 📧 Liên hệ
-- Email: kttstore3cg@gmail.com
+- Email: thanh23102005@gmail.com
 - GitHub: [@WiniFyCode](https://github.com/WiniFyCode)
