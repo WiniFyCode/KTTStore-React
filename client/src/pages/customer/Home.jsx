@@ -217,19 +217,34 @@ const Home = () => {
                 ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
                 : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
               } text-lg font-medium mx-8 tracking-wide`}>
-              🎉 Chào mừng đến với cửa hàng thời trang của chúng tôi!
+              {/* 🎉 Chào mừng đến với cửa hàng thời trang của chúng tôi! */}
+              🙏 Cảm ơn Pantio vì đã cung cấp hình ảnh tham khảo
             </span>
             <span className={`inline-block ${theme === 'tet'
                 ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
                 : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
               } text-lg font-medium mx-8 tracking-wide`}>
-              🌟 Giảm giá đặc biệt cho các sản phẩm mới!
+              {/* 🌟 Giảm giá đặc biệt cho các sản phẩm mới! */}
+              📚 Hình ảnh và nội dung chỉ mang tính chất tham khảo cho mục đích học tập
             </span>
             <span className={`inline-block ${theme === 'tet'
                 ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
                 : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
               } text-lg font-medium mx-8 tracking-wide`}>
-              🎁 Miễn phí vận chuyển cho đơn hàng trên 500,000đ!
+              {/* 🎁 Miễn phí vận chuyển cho đơn hàng trên 500,000đ! */}
+              ⚠️ Không mang tính chất thương mại - Dự án này được tạo ra với mục đích học tập
+            </span>
+            <span className={`inline-block ${theme === 'tet'
+                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
+                : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
+              } text-lg font-medium mx-8 tracking-wide`}>
+              🎓 Đây là dự án học tập của sinh viên năm 2 ngành CNTT
+            </span>
+            <span className={`inline-block ${theme === 'tet'
+                ? 'text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]'
+                : 'text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]'
+              } text-lg font-medium mx-8 tracking-wide`}>
+              💻 Sử dụng công nghệ: React, Node.js, MongoDB và Express
             </span>
           </div>
         </div>
